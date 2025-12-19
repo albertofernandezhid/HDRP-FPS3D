@@ -1,6 +1,3 @@
-# HDRP-FPS3D
-Práctica de clase. GECEGS en Desarrollo de Videojuegos y Realidad Virtual
-
 # 🎮 Proyecto shooter 3D
 
 ![Unity 6.3](https://img.shields.io/badge/Engine-Unity%206.3-black?logo=unity) 
