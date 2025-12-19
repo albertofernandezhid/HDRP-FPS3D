@@ -1,7 +1,7 @@
 # HDRP-FPS3D
 Práctica de clase. GECEGS en Desarrollo de Videojuegos y Realidad Virtual
 
-# 🎮 Proyecto Shooter 3D
+# 🎮 Proyecto shooter 3D
 
 ![Unity 6.3](https://img.shields.io/badge/Engine-Unity%206.3-black?logo=unity) 
 ![Status](https://img.shields.io/badge/Status-In%20Progress-yellow) 
@@ -14,7 +14,7 @@ Práctica de clase. GECEGS en Desarrollo de Videojuegos y Realidad Virtual
 
 ---
 
-## 📌 Descripción General
+## 📌 Descripción general
 
 Este proyecto es un **shooter 3D** en Unity 6.3. El jugador podrá cambiar entre **primera y tercera persona con zoom**, moverse libremente y atacar enemigos usando **2 o 3 armas distintas**.  
 El juego contará con **mínimo 3 niveles**, enemigos animados con Mixamo, sistemas de stamina, power-ups y efectos de audio/partículas avanzados.  
@@ -23,7 +23,7 @@ Se está desarrollando con un enfoque en **arquitectura limpia** utilizando patr
 
 ---
 
-## 🎮 Mecánicas de Juego
+## 🎮 Mecánicas de juego
 
 1. **Movimiento del jugador**
    - Primera y tercera persona
@@ -65,7 +65,7 @@ Se está desarrollando con un enfoque en **arquitectura limpia** utilizando patr
 
 ---
 
-## 🗂 Arquitectura / Patrones de Diseño
+## 🗂 Arquitectura / Patrones de diseño
 
 | Sistema | Patrón Aplicado | Detalles |
 |--------|----------------|---------|
@@ -80,7 +80,7 @@ Se está desarrollando con un enfoque en **arquitectura limpia** utilizando patr
 
 ---
 
-## 🛠 Estructura del Proyecto
+## 🛠 Estructura del proyecto
 
 ```plaintext
 Assets/
@@ -203,7 +203,7 @@ Assets/
 
 ---
 
-## 📝 Features en Construcción
+## 📝 Features en construcción
 
 - Cambio de cámara FPS / TPS con zoom
 - Cambio de armas dinámico (2–3 armas)
