@@ -27,13 +27,13 @@ Se está desarrollando con un enfoque en **arquitectura limpia** utilizando patr
 
 1. **Movimiento del jugador**
    - Primera y tercera persona
-   - Sprint / caminata
+   - Caminar, correr y sprintar
    - Stamina y regeneración
    - Interacción con pickups (power-ups)
 
 2. **Sistema de armas**
    - Cambio entre 2–3 armas
-   - Armas pueden ser proyectiles tipo bolas, botellas o piedras
+   - Las armas pueden ser proyectiles tipo bolas, botellas o piedras
    - Cada arma con comportamiento propio usando Strategy Pattern
 
 3. **Enemigos**
@@ -85,35 +85,110 @@ Se está desarrollando con un enfoque en **arquitectura limpia** utilizando patr
 ```plaintext
 Assets/
 ├─ Art/
-│  ├─ Characters/    # Modelos Mixamo (Player y Enemigos)
-│  ├─ Weapons/       # Prefabs de armas
-│  ├─ Pickups/       # PowerUps
-│  └─ Environment/   # Escenarios
+│  ├─ Characters/      
+│  │  ├─ Player/
+│  │  │  └─ Player.fbx
+│  │  └─ Enemies/
+│  │     └─ Enemy.fbx
+│  │
+│  ├─ Weapons/          
+│  │  └─ Rifle.fbx
+│  │
+│  ├─ Pickups/           
+│  │  └─ StaminaPack.fbx
+│  │
+│  └─ Environment/      
+│     └─ Buildings.fbx
+│
 ├─ Audio/
 │  ├─ SFX/
 │  └─ Music/
+│
 ├─ Materials/
 ├─ Particles/
+│
+├─ Animations/
+│  ├─ Player/            
+│  │  ├─ Idle.anim
+│  │  ├─ Walk.anim
+│  │  ├─ Run.anim
+│  │  └─ Sprint.anim
+│  │
+│  └─ Enemies/
+│     ├─ Patrol.anim
+│     ├─ Chase.anim
+│     └─ Attack.anim
+│
+├─ Animators/
+│  ├─ PlayerAnimator.controller
+│  └─ EnemyAnimator.controller
+│
 ├─ Prefabs/
-├─ Scripts/
 │  ├─ Player/
-│  │  ├─ PlayerController.cs
-│  │  ├─ WeaponSystem.cs
-│  │  └─ CameraController.cs
+│  │  └─ Player.prefab
 │  ├─ Enemies/
-│  │  ├─ EnemyController.cs
-│  │  └─ EnemyAIStateMachine.cs
-│  ├─ PowerUps/
-│  │  └─ PowerUpController.cs
-│  ├─ Managers/
-│  │  ├─ GameManager.cs
-│  │  └─ AudioManager.cs
+│  ├─ Weapons/
+│  └─ Pickups/
+│
+├─ Scenes/
+│  ├─ MainMenu.unity
+│  ├─ Level1.unity
+│  ├─ Level2.unity
+│  └─ Level3.unity
+│
+├─ Scripts/
+│  ├─ Core/
+│  │  ├─ Player/
+│  │  │  ├─ PlayerController.cs
+│  │  │  ├─ PlayerState.cs
+│  │  │  ├─ Camera/
+│  │  │  │  ├─ CameraController.cs
+│  │  │  │  ├─ ICameraStrategy.cs
+│  │  │  │  ├─ FPSCameraStrategy.cs
+│  │  │  │  └─ TPSCameraStrategy.cs
+│  │  │  └─ States/
+│  │  │     ├─ IdleState.cs
+│  │  │     ├─ WalkState.cs
+│  │  │     ├─ RunState.cs
+│  │  │     └─ SprintState.cs
+│  │  │
+│  │  ├─ Enemies/
+│  │  │  ├─ EnemyController.cs
+│  │  │  └─ States/
+│  │  │     ├─ PatrolState.cs
+│  │  │     ├─ ChaseState.cs
+│  │  │     └─ AttackState.cs
+│  │  │
+│  │  ├─ Weapons/
+│  │  │  ├─ WeaponBase.cs
+│  │  │  ├─ ProjectileWeapon.cs
+│  │  │  └─ MeleeWeapon.cs
+│  │  │
+│  │  ├─ Systems/
+│  │  │  ├─ WeaponSystem.cs
+│  │  │  ├─ StaminaSystem.cs
+│  │  │  └─ CameraSystem.cs
+│  │  │
+│  │  └─ Managers/
+│  │     ├─ GameManager.cs
+│  │     └─ AudioManager.cs
+│  │
+│  ├─ Interfaces/
+│  │  ├─ IDamageable.cs
+│  │  ├─ IWeapon.cs
+│  │  └─ IStaminaObserver.cs
+│  │
+│  ├─ Input/
+│  │  └─ InputActions.inputactions
+│  │
 │  ├─ UI/
+│  │  ├─ UIStaminaBar.cs
+│  │  └─ UIWeaponHUD.cs
+│  │
 │  └─ Utilities/
-└─ Scenes/
-   ├─ Level1.unity
-   ├─ Level2.unity
-   └─ Level3.unity
+│     ├─ ObjectPool.cs
+│     └─ Extensions.cs
+
 ```
 ---
 
@@ -143,12 +218,13 @@ Assets/
 
 ## 🔮 Roadmap
 
-1. Implementar **jugador con movimiento y stamina**  
-2. Crear **2–3 armas funcionales** con cambio dinámico  
-3. Añadir **enemigos con IA básica**  
-4. Añadir **pickups y power-ups animados**  
-5. Implementar **cámaras y zoom**  
-6. Añadir **audio y partículas 3D**  
-7. Primer **nivel jugable**  
-8. Extender a **mínimo 3 niveles**  
-9. Pulir optimización y efectos visuales  
+- [x] Implementar **jugador con movimiento y stamina**
+- [x] Implementar **cámaras y zoom**
+- [ ] Crear **2–3 armas funcionales** con cambio dinámico
+- [ ] Añadir **enemigos con IA básica**
+- [ ] Añadir **pickups y power-ups**
+- [ ] Añadir **modelos y animaciones finales**
+- [ ] Añadir **audio y partículas 3D**
+- [ ] Primer **nivel jugable**
+- [ ] Extender a **mínimo 3 niveles**
+- [ ] Pulir optimización y efectos visuales
