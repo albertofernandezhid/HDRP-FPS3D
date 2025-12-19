@@ -21,7 +21,7 @@ public class WalkState : PlayerState
 
         if (!player.IsGrounded())
         {
-            return this; // Mantener estado actual en aire
+            return this;
         }
 
         if (moveInput.magnitude < 0.1f)
@@ -45,6 +45,6 @@ public class WalkState : PlayerState
 
     public override void Exit()
     {
-        // No necesitamos limpiar nada específico
+
     }
 }

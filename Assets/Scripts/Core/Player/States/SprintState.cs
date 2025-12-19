@@ -29,7 +29,6 @@ public class SprintState : PlayerState
             return new IdleState(player);
         }
 
-        // Verificar stamina
         if (player.staminaSystem != null && !player.staminaSystem.HasStamina())
         {
             if (player.IsRunPressed())
@@ -53,6 +52,6 @@ public class SprintState : PlayerState
 
     public override void Exit()
     {
-        // No necesitamos limpiar nada específico
+        
     }
 }

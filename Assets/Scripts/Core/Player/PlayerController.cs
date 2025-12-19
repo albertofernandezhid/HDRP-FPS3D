@@ -10,11 +10,10 @@ public class PlayerController : MonoBehaviour
     public float sprintSpeed = 9f;
     public float jumpHeight = 2f;
     public float gravity = -9.81f;
-    public float rotationSpeed = 5f; // Reducido para mejor control
-    public float rotationThreshold = 0.15f;
 
     [Header("References")]
     public CharacterController characterController;
+    public CameraController cameraController;
     public Transform playerCamera;
     public StaminaSystem staminaSystem;
     public PlayerAnimationController animationController;
@@ -36,14 +35,14 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         inputActions = new PlayerInputActions();
 
+        if (cameraController == null)
+            cameraController = GetComponentInChildren<CameraController>();
+
         inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += _ => moveInput = Vector2.zero;
-
         inputActions.Player.Jump.performed += _ => jumpRequested = true;
-
         inputActions.Player.Run.performed += _ => runPressed = true;
         inputActions.Player.Run.canceled += _ => runPressed = false;
-
         inputActions.Player.Sprint.performed += _ => sprintPressed = true;
         inputActions.Player.Sprint.canceled += _ => sprintPressed = false;
 
@@ -81,7 +80,6 @@ public class PlayerController : MonoBehaviour
 
         jumpRequested = false;
 
-        // Actualizar animaciones
         if (animationController != null)
         {
             animationController.UpdateAnimations(
@@ -106,47 +104,15 @@ public class PlayerController : MonoBehaviour
         vel.y += gravity * Time.deltaTime;
     }
 
-    // ?? Método de rotación CORREGIDO (sin parámetros)
-    public void RotateTowardsMovement()
-    {
-        if (moveInput.magnitude < rotationThreshold || moveInput.y < -0.3f)
-            return; // No rotamos para movimiento hacia atrás
-
-        Vector3 moveDirection = GetCameraRelativeDirection(moveInput);
-        moveDirection.y = 0f;
-
-        if (moveDirection.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,
-                rotationSpeed * Time.deltaTime);
-        }
-    }
-
-    // ?? Método alternativo con parámetro
-    public void RotateTowardsInput(Vector2 input)
-    {
-        if (input.magnitude < rotationThreshold || input.y < -0.3f)
-            return;
-
-        Vector3 moveDirection = GetCameraRelativeDirection(input);
-        moveDirection.y = 0f;
-
-        if (moveDirection.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,
-                rotationSpeed * Time.deltaTime);
-        }
-    }
-
     public Vector3 GetCameraRelativeDirection(Vector2 input)
     {
         if (input.sqrMagnitude < 0.01f)
             return Vector3.zero;
 
-        Vector3 forward = playerCamera.forward;
-        Vector3 right = playerCamera.right;
+        Transform cameraTransform = cameraController?.CameraPivot ?? playerCamera;
+
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
 
         forward.y = 0f;
         right.y = 0f;
@@ -167,5 +133,4 @@ public class PlayerController : MonoBehaviour
     public bool IsRunPressed() => runPressed;
     public bool IsSprintPressed() => sprintPressed;
     public Vector2 GetMoveInput() => moveInput;
-    public float GetRotationSpeed() => rotationSpeed;
 }

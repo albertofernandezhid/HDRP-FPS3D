@@ -45,6 +45,6 @@ public class RunState : PlayerState
 
     public override void Exit()
     {
-        // No necesitamos limpiar nada específico
+        
     }
 }

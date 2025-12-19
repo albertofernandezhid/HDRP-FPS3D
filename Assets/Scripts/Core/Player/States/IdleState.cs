@@ -12,7 +12,6 @@ public class IdleState : PlayerState
 
     public override void HandleMovement(Vector2 input, ref Vector3 velocity, bool jumpRequested)
     {
-        // En idle, solo aplicamos gravedad
         player.ApplyGravity(ref velocity);
 
         if (jumpRequested && player.IsGrounded())
@@ -21,8 +20,6 @@ public class IdleState : PlayerState
         }
 
         player.Move(velocity);
-
-        // No rotamos en idle
     }
 
     public override PlayerState UpdateState()
@@ -31,7 +28,7 @@ public class IdleState : PlayerState
 
         if (!player.IsGrounded())
         {
-            return this; // Mantener en aire (podemos añadir AirState después)
+            return this;
         }
 
         if (moveInput.magnitude > 0.1f)
@@ -51,6 +48,6 @@ public class IdleState : PlayerState
 
     public override void Exit()
     {
-        // No necesitamos limpiar nada específico
+        
     }
 }
