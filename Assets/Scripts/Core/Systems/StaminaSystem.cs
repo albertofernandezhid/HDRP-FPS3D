@@ -43,6 +43,22 @@ public class StaminaSystem : MonoBehaviour
         Notify();
     }
 
+    public void AddStamina(float amount)
+    {
+        currentStamina = Mathf.Min(maxStamina, currentStamina + amount);
+        Notify();
+    }
+
+    public void SetRegenerationMultiplier(float multiplier)
+    {
+        regenPerSecond *= multiplier;
+    }
+
+    public void ResetRegenerationMultiplier(float originalValue)
+    {
+        regenPerSecond = originalValue;
+    }
+
     public bool HasStamina()
     {
         return currentStamina > 0f;

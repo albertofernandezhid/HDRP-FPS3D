@@ -26,10 +26,7 @@ public class IdleState : PlayerState
     {
         Vector2 moveInput = player.GetMoveInput();
 
-        if (!player.IsGrounded())
-        {
-            return this;
-        }
+        if (!player.IsGrounded()) return this;
 
         if (moveInput.magnitude > 0.1f)
         {
@@ -46,8 +43,5 @@ public class IdleState : PlayerState
 
     public override float GetSpeed() => 0f;
 
-    public override void Exit()
-    {
-        
-    }
+    public override void Exit() { }
 }

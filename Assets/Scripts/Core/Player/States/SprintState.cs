@@ -19,30 +19,20 @@ public class SprintState : PlayerState
     {
         Vector2 moveInput = player.GetMoveInput();
 
-        if (!player.IsGrounded())
-        {
-            return this;
-        }
+        if (!player.IsGrounded()) return this;
 
-        if (moveInput.magnitude < 0.1f)
-        {
-            return new IdleState(player);
-        }
+        if (moveInput.magnitude < 0.1f) return new IdleState(player);
 
         if (player.staminaSystem != null && !player.staminaSystem.HasStamina())
         {
-            if (player.IsRunPressed())
-                return new RunState(player);
-            else
-                return new WalkState(player);
+            if (player.IsRunPressed()) return new RunState(player);
+            else return new WalkState(player);
         }
 
         if (!player.IsSprintPressed())
         {
-            if (player.IsRunPressed())
-                return new RunState(player);
-            else
-                return new WalkState(player);
+            if (player.IsRunPressed()) return new RunState(player);
+            else return new WalkState(player);
         }
 
         return this;
@@ -50,8 +40,5 @@ public class SprintState : PlayerState
 
     public override float GetSpeed() => player.sprintSpeed;
 
-    public override void Exit()
-    {
-        
-    }
+    public override void Exit() { }
 }

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2219a22fd26538e40b65807f61882f8f, type: 3}
+  m_Name: HealthPowerUp
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUpData
+  powerUpName: HealthPowerUp
+  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  duration: 10
+  speedMultiplier: 0
+  jumpMultiplier: 0
+  staminaRegenMultiplier: 0
+  staminaBonus: 0
+  healthBonus: 20
+  pickupColor: {r: 0.22167933, g: 1, b: 0, a: 0}
+  pickupPrefab: {fileID: 0}
+  pickupParticles: {fileID: 0}
+  pickupSound: {fileID: 0}

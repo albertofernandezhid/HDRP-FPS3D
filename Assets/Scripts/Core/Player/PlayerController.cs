@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     public StaminaSystem staminaSystem;
     public PlayerAnimationController animationController;
 
-    private PlayerState currentState;
+    [HideInInspector] public PlayerState currentState;
     private PlayerInputActions inputActions;
 
     private Vector2 moveInput;
@@ -89,6 +89,15 @@ public class PlayerController : MonoBehaviour
                 velocity.y
             );
         }
+    }
+
+    public void ChangeState(PlayerState newState)
+    {
+        if (currentState != null)
+            currentState.Exit();
+
+        currentState = newState;
+        currentState.Enter();
     }
 
     public void Move(Vector3 motion)

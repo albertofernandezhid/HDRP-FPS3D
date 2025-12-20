@@ -12,11 +12,48 @@ public class PlayerAnimationController : MonoBehaviour
     public string isMovingParam = "IsMoving";
     public string moveXParam = "MoveX";
     public string moveYParam = "MoveY";
+    public string takeDamageParam = "TakeDamage";
+    public string dieParam = "Die";
+    public string respawnParam = "Respawn";
+    public string isDeadParam = "IsDead";
+
+    private PlayerHealth playerHealth;
 
     private void Awake()
     {
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        playerHealth = GetComponentInParent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.OnDeath += OnPlayerDeath;
+            playerHealth.OnDamageTaken += OnPlayerDamaged;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (playerHealth != null)
+        {
+            playerHealth.OnDeath -= OnPlayerDeath;
+            playerHealth.OnDamageTaken -= OnPlayerDamaged;
+        }
+    }
+
+    private void OnPlayerDamaged(float damage)
+    {
+        if (animator != null)
+            animator.SetTrigger(takeDamageParam);
+    }
+
+    private void OnPlayerDeath()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger(dieParam);
+            animator.SetBool(isDeadParam, true);
+        }
     }
 
     public void SetSpeed(float speed)
@@ -52,7 +89,6 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
 
-    // Métodos simplificados para los estados
     public void SetIdle()
     {
         SetSpeed(0f);
@@ -86,16 +122,31 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void UpdateAnimations(Vector2 moveInput, float speed, bool isGrounded, float verticalVelocity)
     {
-        // Actualizar parámetros básicos
+        if (animator == null) return;
+
+        bool isDead = animator.GetBool(isDeadParam);
+        if (isDead)
+        {
+            animator.SetFloat(speedParam, 0f);
+            animator.SetBool(isMovingParam, false);
+            return;
+        }
+
         SetGrounded(isGrounded);
         SetVerticalVelocity(verticalVelocity);
         SetMovementDirection(moveInput);
 
-        // Normalizar speed para parámetro animator (0-1)
-        float normalizedSpeed = Mathf.Clamp01(speed / 9f); // Dividir por sprintSpeed
+        float normalizedSpeed = Mathf.Clamp01(speed / 9f);
         animator.SetFloat(speedParam, normalizedSpeed);
+        animator.SetBool(isMovingParam, moveInput.magnitude > 0.1f);
+    }
 
-        // Actualizar si está moviéndose
-        SetMoving(moveInput.magnitude > 0.1f);
+    public void TriggerRespawn()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger(respawnParam);
+            animator.SetBool(isDeadParam, false);
+        }
     }
 }
