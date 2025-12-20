@@ -30,6 +30,7 @@ public class CameraController : MonoBehaviour
     [Header("First Person Options")]
     [SerializeField] private bool hideMeshInFPS = true;
     [SerializeField] private float fpsVerticalOffset = 0.6f;
+    [SerializeField] private bool startInFirstPerson = true; // NUEVA OPCIÓN
 
     private float xRotation = 0f;
     private float currentDistance;
@@ -49,6 +50,8 @@ public class CameraController : MonoBehaviour
         if (playerMesh != null)
             playerRenderer = playerMesh.GetComponent<Renderer>();
 
+        // Configurar modo inicial
+        isFirstPerson = startInFirstPerson;
         SwitchCameraMode();
     }
 
