@@ -12,7 +12,6 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 300f;
     [SerializeField] private float fpsFOV = 75f;
     [SerializeField] private float tpsFOV = 65f;
-    [SerializeField] private float aimFOV = 55f;
     [SerializeField] private float tpsDistance = 3f;
     [SerializeField] private float minZoomDistance = 1f;
     [SerializeField] private float maxZoomDistance = 10f;

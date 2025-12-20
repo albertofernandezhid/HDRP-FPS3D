@@ -1422,7 +1422,6 @@ MonoBehaviour:
   mouseSensitivity: 300
   fpsFOV: 75
   tpsFOV: 65
-  aimFOV: 55
   tpsDistance: 3
   minZoomDistance: 1
   maxZoomDistance: 5

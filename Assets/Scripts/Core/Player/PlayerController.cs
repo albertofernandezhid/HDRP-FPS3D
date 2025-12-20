@@ -98,10 +98,12 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyGravity(ref Vector3 vel)
     {
-        if (characterController.isGrounded && vel.y < 0f)
-            vel.y = -2f;
-
         vel.y += gravity * Time.deltaTime;
+
+        if (characterController.isGrounded && vel.y < 0f)
+        {
+            vel.y = -2f;
+        }
     }
 
     public Vector3 GetCameraRelativeDirection(Vector2 input)
