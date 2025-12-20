@@ -9,7 +9,15 @@ public class PlayerController : MonoBehaviour
     public float runSpeed = 6f;
     public float sprintSpeed = 9f;
     public float jumpHeight = 2f;
+    public float jumpHeightMultiplier = 1f;
     public float gravity = -9.81f;
+
+    [Header("Original Values (no modificar)")]
+    public float originalWalkSpeed = 3f;
+    public float originalRunSpeed = 6f;
+    public float originalSprintSpeed = 9f;
+    public float originalJumpHeight = 2f;
+    public float originalJumpHeightMultiplier = 1f;
 
     [Header("References")]
     public CharacterController characterController;
@@ -48,6 +56,26 @@ public class PlayerController : MonoBehaviour
 
         if (!staminaSystem)
             staminaSystem = GetComponent<StaminaSystem>();
+
+        SaveOriginalValues();
+    }
+
+    private void SaveOriginalValues()
+    {
+        originalWalkSpeed = walkSpeed;
+        originalRunSpeed = runSpeed;
+        originalSprintSpeed = sprintSpeed;
+        originalJumpHeight = jumpHeight;
+        originalJumpHeightMultiplier = jumpHeightMultiplier;
+    }
+
+    public void ResetToOriginalValues()
+    {
+        walkSpeed = originalWalkSpeed;
+        runSpeed = originalRunSpeed;
+        sprintSpeed = originalSprintSpeed;
+        jumpHeight = originalJumpHeight;
+        jumpHeightMultiplier = originalJumpHeightMultiplier;
     }
 
     private void OnEnable()

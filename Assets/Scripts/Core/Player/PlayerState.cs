@@ -24,7 +24,8 @@ public abstract class PlayerState
 
         if (jumpRequested && player.IsGrounded())
         {
-            velocity.y = Mathf.Sqrt(player.jumpHeight * -2f * player.gravity);
+            float effectiveJumpHeight = player.jumpHeight * player.jumpHeightMultiplier;
+            velocity.y = Mathf.Sqrt(effectiveJumpHeight * -2f * player.gravity);
         }
 
         Vector3 horizontalMotion = moveDirection * currentSpeed;

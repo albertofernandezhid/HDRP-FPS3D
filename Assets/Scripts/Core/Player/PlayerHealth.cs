@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
@@ -15,10 +16,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
 
-    public event System.Action<float> OnHealthChanged;
-    public event System.Action<float, float> OnHealthChangedDetailed;
-    public event System.Action OnDeath;
-    public event System.Action<float> OnDamageTaken;
+    public event Action<float> OnHealthChanged;
+    public event Action<float, float> OnHealthChangedDetailed;
+    public event Action OnDeath;
+    public event Action<float> OnDamageTaken;
 
     private void Start()
     {
@@ -75,7 +76,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         if (currentHealth >= maxHealth) return;
 
-        float oldHealth = currentHealth;
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
         NotifyHealthChange();
     }
@@ -90,7 +90,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     private void NotifyHealthChange()
     {
-        OnHealthChanged?.Invoke(currentHealth / maxHealth);
+        float healthPercent = currentHealth / maxHealth;
+        OnHealthChanged?.Invoke(healthPercent);
         OnHealthChangedDetailed?.Invoke(currentHealth, maxHealth);
     }
 

@@ -16,16 +16,19 @@ public class IdleState : PlayerState
 
         if (jumpRequested && player.IsGrounded())
         {
-            velocity.y = Mathf.Sqrt(player.jumpHeight * -2f * player.gravity);
+            float effectiveJumpHeight = player.jumpHeight * player.jumpHeightMultiplier;
+            velocity.y = Mathf.Sqrt(effectiveJumpHeight * -2f * player.gravity);
         }
 
         player.Move(velocity);
+
+        if (player.staminaSystem != null)
+            player.staminaSystem.Regenerate(Time.deltaTime, player.staminaSystem.idleRegenMultiplier);
     }
 
     public override PlayerState UpdateState()
     {
         Vector2 moveInput = player.GetMoveInput();
-
         if (!player.IsGrounded()) return this;
 
         if (moveInput.magnitude > 0.1f)
@@ -42,6 +45,5 @@ public class IdleState : PlayerState
     }
 
     public override float GetSpeed() => 0f;
-
     public override void Exit() { }
 }

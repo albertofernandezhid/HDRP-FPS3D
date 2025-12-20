@@ -27,13 +27,9 @@ public class PowerUpManager : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
-        {
             Destroy(gameObject);
-        }
     }
 
     private void Start()
@@ -68,6 +64,9 @@ public class PowerUpManager : MonoBehaviour
 
         ApplyImmediateEffects(data);
 
+        if (data.duration <= 0)
+            return true;
+
         Action onExpire = ApplyTemporaryEffects(data);
 
         PowerUpInstance instance = new PowerUpInstance
@@ -80,9 +79,7 @@ public class PowerUpManager : MonoBehaviour
         activePowerUps.Add(data.powerUpName, instance);
 
         if (uiDisplay != null)
-        {
             uiDisplay.ShowPowerUp(data);
-        }
 
         return true;
     }
@@ -97,9 +94,7 @@ public class PowerUpManager : MonoBehaviour
             instance.timerCoroutine = StartCoroutine(PowerUpTimer(powerUpName, data.duration));
 
             if (uiDisplay != null)
-            {
                 uiDisplay.ResetPowerUpTimer(powerUpName, data.duration);
-            }
         }
     }
 
@@ -110,9 +105,12 @@ public class PowerUpManager : MonoBehaviour
             staminaSystem.AddStamina(data.staminaBonus);
         }
 
-        if (data.healthBonus > 0 && playerHealth != null)
+        if (data.healthBonus != 0 && playerHealth != null)
         {
-            playerHealth.Heal(data.healthBonus);
+            if (data.healthBonus > 0)
+                playerHealth.Heal(data.healthBonus);
+            else
+                playerHealth.TakeDamage(Mathf.Abs(data.healthBonus));
         }
     }
 
@@ -120,7 +118,7 @@ public class PowerUpManager : MonoBehaviour
     {
         List<Action> revertActions = new List<Action>();
 
-        if (data.speedMultiplier != 1f && playerController != null)
+        if (data.speedMultiplier > 0.01f && Mathf.Abs(data.speedMultiplier - 1f) > 0.01f && playerController != null)
         {
             float originalWalk = playerController.walkSpeed;
             float originalRun = playerController.runSpeed;
@@ -138,7 +136,7 @@ public class PowerUpManager : MonoBehaviour
             });
         }
 
-        if (data.staminaRegenMultiplier != 1f && staminaSystem != null)
+        if (data.staminaRegenMultiplier > 0.01f && Mathf.Abs(data.staminaRegenMultiplier - 1f) > 0.01f && staminaSystem != null)
         {
             float originalRegen = staminaSystem.regenPerSecond;
             staminaSystem.regenPerSecond *= data.staminaRegenMultiplier;
@@ -149,23 +147,21 @@ public class PowerUpManager : MonoBehaviour
             });
         }
 
-        if (data.jumpMultiplier != 1f && playerController != null)
+        if (data.jumpMultiplier > 0.01f && Mathf.Abs(data.jumpMultiplier - 1f) > 0.01f && playerController != null)
         {
-            float originalJump = playerController.jumpHeight;
-            playerController.jumpHeight *= data.jumpMultiplier;
+            float originalMultiplier = playerController.jumpHeightMultiplier;
+            playerController.jumpHeightMultiplier *= data.jumpMultiplier;
 
             revertActions.Add(() =>
             {
-                playerController.jumpHeight = originalJump;
+                playerController.jumpHeightMultiplier = originalMultiplier;
             });
         }
 
         return () =>
         {
             foreach (var action in revertActions)
-            {
                 action();
-            }
         };
     }
 
@@ -185,9 +181,7 @@ public class PowerUpManager : MonoBehaviour
                 StopCoroutine(instance.timerCoroutine);
 
             if (uiDisplay != null)
-            {
                 uiDisplay.HidePowerUp(powerUpName);
-            }
 
             activePowerUps.Remove(powerUpName);
         }
@@ -206,9 +200,7 @@ public class PowerUpManager : MonoBehaviour
         activePowerUps.Clear();
 
         if (uiDisplay != null)
-        {
             uiDisplay.ClearAll();
-        }
     }
 
     private void OnDestroy()

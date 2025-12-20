@@ -60,7 +60,9 @@ public class UIPowerUpDisplay : MonoBehaviour
 
     private void RepositionDisplays()
     {
-        float currentY = 0f;
+        float startX = 30f;  // Tu posición X
+        float startY = -45f; // Tu posición Y inicial
+        float currentY = startY;
 
         foreach (var powerUpName in displayOrder)
         {
@@ -68,7 +70,7 @@ public class UIPowerUpDisplay : MonoBehaviour
             {
                 if (display.rectTransform != null)
                 {
-                    display.rectTransform.anchoredPosition = new Vector2(0f, currentY);
+                    display.rectTransform.anchoredPosition = new Vector2(startX, currentY);
                     currentY -= verticalSpacing;
                 }
             }

@@ -13,15 +13,19 @@ public class RunState : PlayerState
     public override void HandleMovement(Vector2 input, ref Vector3 velocity, bool jumpRequested)
     {
         BaseMovement(input, ref velocity, jumpRequested);
+
+        if (player.staminaSystem != null)
+            player.staminaSystem.Consume(Time.deltaTime, player.staminaSystem.runDrainMultiplier);
     }
 
     public override PlayerState UpdateState()
     {
         Vector2 moveInput = player.GetMoveInput();
-
         if (!player.IsGrounded()) return this;
-
         if (moveInput.magnitude < 0.1f) return new IdleState(player);
+
+        if (player.staminaSystem != null && !player.staminaSystem.HasStamina())
+            return new WalkState(player);
 
         if (player.IsSprintPressed() && player.staminaSystem != null && player.staminaSystem.HasStamina())
             return new SprintState(player);
@@ -32,6 +36,5 @@ public class RunState : PlayerState
     }
 
     public override float GetSpeed() => player.runSpeed;
-
     public override void Exit() { }
 }

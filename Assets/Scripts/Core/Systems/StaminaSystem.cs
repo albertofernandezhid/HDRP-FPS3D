@@ -3,9 +3,18 @@ using UnityEngine;
 
 public class StaminaSystem : MonoBehaviour
 {
+    [Header("Base Settings")]
     public float maxStamina = 100f;
     public float drainPerSecond = 25f;
     public float regenPerSecond = 15f;
+
+    [Header("Multipliers (Consumption)")]
+    [Range(0f, 2f)] public float sprintDrainMultiplier = 1f;
+    [Range(0f, 2f)] public float runDrainMultiplier = 0.5f;
+
+    [Header("Multipliers (Regeneration)")]
+    [Range(0f, 2f)] public float idleRegenMultiplier = 1f;
+    [Range(0f, 2f)] public float walkRegenMultiplier = 0.5f;
 
     private float currentStamina;
     private readonly List<IStaminaObserver> observers = new();
@@ -26,9 +35,9 @@ public class StaminaSystem : MonoBehaviour
         observers.Remove(observer);
     }
 
-    public void Consume(float deltaTime)
+    public void Consume(float deltaTime, float multiplier)
     {
-        currentStamina -= drainPerSecond * deltaTime;
+        currentStamina -= drainPerSecond * multiplier * deltaTime;
         currentStamina = Mathf.Max(currentStamina, 0f);
         Notify();
 
@@ -36,9 +45,9 @@ public class StaminaSystem : MonoBehaviour
             NotifyEmpty();
     }
 
-    public void Regenerate(float deltaTime)
+    public void Regenerate(float deltaTime, float multiplier)
     {
-        currentStamina += regenPerSecond * deltaTime;
+        currentStamina += regenPerSecond * multiplier * deltaTime;
         currentStamina = Mathf.Min(currentStamina, maxStamina);
         Notify();
     }
@@ -49,30 +58,25 @@ public class StaminaSystem : MonoBehaviour
         Notify();
     }
 
-    public void SetRegenerationMultiplier(float multiplier)
-    {
-        regenPerSecond *= multiplier;
-    }
-
-    public void ResetRegenerationMultiplier(float originalValue)
-    {
-        regenPerSecond = originalValue;
-    }
-
     public bool HasStamina()
     {
-        return currentStamina > 0f;
+        return currentStamina > 0.1f;
     }
 
     private void Notify()
     {
-        foreach (var observer in observers)
-            observer.OnStaminaChanged(currentStamina, maxStamina);
+        for (int i = observers.Count - 1; i >= 0; i--)
+            observers[i].OnStaminaChanged(currentStamina, maxStamina);
+    }
+
+    public void NotifyManual()
+    {
+        Notify();
     }
 
     private void NotifyEmpty()
     {
-        foreach (var observer in observers)
-            observer.OnStaminaEmpty();
+        for (int i = observers.Count - 1; i >= 0; i--)
+            observers[i].OnStaminaEmpty();
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpData
   powerUpName: RecibeDamagePowerDown
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  duration: 0.15
+  duration: 0
   speedMultiplier: 0
   jumpMultiplier: 0
   staminaRegenMultiplier: 0
