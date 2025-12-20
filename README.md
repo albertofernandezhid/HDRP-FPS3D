@@ -217,7 +217,8 @@ Assets/
 
 - [x] Implementar **jugador con movimiento y stamina**
 - [x] Implementar **cámaras y zoom**
-- [ ] Crear **2–3 armas funcionales** con cambio dinámico
+- [x] Crear **2–3 armas funcionales** con cambio dinámico
+- [x] Crear **inventario de armas**
 - [ ] Añadir **enemigos con IA básica**
 - [ ] Añadir **pickups y power-ups**
 - [ ] Añadir **modelos y animaciones finales**
