@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Stone
   icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   prefab: {fileID: 9152739413097916265, guid: 6c0f78ad98611da45be7510f046c52ff, type: 3}
-  throwForce: 15
+  throwForce: 35
   damage: 20
   arcHeight: 0.2
   throwSound: {fileID: 0}

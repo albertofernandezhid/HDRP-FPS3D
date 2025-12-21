@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Bottle
   icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   prefab: {fileID: 9152739413097916265, guid: 7964de2482b3f0846a5c72f71a941d24, type: 3}
-  throwForce: 10
+  throwForce: 22
   damage: 25
   arcHeight: 0.3
   throwSound: {fileID: 0}
