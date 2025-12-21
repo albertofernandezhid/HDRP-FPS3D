@@ -25,11 +25,25 @@ public class RunState : PlayerState
         if (moveInput.magnitude < 0.1f) return new IdleState(player);
 
         if (player.staminaSystem != null && !player.staminaSystem.HasStamina())
+        {
+            player.SetRunBlocked(true);
             return new WalkState(player);
+        }
 
-        if (player.IsSprintPressed() && player.staminaSystem != null && player.staminaSystem.HasStamina())
+        bool wantsSprint = player.IsSprintPressed() && !player.IsSprintBlocked();
+        bool wantsRun = player.IsRunPressed() && !player.IsRunBlocked();
+
+        if (wantsSprint && wantsRun)
+        {
+            if (player.GetLastSprintTime() > player.GetLastRunTime())
+                return new SprintState(player);
+        }
+        else if (wantsSprint)
+        {
             return new SprintState(player);
-        else if (!player.IsRunPressed())
+        }
+
+        if (!player.IsRunPressed())
             return new WalkState(player);
 
         return this;

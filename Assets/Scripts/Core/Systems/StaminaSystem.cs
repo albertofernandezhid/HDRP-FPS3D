@@ -8,6 +8,9 @@ public class StaminaSystem : MonoBehaviour
     public float drainPerSecond = 25f;
     public float regenPerSecond = 15f;
 
+    [Header("Threshold Settings")]
+    [Range(0f, 1f)] public float minStaminaPercentage = 0.1f;
+
     [Header("Multipliers (Consumption)")]
     [Range(0f, 2f)] public float sprintDrainMultiplier = 1f;
     [Range(0f, 2f)] public float runDrainMultiplier = 0.5f;
@@ -61,6 +64,11 @@ public class StaminaSystem : MonoBehaviour
     public bool HasStamina()
     {
         return currentStamina > 0.1f;
+    }
+
+    public bool CanEnterStaminaState()
+    {
+        return currentStamina >= maxStamina * minStaminaPercentage;
     }
 
     private void Notify()

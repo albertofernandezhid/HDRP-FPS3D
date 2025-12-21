@@ -13,7 +13,16 @@ public class WeaponManager : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float throwCooldown = 0.5f;
-    [SerializeField] private float throwArcHeight = 0.3f;
+    [SerializeField] private float maxThrowDistance = 50f;
+    [SerializeField] private float minSpawnDistance = 0.8f;
+    [SerializeField] private LayerMask throwLayerMask = ~0;
+
+    [Header("Trajectory Predictor")]
+    [SerializeField] private bool showTrajectory = true;
+    [SerializeField] private LineRenderer trajectoryLine;
+    [SerializeField] private int trajectoryPoints = 30;
+    [SerializeField] private float trajectoryTimeStep = 0.1f;
+    [SerializeField] private Color trajectoryColor = Color.yellow;
 
     private int currentWeaponIndex = -1;
     private float lastThrowTime;
@@ -41,6 +50,7 @@ public class WeaponManager : MonoBehaviour
             inventory = GetComponent<WeaponInventory>();
 
         inventory.OnInventoryChanged += OnInventoryChanged;
+        SetupTrajectoryLine();
         UpdateWeaponModel();
     }
 
@@ -48,6 +58,25 @@ public class WeaponManager : MonoBehaviour
     {
         if (inventory != null)
             inventory.OnInventoryChanged -= OnInventoryChanged;
+    }
+
+    private void SetupTrajectoryLine()
+    {
+        if (trajectoryLine == null)
+        {
+            GameObject lineObj = new GameObject("TrajectoryLine");
+            lineObj.transform.SetParent(transform);
+            trajectoryLine = lineObj.AddComponent<LineRenderer>();
+        }
+
+        trajectoryLine.startWidth = 0.05f;
+        trajectoryLine.endWidth = 0.05f;
+        trajectoryLine.material = new Material(Shader.Find("Sprites/Default"));
+        trajectoryLine.startColor = trajectoryColor;
+        trajectoryLine.endColor = new Color(trajectoryColor.r, trajectoryColor.g, trajectoryColor.b, 0.3f);
+        trajectoryLine.positionCount = trajectoryPoints;
+        trajectoryLine.enabled = false;
+        trajectoryLine.useWorldSpace = true;
     }
 
     private void OnInventoryChanged()
@@ -64,6 +93,79 @@ public class WeaponManager : MonoBehaviour
     {
         HandleInput();
         HandleModelReload();
+        UpdateTrajectoryPredictor();
+    }
+
+    private void UpdateTrajectoryPredictor()
+    {
+        if (!showTrajectory || !IsArmed || trajectoryLine == null)
+        {
+            if (trajectoryLine != null)
+                trajectoryLine.enabled = false;
+            return;
+        }
+
+        if (currentWeaponIndex < 0 || currentWeaponIndex >= inventory.Slots.Count)
+        {
+            trajectoryLine.enabled = false;
+            return;
+        }
+
+        InventorySlot slot = inventory.Slots[currentWeaponIndex];
+        if (!slot.CanUse())
+        {
+            trajectoryLine.enabled = false;
+            return;
+        }
+
+        Vector3 targetPoint = GetAimTarget();
+        Vector3 throwVelocity = CalculateThrowVelocity(weaponHoldPoint.position, targetPoint, slot.weapon.ThrowForce);
+
+        DrawTrajectory(weaponHoldPoint.position, throwVelocity);
+        trajectoryLine.enabled = true;
+    }
+
+    private void DrawTrajectory(Vector3 origin, Vector3 velocity)
+    {
+        trajectoryLine.positionCount = trajectoryPoints;
+
+        Vector3 position = origin;
+        Vector3 currentVelocity = velocity;
+        float timeStep = trajectoryTimeStep;
+        int pointsDrawn = 0;
+
+        for (int i = 0; i < trajectoryPoints; i++)
+        {
+            if (i < trajectoryLine.positionCount)
+            {
+                trajectoryLine.SetPosition(i, position);
+                pointsDrawn = i + 1;
+            }
+
+            currentVelocity += Physics.gravity * timeStep;
+            Vector3 nextPosition = position + currentVelocity * timeStep;
+
+            if (Physics.Linecast(position, nextPosition, out RaycastHit hit, throwLayerMask))
+            {
+                if (pointsDrawn < trajectoryLine.positionCount)
+                {
+                    trajectoryLine.SetPosition(pointsDrawn, hit.point);
+                    pointsDrawn++;
+                }
+                trajectoryLine.positionCount = pointsDrawn;
+                return;
+            }
+
+            position = nextPosition;
+
+            if (position.y < origin.y - 20f)
+            {
+                trajectoryLine.positionCount = pointsDrawn;
+                return;
+            }
+        }
+
+        trajectoryLine.positionCount = pointsDrawn;
     }
 
     private void HandleModelReload()
@@ -236,6 +338,18 @@ public class WeaponManager : MonoBehaviour
             Destroy(pickup);
     }
 
+    private Vector3 GetAimTarget()
+    {
+        Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+
+        if (Physics.Raycast(ray, out RaycastHit hit, maxThrowDistance, throwLayerMask))
+        {
+            return hit.point;
+        }
+
+        return ray.GetPoint(maxThrowDistance);
+    }
+
     private void ThrowCurrentWeapon()
     {
         if (currentWeaponIndex < 0 || currentWeaponIndex >= inventory.Slots.Count)
@@ -245,25 +359,24 @@ public class WeaponManager : MonoBehaviour
         if (!slot.CanUse())
             return;
 
-        Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        RaycastHit hit;
-        Vector3 targetPoint;
+        Vector3 targetPoint = GetAimTarget();
+        Vector3 throwVelocity = CalculateThrowVelocity(weaponHoldPoint.position, targetPoint, slot.weapon.ThrowForce);
 
-        if (Physics.Raycast(ray, out hit, 100f))
-            targetPoint = hit.point;
-        else
-            targetPoint = ray.GetPoint(50f);
+        Vector3 spawnDirection = throwVelocity.normalized;
+        Vector3 throwPosition = weaponHoldPoint.position + spawnDirection * minSpawnDistance;
 
-        Vector3 direction = (targetPoint - weaponHoldPoint.position).normalized;
-        Vector3 throwPosition = weaponHoldPoint.position + direction * 0.5f;
+        if (Physics.Raycast(weaponHoldPoint.position, spawnDirection, out RaycastHit spawnCheck, minSpawnDistance, throwLayerMask))
+        {
+            throwPosition = weaponHoldPoint.position + spawnDirection * (spawnCheck.distance * 0.5f);
+        }
 
         GameObject thrownProjectile = Instantiate(
             slot.weapon.Prefab,
             throwPosition,
-            Quaternion.LookRotation(direction)
+            Quaternion.LookRotation(spawnDirection)
         );
 
-        SetupThrownWeapon(thrownProjectile, direction, slot);
+        SetupThrownWeapon(thrownProjectile, throwVelocity, slot);
 
         inventory.UseAmmo(currentWeaponIndex);
         lastThrowTime = Time.time;
@@ -275,17 +388,47 @@ public class WeaponManager : MonoBehaviour
         }
 
         isReloadingModel = true;
+        trajectoryLine.enabled = false;
     }
 
-    private void SetupThrownWeapon(GameObject projectile, Vector3 direction, InventorySlot slot)
+    private Vector3 CalculateThrowVelocity(Vector3 origin, Vector3 target, float throwForce)
+    {
+        Vector3 toTarget = target - origin;
+        Vector3 toTargetXZ = new Vector3(toTarget.x, 0, toTarget.z);
+
+        float horizontalDistance = toTargetXZ.magnitude;
+        float verticalDistance = toTarget.y;
+
+        float gravity = Mathf.Abs(Physics.gravity.y);
+        float speed = throwForce;
+
+        float speedSquared = speed * speed;
+        float underRoot = speedSquared * speedSquared - gravity * (gravity * horizontalDistance * horizontalDistance + 2 * verticalDistance * speedSquared);
+
+        if (underRoot < 0)
+        {
+            Vector3 direction = toTarget.normalized;
+            return direction * speed;
+        }
+
+        float root = Mathf.Sqrt(underRoot);
+        float angle1 = Mathf.Atan((speedSquared - root) / (gravity * horizontalDistance));
+
+        Vector3 horizontalDirection = toTargetXZ.normalized;
+        Vector3 velocity = horizontalDirection * Mathf.Cos(angle1) * speed + Vector3.up * Mathf.Sin(angle1) * speed;
+
+        return velocity;
+    }
+
+    private void SetupThrownWeapon(GameObject projectile, Vector3 velocity, InventorySlot slot)
     {
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.isKinematic = false;
             rb.detectCollisions = true;
-            Vector3 forceDirection = direction + (Vector3.up * throwArcHeight);
-            rb.AddForce(forceDirection * slot.weapon.ThrowForce, ForceMode.Impulse);
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            rb.linearVelocity = velocity;
         }
 
         Collider col = projectile.GetComponent<Collider>();

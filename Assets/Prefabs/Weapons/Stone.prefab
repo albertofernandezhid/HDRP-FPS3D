@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a12f88a97dfa184a8e314dc74b5a146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileController
-  lifetime: 5
+  lifetime: 10
   impactEffect: {fileID: 0}
 --- !u!54 &8409896885442225856
 Rigidbody:
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupItem
   weaponData: {fileID: 11400000, guid: 27c52fbfd79e6334c885e2acc1f0f8aa, type: 2}
-  ammoAmount: 5
+  ammoAmount: 500
   rotationSpeed: 90
   bounceHeight: 0.5
   bounceDuration: 1

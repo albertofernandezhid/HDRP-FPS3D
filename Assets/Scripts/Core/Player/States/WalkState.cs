@@ -24,10 +24,27 @@ public class WalkState : PlayerState
         if (!player.IsGrounded()) return this;
         if (moveInput.magnitude < 0.1f) return new IdleState(player);
 
-        if (player.IsSprintPressed() && player.staminaSystem != null && player.staminaSystem.HasStamina())
-            return new SprintState(player);
-        else if (player.IsRunPressed())
-            return new RunState(player);
+        bool wantsRun = player.IsRunPressed() && !player.IsRunBlocked();
+        bool wantsSprint = player.IsSprintPressed() && !player.IsSprintBlocked();
+
+        if (player.staminaSystem != null && player.staminaSystem.CanEnterStaminaState())
+        {
+            if (wantsSprint && wantsRun)
+            {
+                if (player.GetLastSprintTime() > player.GetLastRunTime())
+                    return new SprintState(player);
+                else
+                    return new RunState(player);
+            }
+            else if (wantsSprint)
+            {
+                return new SprintState(player);
+            }
+            else if (wantsRun)
+            {
+                return new RunState(player);
+            }
+        }
 
         return this;
     }

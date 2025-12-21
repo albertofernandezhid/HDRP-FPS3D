@@ -32,8 +32,15 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Vector3 velocity;
     private bool jumpRequested;
+
     private bool runPressed;
     private bool sprintPressed;
+
+    private bool runBlocked;
+    private bool sprintBlocked;
+
+    private float lastRunTime;
+    private float lastSprintTime;
 
     private void Awake()
     {
@@ -49,10 +56,28 @@ public class PlayerController : MonoBehaviour
         inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += _ => moveInput = Vector2.zero;
         inputActions.Player.Jump.performed += _ => jumpRequested = true;
-        inputActions.Player.Run.performed += _ => runPressed = true;
-        inputActions.Player.Run.canceled += _ => runPressed = false;
-        inputActions.Player.Sprint.performed += _ => sprintPressed = true;
-        inputActions.Player.Sprint.canceled += _ => sprintPressed = false;
+
+        inputActions.Player.Run.performed += _ =>
+        {
+            runPressed = true;
+            lastRunTime = Time.time;
+        };
+        inputActions.Player.Run.canceled += _ =>
+        {
+            runPressed = false;
+            runBlocked = false;
+        };
+
+        inputActions.Player.Sprint.performed += _ =>
+        {
+            sprintPressed = true;
+            lastSprintTime = Time.time;
+        };
+        inputActions.Player.Sprint.canceled += _ =>
+        {
+            sprintPressed = false;
+            sprintBlocked = false;
+        };
 
         if (!staminaSystem)
             staminaSystem = GetComponent<StaminaSystem>();
@@ -172,4 +197,13 @@ public class PlayerController : MonoBehaviour
     public bool IsRunPressed() => runPressed;
     public bool IsSprintPressed() => sprintPressed;
     public Vector2 GetMoveInput() => moveInput;
+
+    public void SetRunBlocked(bool blocked) => runBlocked = blocked;
+    public bool IsRunBlocked() => runBlocked;
+
+    public void SetSprintBlocked(bool blocked) => sprintBlocked = blocked;
+    public bool IsSprintBlocked() => sprintBlocked;
+
+    public float GetLastRunTime() => lastRunTime;
+    public float GetLastSprintTime() => lastSprintTime;
 }

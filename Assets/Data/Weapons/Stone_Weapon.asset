@@ -17,6 +17,6 @@ MonoBehaviour:
   prefab: {fileID: 9152739413097916265, guid: 6c0f78ad98611da45be7510f046c52ff, type: 3}
   throwForce: 35
   damage: 20
-  arcHeight: 0.2
+  arcHeight: 0
   throwSound: {fileID: 0}
   impactEffect: {fileID: 0}

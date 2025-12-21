@@ -26,14 +26,24 @@ public class SprintState : PlayerState
 
         if (player.staminaSystem != null && !player.staminaSystem.HasStamina())
         {
-            if (player.IsRunPressed()) return new RunState(player);
-            else return new WalkState(player);
+            player.SetSprintBlocked(true);
+            return new WalkState(player);
         }
 
-        if (!player.IsSprintPressed())
+        bool wantsSprint = player.IsSprintPressed() && !player.IsSprintBlocked();
+        bool wantsRun = player.IsRunPressed() && !player.IsRunBlocked();
+
+        if (wantsSprint && wantsRun)
         {
-            if (player.IsRunPressed()) return new RunState(player);
-            else return new WalkState(player);
+            if (player.GetLastRunTime() > player.GetLastSprintTime())
+                return new RunState(player);
+        }
+        else if (!wantsSprint)
+        {
+            if (wantsRun)
+                return new RunState(player);
+            else
+                return new WalkState(player);
         }
 
         return this;
