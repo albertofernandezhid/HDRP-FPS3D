@@ -81,111 +81,62 @@ Se está desarrollando con un enfoque en **arquitectura limpia** utilizando patr
 
 ```plaintext
 Assets/
-├─ Art/
-│  ├─ Characters/      
-│  │  ├─ Player/
-│  │  │  └─ Player.fbx
-│  │  └─ Enemies/
-│  │     └─ Enemy.fbx
-│  │
-│  ├─ Weapons/          
-│  │  └─ Rifle.fbx
-│  │
-│  ├─ Pickups/           
-│  │  └─ StaminaPack.fbx
-│  │
-│  └─ Environment/      
-│     └─ Buildings.fbx
-│
-├─ Audio/
-│  ├─ SFX/
-│  └─ Music/
-│
-├─ Materials/
-├─ Particles/
-│
-├─ Animations/
-│  ├─ Player/            
-│  │  ├─ Idle.anim
-│  │  ├─ Walk.anim
-│  │  ├─ Run.anim
-│  │  └─ Sprint.anim
-│  │
-│  └─ Enemies/
-│     ├─ Patrol.anim
-│     ├─ Chase.anim
-│     └─ Attack.anim
-│
-├─ Animators/
-│  ├─ PlayerAnimator.controller
-│  └─ EnemyAnimator.controller
-│
-├─ Prefabs/
-│  ├─ Player/
-│  │  └─ Player.prefab
-│  ├─ Enemies/
-│  ├─ Weapons/
-│  └─ Pickups/
-│
-├─ Scenes/
-│  ├─ MainMenu.unity
-│  ├─ Level1.unity
-│  ├─ Level2.unity
-│  └─ Level3.unity
-│
-├─ Scripts/
-│  ├─ Core/
-│  │  ├─ Player/
-│  │  │  ├─ PlayerController.cs
-│  │  │  ├─ PlayerState.cs
-│  │  │  ├─ Camera/
-│  │  │  │  ├─ CameraController.cs
-│  │  │  │  ├─ ICameraStrategy.cs
-│  │  │  │  ├─ FPSCameraStrategy.cs
-│  │  │  │  └─ TPSCameraStrategy.cs
-│  │  │  └─ States/
-│  │  │     ├─ IdleState.cs
-│  │  │     ├─ WalkState.cs
-│  │  │     ├─ RunState.cs
-│  │  │     └─ SprintState.cs
-│  │  │
-│  │  ├─ Enemies/
-│  │  │  ├─ EnemyController.cs
-│  │  │  └─ States/
-│  │  │     ├─ PatrolState.cs
-│  │  │     ├─ ChaseState.cs
-│  │  │     └─ AttackState.cs
-│  │  │
-│  │  ├─ Weapons/
-│  │  │  ├─ WeaponBase.cs
-│  │  │  ├─ ProjectileWeapon.cs
-│  │  │  └─ MeleeWeapon.cs
-│  │  │
-│  │  ├─ Systems/
-│  │  │  ├─ WeaponSystem.cs
-│  │  │  ├─ StaminaSystem.cs
-│  │  │  └─ CameraSystem.cs
-│  │  │
-│  │  └─ Managers/
-│  │     ├─ GameManager.cs
-│  │     └─ AudioManager.cs
-│  │
-│  ├─ Interfaces/
-│  │  ├─ IDamageable.cs
-│  │  ├─ IWeapon.cs
-│  │  └─ IStaminaObserver.cs
-│  │
-│  ├─ Input/
-│  │  └─ InputActions.inputactions
-│  │
-│  ├─ UI/
-│  │  ├─ UIStaminaBar.cs
-│  │  └─ UIWeaponHUD.cs
-│  │
-│  └─ Utilities/
-│     ├─ ObjectPool.cs
-│     └─ Extensions.cs
-
++---Art
+|   +---Animations
+|   +---Images
+|   \---Materials
++---Plugins
+|   +---AssetUsageDetector
+|   |   \---Editor
+|   +---Demigiant
+|   |   \---DOTween
+|   |       +---Editor
+|   |       |   \---Imgs
+|   |       \---Modules
+|   +---Resources
+|   \---TextMesh Pro
+|       +---Examples & Extras
+|       |   +---Fonts
+|       |   +---Materials
+|       |   +---Prefabs
+|       |   +---Resources
+|       |   |   +---Color Gradient Presets
+|       |   |   +---Fonts & Materials
+|       |   |   \---Sprite Assets
+|       |   +---Scenes
+|       |   |   \---28 - HDRP Shader Example
+|       |   +---Scripts
+|       |   +---Sprites
+|       |   \---Textures
+|       +---Fonts
+|       +---Resources
+|       |   +---Fonts & Materials
+|       |   +---Sprite Assets
+|       |   \---Style Sheets
+|       +---Shaders
+|       \---Sprites
++---Prefabs
+|   +---Items
+|   +---Map
+|   +---UI
+|   \---Weapons
++---Scripts
+|   +---Core
+|   |   +---Player
+|   |   |   +---Camera
+|   |   |   \---States
+|   |   +---PowerUps
+|   |   \---Weapons
+|   |       +---Components
+|   |       +---Data
+|   |       \---Systems
+|   +---Data
+|   |   +---PowerUps
+|   |   \---Weapons
+|   +---Interfaces
+|   \---UI
+\---Settings
+    \---HDRPDefaultResources
 ```
 ---
 
@@ -220,7 +171,7 @@ Assets/
 - [x] Crear **2–3 armas funcionales** con cambio dinámico
 - [x] Crear **inventario de armas**
 - [ ] Añadir **enemigos con IA básica**
-- [ ] Añadir **pickups y power-ups**
+- [x] Añadir **pickups y power-ups**
 - [ ] Añadir **modelos y animaciones finales**
 - [ ] Añadir **audio y partículas 3D**
 - [ ] Primer **nivel jugable**
