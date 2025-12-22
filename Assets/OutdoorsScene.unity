@@ -488,9 +488,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
@@ -1802,9 +1802,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
@@ -2294,9 +2294,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
@@ -3189,9 +3189,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
@@ -4216,9 +4216,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
@@ -4402,9 +4402,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
@@ -5408,9 +5408,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
@@ -5947,9 +5947,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
@@ -6097,9 +6097,9 @@ MonoBehaviour:
   pulseEase: 4
   pulseLoopType: 1
   pulseLoops: -1
-  disappearDuration: 0.4
-  shrinkScale: 0.1
-  floatUpDistance: -1
+  disappearDuration: 0.3
+  shrinkScale: 0.01
+  floatUpDistance: 0
   disappearEase: 4
   pickupRenderer: {fileID: 0}
   pickupCollider: {fileID: 0}
