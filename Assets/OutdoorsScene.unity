@@ -470,11 +470,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 9e24e431b6e79e24190ab537c97a0860, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &107561828
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -853,10 +872,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 530439975}
     m_Modifications:
-    - target: {fileID: 1357985536923152023, guid: 7964de2482b3f0846a5c72f71a941d24, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 1a6d53478e647eb4eb0133042775a76b, type: 2}
     - target: {fileID: 5845285339899813978, guid: 7964de2482b3f0846a5c72f71a941d24, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.207058
@@ -900,6 +915,14 @@ PrefabInstance:
     - target: {fileID: 9152739413097916265, guid: 7964de2482b3f0846a5c72f71a941d24, type: 3}
       propertyPath: m_Name
       value: Bottle
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205035006867037917, guid: 7964de2482b3f0846a5c72f71a941d24, type: 3}
+      propertyPath: enableBounce
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9205035006867037917, guid: 7964de2482b3f0846a5c72f71a941d24, type: 3}
+      propertyPath: enableRotation
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1761,11 +1784,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 798fd34203d6e924a959e82197865b94, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &542134499
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2234,11 +2276,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 9e24e431b6e79e24190ab537c97a0860, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &708408730
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3110,11 +3171,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 798fd34203d6e924a959e82197865b94, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &1092909290
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3415,7 +3495,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4118,11 +4198,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 9e24e431b6e79e24190ab537c97a0860, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &1333295940
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4285,11 +4384,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 9e24e431b6e79e24190ab537c97a0860, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &1403063471
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5272,11 +5390,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 8f82dd5bfb08cb846ab20f1f58f336af, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &1603754364
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5792,11 +5929,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 798fd34203d6e924a959e82197865b94, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &1716352937
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5923,11 +6079,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpPickup
   powerUpData: {fileID: 11400000, guid: 38b379eb4e1709d449a017b0ec6a2eda, type: 2}
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
-  bounceDuration: 1
+  bounceDuration: 1.5
+  bounceEase: 4
+  bounceLoopType: 1
+  bounceLoops: -1
+  enableRotation: 1
+  rotationDuration: 20
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationEase: 1
+  rotationLoopType: 2
+  rotationLoops: -1
+  enablePulse: 1
+  pulseScale: 1.25
+  pulseDuration: 2
+  pulseEase: 4
+  pulseLoopType: 1
+  pulseLoops: -1
+  disappearDuration: 0.4
+  shrinkScale: 0.1
+  floatUpDistance: -1
+  disappearEase: 4
   pickupRenderer: {fileID: 0}
-  pickupLight: {fileID: 0}
+  pickupCollider: {fileID: 0}
 --- !u!65 &1727213070
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7062,10 +7237,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 530439975}
     m_Modifications:
-    - target: {fileID: 1357985536923152023, guid: 3cf3e033e1980584a8ef963ad44a96b9, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 5e1c1501ce5a48d4d920069277bc531f, type: 2}
+    - target: {fileID: 3043791015775454918, guid: 3cf3e033e1980584a8ef963ad44a96b9, type: 3}
+      propertyPath: enableBounce
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3043791015775454918, guid: 3cf3e033e1980584a8ef963ad44a96b9, type: 3}
+      propertyPath: enableRotation
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5845285339899813978, guid: 3cf3e033e1980584a8ef963ad44a96b9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.3480554
@@ -7325,10 +7504,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 530439975}
     m_Modifications:
-    - target: {fileID: 1357985536923152023, guid: 6c0f78ad98611da45be7510f046c52ff, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 5ea903db37d0c404db18fc9bcd0be33b, type: 2}
+    - target: {fileID: 724611618124582325, guid: 6c0f78ad98611da45be7510f046c52ff, type: 3}
+      propertyPath: enableBounce
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 724611618124582325, guid: 6c0f78ad98611da45be7510f046c52ff, type: 3}
+      propertyPath: enableRotation
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1807709263688238813, guid: 6c0f78ad98611da45be7510f046c52ff, type: 3}
+      propertyPath: enablePickupEffects
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1807709263688238813, guid: 6c0f78ad98611da45be7510f046c52ff, type: 3}
+      propertyPath: enablePickupAnimations
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5845285339899813978, guid: 6c0f78ad98611da45be7510f046c52ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.7271843
