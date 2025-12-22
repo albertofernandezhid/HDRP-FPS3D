@@ -30,10 +30,17 @@ public class CameraController : MonoBehaviour
     [Header("First Person Options")]
     [SerializeField] private bool hideMeshInFPS = true;
     [SerializeField] private float fpsVerticalOffset = 0.6f;
-    [SerializeField] private bool startInFirstPerson = true; // NUEVA OPCIÓN
+    [SerializeField] private bool startInFirstPerson = true;
+
+    [Header("Aiming Settings")]
+    [SerializeField] private float aimingZoomMultiplier = 0.7f;
+    [SerializeField] private float aimingDistanceReduction = 1.5f;
+    [SerializeField] private float aimingSmoothTime = 0.15f;
+    [SerializeField] private bool toggleAimMode = true;
 
     private float xRotation = 0f;
     private float currentDistance;
+    private float targetDistance;
     private bool isFirstPerson = false;
     private bool isAiming = false;
     private Vector3 cameraVelocity;
@@ -45,12 +52,12 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         currentDistance = tpsDistance;
+        targetDistance = tpsDistance;
         originalPivotPosition = cameraPivot.localPosition;
 
         if (playerMesh != null)
             playerRenderer = playerMesh.GetComponent<Renderer>();
 
-        // Configurar modo inicial
         isFirstPerson = startInFirstPerson;
         SwitchCameraMode();
     }
@@ -59,6 +66,7 @@ public class CameraController : MonoBehaviour
     {
         HandleMouseLook();
         HandleInput();
+        UpdateCameraDistance();
 
         if (isFirstPerson)
             UpdateFirstPerson();
@@ -91,19 +99,45 @@ public class CameraController : MonoBehaviour
             SwitchCameraMode();
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (toggleAimMode)
         {
-            isAiming = !isAiming;
+            if (Input.GetMouseButtonDown(1))
+            {
+                isAiming = !isAiming;
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                isAiming = true;
+            }
+
+            if (Input.GetMouseButtonUp(1))
+            {
+                isAiming = false;
+            }
         }
 
-        if (!isFirstPerson)
+        if (!isFirstPerson && !isAiming)
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll != 0)
             {
-                currentDistance = Mathf.Clamp(currentDistance - scroll * zoomSpeed, minZoomDistance, maxZoomDistance);
+                targetDistance = Mathf.Clamp(targetDistance - scroll * zoomSpeed, minZoomDistance, maxZoomDistance);
             }
         }
+    }
+
+    private void UpdateCameraDistance()
+    {
+        if (isAiming && !isFirstPerson)
+        {
+            float aimingDistance = Mathf.Max(minZoomDistance, tpsDistance - aimingDistanceReduction);
+            targetDistance = aimingDistance;
+        }
+
+        currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.deltaTime / aimingSmoothTime);
     }
 
     private void SwitchCameraMode()
@@ -169,10 +203,11 @@ public class CameraController : MonoBehaviour
     {
         float targetFOV = isFirstPerson ? fpsFOV : tpsFOV;
         if (isAiming)
-            targetFOV *= 0.7f;
+            targetFOV *= aimingZoomMultiplier;
 
         playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, Time.deltaTime * 10f);
     }
 
     public Transform CameraPivot => cameraPivot;
+    public bool IsAiming => isAiming;
 }

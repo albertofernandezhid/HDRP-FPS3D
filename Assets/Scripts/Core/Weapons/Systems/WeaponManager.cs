@@ -193,12 +193,6 @@ public class WeaponManager : MonoBehaviour
         else if (Keyboard.current.digit3Key.wasPressedThisFrame)
             SelectWeapon(2);
 
-        float scroll = Mouse.current.scroll.ReadValue().y;
-        if (scroll > 0)
-            NextWeapon();
-        else if (scroll < 0)
-            PreviousWeapon();
-
         if (Gamepad.current != null)
         {
             if (Gamepad.current.dpad.left.wasPressedThisFrame)
