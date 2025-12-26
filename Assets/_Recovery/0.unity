@@ -1915,7 +1915,7 @@ Transform:
   m_GameObject: {fileID: 530439974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -12.51, y: 0, z: 7.43}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2936,7 +2936,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &852249364
 Transform:
   m_ObjectHideFlags: 0
@@ -3062,7 +3062,7 @@ GameObject:
   - component: {fileID: 975069974}
   - component: {fileID: 975069975}
   - component: {fileID: 975069976}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: CameraRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3375,7 +3375,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1070699824}
   m_Layer: 7
-  m_Name: WeaponHoldPoint
+  m_Name: ProjectileSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3556,7 +3556,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1127980433}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: CameraPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3807,7 +3807,7 @@ GameObject:
   - component: {fileID: 1211875432}
   - component: {fileID: 1211875431}
   - component: {fileID: 1211875433}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -3902,8 +3902,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211875420}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalRotation: {x: 0, y: 0.92387956, z: 0, w: 0.38268343}
+  m_LocalPosition: {x: -10, y: 1, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3911,7 +3911,7 @@ Transform:
   - {fileID: 1490731085}
   - {fileID: 1323031149}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 135, z: 0}
 --- !u!114 &1211875425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4437,7 +4437,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1323031149}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: WeaponHoldPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4471,12 +4471,18 @@ GameObject:
   - component: {fileID: 1327665746}
   - component: {fileID: 1327665749}
   - component: {fileID: 1327665748}
+  - component: {fileID: 1327665752}
+  - component: {fileID: 1327665761}
+  - component: {fileID: 1327665753}
   - component: {fileID: 1327665747}
   - component: {fileID: 1327665755}
-  - component: {fileID: 1327665753}
-  - component: {fileID: 1327665752}
+  - component: {fileID: 1327665760}
+  - component: {fileID: 1327665759}
+  - component: {fileID: 1327665758}
+  - component: {fileID: 1327665757}
+  - component: {fileID: 1327665756}
   m_Layer: 7
-  m_Name: Enemy 1
+  m_Name: EnemyBase
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4721,11 +4727,173 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1327665756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327665745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a25693f426d55443af7f18304449c29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RangeEnemy
+  config: {fileID: 11400000, guid: 6e30b93607085864186a82e656314a11, type: 2}
+  player: {fileID: 1211875424}
+  enemyHealth: {fileID: 1327665760}
+  projectileSpawnPoint: {fileID: 1070699824}
+--- !u!114 &1327665757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327665745}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77b77fe12fd731746b5605c3714d4d65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemy
+  config: {fileID: 11400000, guid: 6e30b93607085864186a82e656314a11, type: 2}
+  player: {fileID: 1211875424}
+  enemyHealth: {fileID: 1327665760}
+--- !u!114 &1327665758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327665745}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddfb53115889b364f9f104d82e5ff88d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveEnemy
+  config: {fileID: 11400000, guid: 6e30b93607085864186a82e656314a11, type: 2}
+  player: {fileID: 1211875424}
+  enemyHealth: {fileID: 1327665760}
+  minIdleTime: 1
+  maxIdleTime: 3
+--- !u!114 &1327665759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327665745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f68783f156acb646a36551c0f5edd6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIEnemyHealthBar
+  healthSlider: {fileID: 2059183972}
+  healthFillGraphic: {fileID: 1223667848}
+  healthGradient:
+    key0:
+      r: 1
+      g: 0
+      b: 0
+      a: 1
+    key1:
+      r: 1
+      g: 0.92156863
+      b: 0.015686275
+      a: 1
+    key2:
+      r: 0
+      g: 1
+      b: 0
+      a: 0
+    key3:
+      r: 0
+      g: 0
+      b: 0
+      a: 0
+    key4:
+      r: 0
+      g: 0
+      b: 0
+      a: 0
+    key5:
+      r: 0
+      g: 0
+      b: 0
+      a: 0
+    key6:
+      r: 0
+      g: 0
+      b: 0
+      a: 0
+    key7:
+      r: 0
+      g: 0
+      b: 0
+      a: 0
+    ctime0: 0
+    ctime1: 32768
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  healthText: {fileID: 0}
+--- !u!114 &1327665760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327665745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 254b15a76512511469fa9183f2e506dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHealth: 80
+--- !u!143 &1327665761
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327665745}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1331839795
 GameObject:
   m_ObjectHideFlags: 0
@@ -5486,7 +5654,7 @@ GameObject:
   - component: {fileID: 1490731088}
   - component: {fileID: 1490731087}
   - component: {fileID: 1490731086}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Ojos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7380,7 +7548,7 @@ GameObject:
   - component: {fileID: 1823688466}
   - component: {fileID: 1823688465}
   - component: {fileID: 1823688468}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -7731,7 +7899,7 @@ GameObject:
   - component: {fileID: 1877807529}
   - component: {fileID: 1877807528}
   - component: {fileID: 1877807527}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Mano
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8090,7 +8258,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 1223667847}
   m_HandleRect: {fileID: 0}
-  m_Direction: 0
+  m_Direction: 1
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
