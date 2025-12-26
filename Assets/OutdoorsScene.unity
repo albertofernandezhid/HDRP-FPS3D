@@ -3263,7 +3263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1042071491}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3374,7 +3374,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1070699824}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: WeaponHoldPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3665,7 +3665,7 @@ GameObject:
   - component: {fileID: 1148865371}
   - component: {fileID: 1148865373}
   - component: {fileID: 1148865372}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4191,7 +4191,7 @@ GameObject:
   - component: {fileID: 1223667847}
   - component: {fileID: 1223667849}
   - component: {fileID: 1223667848}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4475,7 +4475,9 @@ GameObject:
   - component: {fileID: 1327665755}
   - component: {fileID: 1327665753}
   - component: {fileID: 1327665752}
-  m_Layer: 7
+  - component: {fileID: 1327665757}
+  - component: {fileID: 1327665756}
+  m_Layer: 6
   m_Name: Enemy 1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -4722,10 +4724,47 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1327665756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327665745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ab2df105de1224db312c1bceb9ca37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyHealth
+  MaxHealth: 80
+  DeathEffect: {fileID: 0}
+--- !u!114 &1327665757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327665745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64aa4c9f48d803646b0e16527f68998e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyStateMachine
+  PatrolSpeed: 3
+  ChaseSpeed: 6
+  AttackRange: 6
+  DetectionRange: 10
+  AttackDamage: 10
+  AttackCooldown: 1
+  RotationSpeed: 5
+  PatrolPoints: []
+  AttackPrefab: {fileID: 9152739413097916265, guid: 15141341380bd30419ce3a5e461c9216, type: 3}
+  AttackPoint: {fileID: 1070699824}
+  ProjectileSpeed: 20
 --- !u!1 &1331839795
 GameObject:
   m_ObjectHideFlags: 0
@@ -4739,7 +4778,7 @@ GameObject:
   - component: {fileID: 1331839798}
   - component: {fileID: 1331839797}
   - component: {fileID: 1331839800}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7077,7 +7116,7 @@ GameObject:
   - component: {fileID: 1757880522}
   - component: {fileID: 1757880521}
   - component: {fileID: 1757880520}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Ojos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7617,7 +7656,7 @@ GameObject:
   - component: {fileID: 1846169556}
   - component: {fileID: 1846169555}
   - component: {fileID: 1846169554}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Mano
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8019,7 +8058,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2059183971}
   - component: {fileID: 2059183972}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}

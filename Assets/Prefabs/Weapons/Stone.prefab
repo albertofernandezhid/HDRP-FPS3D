@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: -4928518716163996917}
   - component: {fileID: 8409896885442225856}
   - component: {fileID: 724611618124582325}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Stone
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -170,8 +170,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PickupItem
   weaponData: {fileID: 11400000, guid: 27c52fbfd79e6334c885e2acc1f0f8aa, type: 2}
   ammoAmount: 500
-  rotationSpeed: 90
+  enableBounce: 1
   bounceHeight: 0.5
   bounceDuration: 1
+  bounceEase: 4
+  customBounceStart: 0
+  bounceStartDelay: 0
+  bounceOvershoot: 1.70158
+  enableRotation: 1
+  rotationSpeed: 90
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotateMode: 3
+  rotationEase: 1
+  customRotationStart: 0
+  rotationStartDelay: 0
+  enableScalePulse: 0
+  scalePulseTo: {x: 1.2, y: 1.2, z: 1.2}
+  scalePulseDuration: 0.5
+  scalePulseEase: 4
+  scalePulseLoops: -1
+  scalePulseLoopType: 1
+  enableHover: 0
+  hoverHeight: 0.3
+  hoverDuration: 2
+  hoverEase: 4
   pickupEffect: {fileID: 0}
   pickupSound: {fileID: 0}

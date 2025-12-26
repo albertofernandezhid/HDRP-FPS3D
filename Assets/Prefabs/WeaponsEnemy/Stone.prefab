@@ -12,12 +12,11 @@ GameObject:
   - component: {fileID: 5824409660733673638}
   - component: {fileID: 1357985536923152023}
   - component: {fileID: 5865629302600858415}
-  - component: {fileID: -1892107683284080072}
-  - component: {fileID: -7150212920514351009}
-  - component: {fileID: 3043791015775454918}
-  m_Layer: 7
-  m_Name: Ball
-  m_TagString: Projectile
+  - component: {fileID: 8409896885442225856}
+  - component: {fileID: 4960515789278852093}
+  m_Layer: 8
+  m_Name: Stone
+  m_TagString: EnemyProjectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -115,21 +114,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-1892107683284080072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9152739413097916265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a12f88a97dfa184a8e314dc74b5a146, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectileController
-  lifetime: 10
-  impactEffect: {fileID: 0}
---- !u!54 &-7150212920514351009
+--- !u!54 &8409896885442225856
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,9 +122,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9152739413097916265}
   serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0.3
-  m_AngularDamping: 0.3
+  m_Mass: 2
+  m_LinearDamping: 0.5
+  m_AngularDamping: 0.5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -156,7 +141,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3043791015775454918
+--- !u!114 &4960515789278852093
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -165,34 +150,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 9152739413097916265}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36bd105cc9d14e8409d8d8ecfdfe5016, type: 3}
+  m_Script: {fileID: 11500000, guid: ca23e185f434f73449a679b908185fc2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickupItem
-  weaponData: {fileID: 11400000, guid: 6885c1ac961b8004ca2b3f5aa1d1ebb3, type: 2}
-  ammoAmount: 500
-  enableBounce: 1
-  bounceHeight: 0.5
-  bounceDuration: 1
-  bounceEase: 4
-  customBounceStart: 0
-  bounceStartDelay: 0
-  bounceOvershoot: 1.70158
-  enableRotation: 1
-  rotationSpeed: 90
-  rotationAxis: {x: 0, y: 1, z: 0}
-  rotateMode: 3
-  rotationEase: 1
-  customRotationStart: 0
-  rotationStartDelay: 0
-  enableScalePulse: 0
-  scalePulseTo: {x: 1.2, y: 1.2, z: 1.2}
-  scalePulseDuration: 0.5
-  scalePulseEase: 4
-  scalePulseLoops: -1
-  scalePulseLoopType: 1
-  enableHover: 0
-  hoverHeight: 0.3
-  hoverDuration: 2
-  hoverEase: 4
-  pickupEffect: {fileID: 0}
-  pickupSound: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyProjectile
+  Damage: 10
+  LifeTime: 10
