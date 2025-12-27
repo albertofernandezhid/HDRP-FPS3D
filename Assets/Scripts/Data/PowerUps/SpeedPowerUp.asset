@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: SpeedPowerUp
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpData
   powerUpName: SpeedPowerUp
-  icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 21300000, guid: f533ca76f25ace84aa0048d7f271adbb, type: 3}
   duration: 15
   speedMultiplier: 2
   jumpMultiplier: 0
   staminaRegenMultiplier: 0
   staminaBonus: 0
   healthBonus: 0
-  pickupColor: {r: 0.9278021, g: 1, b: 0, a: 0}
-  pickupPrefab: {fileID: 0}
+  pickupColor: {r: 1, g: 1, b: 1, a: 1}
+  pickupPrefab: {fileID: 1997435093139925510, guid: 5e4e3aa2d7af9c64791fedf50339a4b9, type: 3}
   pickupParticles: {fileID: 0}
   pickupSound: {fileID: 0}

@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: RecibeDamagePowerDown
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpData
   powerUpName: RecibeDamagePowerDown
-  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 21300000, guid: 18255d7b0478e9640b703b2c41cf071a, type: 3}
   duration: 0
   speedMultiplier: 0
   jumpMultiplier: 0
   staminaRegenMultiplier: 0
   staminaBonus: 0
   healthBonus: -20
-  pickupColor: {r: 0.22167933, g: 1, b: 0, a: 0}
-  pickupPrefab: {fileID: 0}
+  pickupColor: {r: 1, g: 1, b: 1, a: 1}
+  pickupPrefab: {fileID: 5028647832096405234, guid: 5f411d9aa9ecd12429f3f8b346e4044e, type: 3}
   pickupParticles: {fileID: 0}
   pickupSound: {fileID: 0}

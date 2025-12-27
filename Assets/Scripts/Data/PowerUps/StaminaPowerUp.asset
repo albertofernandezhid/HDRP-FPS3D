@@ -20,7 +20,7 @@ MonoBehaviour:
   staminaRegenMultiplier: 2
   staminaBonus: 0
   healthBonus: 0
-  pickupColor: {r: 0, g: 0.3898821, b: 1, a: 0}
+  pickupColor: {r: 1, g: 1, b: 1, a: 1}
   pickupPrefab: {fileID: 0}
   pickupParticles: {fileID: 0}
   pickupSound: {fileID: 0}

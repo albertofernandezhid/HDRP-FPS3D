@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bottle_Weapon
   m_EditorClassIdentifier: Assembly-CSharp::ThrowableWeapon
   itemName: Bottle
-  icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 21300000, guid: b5da9f72c0aecbf4791c92b57111e44a, type: 3}
   prefab: {fileID: 9152739413097916265, guid: 7964de2482b3f0846a5c72f71a941d24, type: 3}
   throwForce: 22
   damage: 25

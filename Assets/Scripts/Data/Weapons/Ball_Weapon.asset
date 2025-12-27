@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ball_Weapon
   m_EditorClassIdentifier: Assembly-CSharp::ThrowableWeapon
   itemName: Ball
-  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 21300000, guid: decf702b58994a84888de500253ca470, type: 3}
   prefab: {fileID: 9152739413097916265, guid: 3cf3e033e1980584a8ef963ad44a96b9, type: 3}
   throwForce: 25
   damage: 10

@@ -59,9 +59,8 @@ public class PowerUpPickup : MonoBehaviour
         if (pickupRenderer != null)
         {
             Material mat = pickupRenderer.material;
-            if (mat != null)
+            if (mat != null && powerUpData.pickupColor.a > 0.05f)
             {
-                mat.color = powerUpData.pickupColor;
                 mat.EnableKeyword("_EMISSION");
                 mat.SetColor("_EmissionColor", powerUpData.pickupColor * 0.5f);
             }
@@ -184,7 +183,6 @@ public class PowerUpPickup : MonoBehaviour
         }
 
         disappearSequence.OnComplete(() => Destroy(gameObject));
-
         disappearSequence.SetUpdate(true);
     }
 

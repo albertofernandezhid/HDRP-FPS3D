@@ -98,9 +98,9 @@ public class UIPowerUpDisplay : MonoBehaviour
 
         Image icon = iconTransform.GetComponent<Image>();
         Slider slider = timerTransform.GetComponent<Slider>();
-        RectTransform rectTransform = displayObj.GetComponent<RectTransform>();
+        RectTransform rect = displayObj.GetComponent<RectTransform>();
 
-        if (icon == null || slider == null || rectTransform == null)
+        if (icon == null || slider == null || rect == null)
         {
             Destroy(displayObj);
             return;
@@ -112,16 +112,20 @@ public class UIPowerUpDisplay : MonoBehaviour
             container = displayObj,
             icon = icon,
             timerSlider = slider,
-            rectTransform = rectTransform,
+            rectTransform = rect,
             duration = data.duration,
             timeRemaining = data.duration
         };
 
         display.icon.sprite = data.icon;
 
-        if (data.pickupColor != Color.clear)
+        if (data.pickupColor.a > 0.1f)
         {
             display.icon.color = data.pickupColor;
+        }
+        else
+        {
+            display.icon.color = Color.white;
         }
 
         slider.maxValue = 1f;
