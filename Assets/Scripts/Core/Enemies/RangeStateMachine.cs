@@ -24,11 +24,13 @@ namespace HDRP_FPS3D.Enemy
         private EnemyBaseState _currentState;
         private NavMeshAgent _agent;
         private EnemyHealth _health;
+        private Animator _animator;
         private float _lastAttackTime;
         private bool _isPlayerDetected;
         private Vector3 _initialPosition;
 
         public NavMeshAgent Agent => _agent;
+        public Animator Animator => _animator;
         public EnemyHealth Health => _health;
         public bool IsPlayerDetected => _isPlayerDetected;
         public Vector3 InitialPosition => _initialPosition;
@@ -44,6 +46,7 @@ namespace HDRP_FPS3D.Enemy
         {
             _agent = GetComponent<NavMeshAgent>();
             _health = GetComponent<EnemyHealth>();
+            _animator = GetComponent<Animator>();
             _initialPosition = transform.position;
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = true;

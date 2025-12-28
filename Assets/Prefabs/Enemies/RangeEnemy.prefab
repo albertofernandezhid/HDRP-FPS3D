@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 8587884769086613790}
   - component: {fileID: 3255246038880455264}
   - component: {fileID: 9115617110954661472}
+  - component: {fileID: 4364202164087799679}
   m_Layer: 6
   m_Name: RangeEnemy
   m_TagString: Enemy
@@ -190,7 +191,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 26cbd8da5db8c7242ae64afd9e28a7be, type: 3}
+  - {fileID: 2100000, guid: 7669597e2cd68b246afed9abf2c0d93f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -397,8 +398,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyStateMachine
   PatrolSpeed: 3
   ChaseSpeed: 6
-  AttackRange: 6
   DetectionRange: 10
+  ChaseRange: 8
+  AttackRange: 6
+  PatrolRadius: 5
   AttackDamage: 10
   AttackCooldown: 1
   RotationSpeed: 5
@@ -420,6 +423,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyHealth
   MaxHealth: 80
   DeathEffect: {fileID: 0}
+--- !u!114 &4364202164087799679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2870170680269873731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6a7de2d5d46df948b3961166993ca11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyHealthBar
+  healthSlider: {fileID: 1946955565010902323}
+  enemyHealth: {fileID: 9115617110954661472}
+  canvas: {fileID: 4409145439434594237}
+  heightOffset: 0
 --- !u!1 &4351210519312147833
 GameObject:
   m_ObjectHideFlags: 0

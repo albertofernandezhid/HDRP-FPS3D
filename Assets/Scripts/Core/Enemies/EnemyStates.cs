@@ -25,6 +25,14 @@ namespace HDRP_FPS3D.Enemy
         {
             if (enemy.Health.IsDead) return;
 
+            float angleToTarget = Vector3.Angle(enemy.transform.forward, enemy.Agent.desiredVelocity);
+            if (enemy.Agent.remainingDistance > enemy.Agent.stoppingDistance)
+            {
+                enemy.Agent.speed = (angleToTarget > 45f) ? 0.5f : enemy.PatrolSpeed;
+            }
+
+            enemy.Animator.SetFloat("Speed", enemy.Agent.velocity.magnitude);
+
             float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
 
             if (distanceToPlayer <= enemy.ChaseRange)
@@ -37,6 +45,7 @@ namespace HDRP_FPS3D.Enemy
             {
                 enemy.Agent.isStopped = true;
                 enemy.Agent.updateRotation = false;
+                enemy.Animator.SetFloat("Speed", 0);
                 return;
             }
 
@@ -80,18 +89,30 @@ namespace HDRP_FPS3D.Enemy
 
         private void SetNextMainWaypoint(IEnemy enemy)
         {
-            Vector3 centerPoint = (enemy.PatrolPoints != null && enemy.PatrolPoints.Length > 0)
+            bool hasPoints = enemy.PatrolPoints != null && enemy.PatrolPoints.Length > 0;
+
+            Vector3 centerPoint = hasPoints
                 ? enemy.PatrolPoints[_currentPatrolIndex].position
                 : enemy.InitialPosition;
 
-            _currentPatrolIndex = (enemy.PatrolPoints != null) ? (_currentPatrolIndex + 1) % enemy.PatrolPoints.Length : 0;
+            if (hasPoints)
+            {
+                _currentPatrolIndex = (_currentPatrolIndex + 1) % enemy.PatrolPoints.Length;
+            }
+            else
+            {
+                _currentPatrolIndex = 0;
+            }
+
             enemy.Agent.SetDestination(centerPoint);
         }
 
         private void MoveToRandomLocalPoint(IEnemy enemy)
         {
-            Vector3 center = (enemy.PatrolPoints != null && enemy.PatrolPoints.Length > 0)
-                ? enemy.PatrolPoints[(_currentPatrolIndex == 0 ? enemy.PatrolPoints.Length - 1 : _currentPatrolIndex - 1)].position
+            int pointsCount = (enemy.PatrolPoints != null) ? enemy.PatrolPoints.Length : 0;
+
+            Vector3 center = (pointsCount > 0)
+                ? enemy.PatrolPoints[(_currentPatrolIndex == 0 ? pointsCount - 1 : _currentPatrolIndex - 1)].position
                 : enemy.InitialPosition;
 
             Vector3 randomPoint = center + Random.insideUnitSphere * enemy.PatrolRadius;
@@ -127,7 +148,7 @@ namespace HDRP_FPS3D.Enemy
         public override void EnterState(IEnemy enemy)
         {
             enemy.Agent.speed = enemy.ChaseSpeed;
-            enemy.Agent.stoppingDistance = enemy.AttackRange * 0.9f;
+            enemy.Agent.stoppingDistance = enemy.AttackRange * 0.8f;
             enemy.Agent.updateRotation = true;
             enemy.Agent.isStopped = false;
         }
@@ -135,6 +156,12 @@ namespace HDRP_FPS3D.Enemy
         public override void UpdateState(IEnemy enemy)
         {
             if (enemy.Health.IsDead) return;
+
+            float angleToTarget = Vector3.Angle(enemy.transform.forward, (enemy.Player.position - enemy.transform.position).normalized);
+            enemy.Agent.speed = (angleToTarget > 60f) ? 0.5f : enemy.ChaseSpeed;
+
+            enemy.Animator.SetFloat("Speed", enemy.Agent.velocity.magnitude);
+
             float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
 
             if (distanceToPlayer > enemy.ChaseRange)
@@ -161,20 +188,34 @@ namespace HDRP_FPS3D.Enemy
         {
             enemy.Agent.isStopped = true;
             enemy.Agent.updateRotation = false;
+            enemy.Animator.SetFloat("Speed", 0f);
         }
 
         public override void UpdateState(IEnemy enemy)
         {
             if (enemy.Health.IsDead) return;
+
+            Vector3 directionToPlayer = (enemy.Player.position - enemy.transform.position).normalized;
+            directionToPlayer.y = 0;
+            if (directionToPlayer != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+                enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRotation, Time.deltaTime * 8f);
+            }
+
             float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
 
-            if (distanceToPlayer > enemy.AttackRange)
+            if (distanceToPlayer > enemy.AttackRange * 1.1f)
             {
                 enemy.SwitchState(new EnemyChaseState());
                 return;
             }
 
-            if (enemy.CanAttack()) ExecuteAttack(enemy);
+            if (enemy.CanAttack())
+            {
+                enemy.Animator.SetTrigger("Attack");
+                ExecuteAttack(enemy);
+            }
         }
 
         private void ExecuteAttack(IEnemy enemy)

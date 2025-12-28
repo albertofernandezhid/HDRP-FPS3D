@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace HDRP_FPS3D.Enemy
 {
@@ -10,6 +11,7 @@ namespace HDRP_FPS3D.Enemy
         private float _currentHealth;
         private bool _isDead;
         private EnemyHealthBar _healthBar;
+        private Animator _animator;
 
         public float CurrentHealth => _currentHealth;
         public bool IsDead => _isDead;
@@ -17,6 +19,7 @@ namespace HDRP_FPS3D.Enemy
         private void Start()
         {
             _currentHealth = MaxHealth;
+            _animator = GetComponent<Animator>();
             _healthBar = GetComponentInChildren<EnemyHealthBar>();
 
             if (_healthBar != null)
@@ -31,6 +34,11 @@ namespace HDRP_FPS3D.Enemy
 
             _currentHealth -= damage;
 
+            if (_animator != null)
+            {
+                _animator.SetTrigger("TakeDamage");
+            }
+
             if (_healthBar != null)
             {
                 _healthBar.UpdateHealth(_currentHealth);
@@ -44,14 +52,43 @@ namespace HDRP_FPS3D.Enemy
 
         public void Die()
         {
+            if (_isDead) return;
             _isDead = true;
+
+            if (_animator != null)
+            {
+                _animator.SetBool("IsDead", true);
+            }
+
+            NavMeshAgent agent = GetComponent<NavMeshAgent>();
+            if (agent != null)
+            {
+                agent.isStopped = true;
+                agent.enabled = false;
+            }
+
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+                rb.useGravity = false;
+            }
+
+            MonoBehaviour[] allScripts = GetComponents<MonoBehaviour>();
+            foreach (MonoBehaviour script in allScripts)
+            {
+                if (script == null) continue;
+                System.Type type = script.GetType();
+                if (type != typeof(Animator) && type != typeof(EnemyHealth))
+                {
+                    script.enabled = false;
+                }
+            }
 
             if (DeathEffect != null)
             {
                 Instantiate(DeathEffect, transform.position, Quaternion.identity);
             }
-
-            Destroy(gameObject);
         }
     }
 }

@@ -8,6 +8,7 @@ namespace HDRP_FPS3D.Enemy
         Transform transform { get; }
         Transform Player { get; }
         NavMeshAgent Agent { get; }
+        Animator Animator { get; }
         EnemyHealth Health { get; }
         float PatrolSpeed { get; }
         float ChaseSpeed { get; }
