@@ -8,6 +8,9 @@
 ![CLA Required](https://img.shields.io/badge/CLA-Required-blue.svg)
 
 > ⚠️ **Proyecto en construcción:** Actualmente se está desarrollando la base del juego, incluyendo personajes, enemigos, mecánicas de movimiento, combate y cambio de cámara/armas.
+<p align="center">
+  <img src="https://progress-bar.xyz/55/?title=Progress&width=600&color=7c3aed" />
+</p>
 
 ---
 
@@ -79,65 +82,50 @@ Se está desarrollando con un enfoque en **arquitectura limpia** utilizando patr
 
 ## 🛠 Estructura del proyecto
 
+<details>
+<summary><strong>📂 Ver estructura completa del proyecto</strong></summary>
+
 ```plaintext
 Assets/
-+---Art
-|   +---Animations
-|   +---Images
-|   \---Materials
-+---Plugins
-|   +---AssetUsageDetector
-|   |   \---Editor
-|   +---Demigiant
-|   |   \---DOTween
-|   |       +---Editor
-|   |       |   \---Imgs
-|   |       \---Modules
-|   +---Resources
-|   \---TextMesh Pro
-|       +---Examples & Extras
-|       |   +---Fonts
-|       |   +---Materials
-|       |   +---Prefabs
-|       |   +---Resources
-|       |   |   +---Color Gradient Presets
-|       |   |   +---Fonts & Materials
-|       |   |   \---Sprite Assets
-|       |   +---Scenes
-|       |   |   \---28 - HDRP Shader Example
-|       |   +---Scripts
-|       |   +---Sprites
-|       |   \---Textures
-|       +---Fonts
-|       +---Resources
-|       |   +---Fonts & Materials
-|       |   +---Sprite Assets
-|       |   \---Style Sheets
-|       +---Shaders
-|       \---Sprites
-+---Prefabs
-|   +---Items
-|   +---Map
-|   +---UI
-|   \---Weapons
-+---Scripts
-|   +---Core
-|   |   +---Player
-|   |   |   +---Camera
-|   |   |   \---States
-|   |   +---PowerUps
-|   |   \---Weapons
-|   |       +---Components
-|   |       +---Data
-|   |       \---Systems
-|   +---Data
-|   |   +---PowerUps
-|   |   \---Weapons
-|   +---Interfaces
-|   \---UI
-\---Settings
-    \---HDRPDefaultResources
-```
+├── 🎨 Art
+│   ├── Animations
+│   ├── Images
+│   └── Materials
+│
+├── 🧩 Plugins
+│   ├── DOTween
+│   ├── TextMesh Pro
+│   ├── AssetUsageDetector
+│   └── Recursos externos
+│
+├── 🧱 Prefabs
+│   ├── Enemies
+│   ├── Items
+│   ├── Map
+│   ├── PowerUps
+│   ├── UI
+│   └── Weapons
+│
+├── 🧠 Scripts
+│   ├── Core
+│   │   ├── Player
+│   │   │   ├── Camera
+│   │   │   └── States
+│   │   ├── Enemies
+│   │   ├── Weapons
+│   │   └── PowerUps
+│   │
+│   ├── Interfaces
+│   ├── UI
+│   └── Data
+│
+├── ⚙ Settings
+│   └── HDRPDefaultResources
+│
+└── 🗃 _Recovery
+ ```
+</details>
+
 ---
 
 ## ⚙ Requisitos / Herramientas
@@ -170,7 +158,7 @@ Assets/
 - [x] Implementar **cámaras y zoom**
 - [x] Crear **2–3 armas funcionales** con cambio dinámico
 - [x] Crear **inventario de armas**
-- [ ] Añadir **enemigos con IA básica**
+- [x] Añadir **enemigos con IA básica**
 - [x] Añadir **pickups y power-ups**
 - [ ] Añadir **modelos y animaciones finales**
 - [ ] Añadir **audio y partículas 3D**
