@@ -67,11 +67,18 @@ namespace HDRP_FPS3D.Enemy
                 agent.enabled = false;
             }
 
+            Collider mainCollider = GetComponent<Collider>();
+            if (mainCollider != null)
+            {
+                mainCollider.enabled = false;
+            }
+
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null)
             {
                 rb.isKinematic = true;
                 rb.useGravity = false;
+                rb.detectCollisions = false;
             }
 
             MonoBehaviour[] allScripts = GetComponents<MonoBehaviour>();

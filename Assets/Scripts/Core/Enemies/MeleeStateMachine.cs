@@ -84,6 +84,8 @@ namespace HDRP_FPS3D.Enemy
 
         public void LookAtPlayer()
         {
+            if (_animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
+
             Vector3 direction = (Player.position - transform.position).normalized;
             direction.y = 0;
             if (direction != Vector3.zero)
@@ -105,6 +107,10 @@ namespace HDRP_FPS3D.Enemy
         public void PerformMeleeAttack()
         {
             _lastAttackTime = Time.time;
+        }
+
+        public void AnimationEvent_HitPlayer()
+        {
             Collider[] hitPlayers = Physics.OverlapSphere(AttackHitboxCenter.position, HitboxRadius, PlayerLayer);
             foreach (Collider player in hitPlayers)
             {
