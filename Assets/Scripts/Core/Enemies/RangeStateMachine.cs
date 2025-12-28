@@ -3,13 +3,15 @@ using UnityEngine.AI;
 
 namespace HDRP_FPS3D.Enemy
 {
-    public class EnemyStateMachine : MonoBehaviour
+    public class RangeStateMachine : MonoBehaviour, IEnemy
     {
         public Transform Player { get; private set; }
         public float PatrolSpeed = 3f;
         public float ChaseSpeed = 6f;
-        public float AttackRange = 5f;
-        public float DetectionRange = 15f;
+        public float DetectionRange = 20f;
+        public float ChaseRange = 12f;
+        public float AttackRange = 7f;
+        public float PatrolRadius = 5f;
         public float AttackDamage = 10f;
         public float AttackCooldown = 1.5f;
         public float RotationSpeed = 5f;
@@ -24,21 +26,25 @@ namespace HDRP_FPS3D.Enemy
         private EnemyHealth _health;
         private float _lastAttackTime;
         private bool _isPlayerDetected;
+        private Vector3 _initialPosition;
 
-        public EnemyBaseState CurrentState => _currentState;
         public NavMeshAgent Agent => _agent;
         public EnemyHealth Health => _health;
-        public float LastAttackTime => _lastAttackTime;
         public bool IsPlayerDetected => _isPlayerDetected;
+        public Vector3 InitialPosition => _initialPosition;
+        float IEnemy.PatrolSpeed => PatrolSpeed;
+        float IEnemy.ChaseSpeed => ChaseSpeed;
+        float IEnemy.AttackRange => AttackRange;
+        float IEnemy.ChaseRange => ChaseRange;
+        float IEnemy.DetectionRange => DetectionRange;
+        float IEnemy.PatrolRadius => PatrolRadius;
+        Transform[] IEnemy.PatrolPoints => PatrolPoints;
 
         private void Awake()
         {
             _agent = GetComponent<NavMeshAgent>();
-            if (_agent == null) _agent = gameObject.AddComponent<NavMeshAgent>();
-
             _health = GetComponent<EnemyHealth>();
-            if (_health == null) _health = gameObject.AddComponent<EnemyHealth>();
-
+            _initialPosition = transform.position;
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = true;
         }
@@ -54,14 +60,8 @@ namespace HDRP_FPS3D.Enemy
         {
             if (Player == null) FindPlayer();
             if (Player == null || _health.IsDead) return;
-
             CheckPlayerDetection();
-
-            if (_isPlayerDetected)
-            {
-                LookAtPlayer();
-            }
-
+            if (_isPlayerDetected) LookAtPlayer();
             _currentState?.UpdateState(this);
         }
 
@@ -97,20 +97,15 @@ namespace HDRP_FPS3D.Enemy
             _currentState.EnterState(this);
         }
 
-        public void SetAttackTime(float time)
-        {
-            _lastAttackTime = time;
-        }
-
-        public bool CanAttack()
-        {
-            return Time.time >= _lastAttackTime + AttackCooldown;
-        }
+        public void SetAttackTime(float time) => _lastAttackTime = time;
+        public bool CanAttack() => Time.time >= _lastAttackTime + AttackCooldown;
 
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, AttackRange);
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(transform.position, ChaseRange);
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, DetectionRange);
         }

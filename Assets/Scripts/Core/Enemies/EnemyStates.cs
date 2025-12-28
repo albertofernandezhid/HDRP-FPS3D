@@ -1,70 +1,147 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace HDRP_FPS3D.Enemy
 {
     public class EnemyPatrolState : EnemyBaseState
     {
         private int _currentPatrolIndex;
+        private float _waitTime = 4f;
+        private float _waitTimer;
+        private bool _isPerformingMicroSearch;
+        private Quaternion _targetSearchRotation;
+        private float _rotationTimer;
 
-        public override void EnterState(EnemyStateMachine enemy)
+        public override void EnterState(IEnemy enemy)
         {
             enemy.Agent.speed = enemy.PatrolSpeed;
             enemy.Agent.stoppingDistance = 0.5f;
-            enemy.Agent.isStopped = false;
-            SetNextPatrolPoint(enemy);
+            enemy.Agent.updateRotation = true;
+            _isPerformingMicroSearch = false;
+            SetNextMainWaypoint(enemy);
         }
 
-        public override void UpdateState(EnemyStateMachine enemy)
+        public override void UpdateState(IEnemy enemy)
         {
             if (enemy.Health.IsDead) return;
 
             float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
 
-            if (enemy.IsPlayerDetected && distanceToPlayer <= enemy.AttackRange)
+            if (distanceToPlayer <= enemy.ChaseRange)
             {
-                enemy.SwitchState(new EnemyAttackState());
+                enemy.SwitchState(new EnemyChaseState());
                 return;
             }
 
+            if (enemy.IsPlayerDetected)
+            {
+                enemy.Agent.isStopped = true;
+                enemy.Agent.updateRotation = false;
+                return;
+            }
+
+            if (_isPerformingMicroSearch)
+            {
+                _waitTimer -= Time.deltaTime;
+
+                if (enemy.Agent.remainingDistance <= enemy.Agent.stoppingDistance)
+                {
+                    enemy.Agent.updateRotation = false;
+                    HandleIntelligentLook(enemy);
+
+                    if (Random.value < 0.01f && _waitTimer > 1f)
+                    {
+                        MoveToRandomLocalPoint(enemy);
+                    }
+                }
+                else
+                {
+                    enemy.Agent.updateRotation = true;
+                }
+
+                if (_waitTimer <= 0)
+                {
+                    _isPerformingMicroSearch = false;
+                    SetNextMainWaypoint(enemy);
+                }
+                return;
+            }
+
+            enemy.Agent.isStopped = false;
+            enemy.Agent.updateRotation = true;
+
             if (enemy.Agent.remainingDistance <= enemy.Agent.stoppingDistance && !enemy.Agent.pathPending)
             {
-                SetNextPatrolPoint(enemy);
+                _isPerformingMicroSearch = true;
+                _waitTimer = _waitTime;
+                _rotationTimer = 0;
             }
         }
 
-        private void SetNextPatrolPoint(EnemyStateMachine enemy)
+        private void SetNextMainWaypoint(IEnemy enemy)
         {
-            if (enemy.PatrolPoints == null || enemy.PatrolPoints.Length == 0) return;
-            _currentPatrolIndex = (_currentPatrolIndex + 1) % enemy.PatrolPoints.Length;
-            enemy.Agent.SetDestination(enemy.PatrolPoints[_currentPatrolIndex].position);
+            Vector3 centerPoint = (enemy.PatrolPoints != null && enemy.PatrolPoints.Length > 0)
+                ? enemy.PatrolPoints[_currentPatrolIndex].position
+                : enemy.InitialPosition;
+
+            _currentPatrolIndex = (enemy.PatrolPoints != null) ? (_currentPatrolIndex + 1) % enemy.PatrolPoints.Length : 0;
+            enemy.Agent.SetDestination(centerPoint);
         }
 
-        public override void ExitState(EnemyStateMachine enemy)
+        private void MoveToRandomLocalPoint(IEnemy enemy)
         {
-            enemy.Agent.ResetPath();
+            Vector3 center = (enemy.PatrolPoints != null && enemy.PatrolPoints.Length > 0)
+                ? enemy.PatrolPoints[(_currentPatrolIndex == 0 ? enemy.PatrolPoints.Length - 1 : _currentPatrolIndex - 1)].position
+                : enemy.InitialPosition;
+
+            Vector3 randomPoint = center + Random.insideUnitSphere * enemy.PatrolRadius;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomPoint, out hit, enemy.PatrolRadius, NavMesh.AllAreas))
+            {
+                enemy.Agent.SetDestination(hit.position);
+            }
+        }
+
+        private void HandleIntelligentLook(IEnemy enemy)
+        {
+            _rotationTimer -= Time.deltaTime;
+            if (_rotationTimer <= 0)
+            {
+                float randomAngle = Random.Range(-60f, 60f);
+                _targetSearchRotation = Quaternion.Euler(0, enemy.transform.eulerAngles.y + randomAngle, 0);
+                _rotationTimer = Random.Range(1.2f, 2.5f);
+            }
+
+            enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, _targetSearchRotation, Time.deltaTime * 2.5f);
+        }
+
+        public override void ExitState(IEnemy enemy)
+        {
+            enemy.Agent.isStopped = false;
+            enemy.Agent.updateRotation = true;
         }
     }
 
     public class EnemyChaseState : EnemyBaseState
     {
-        public override void EnterState(EnemyStateMachine enemy)
+        public override void EnterState(IEnemy enemy)
         {
             enemy.Agent.speed = enemy.ChaseSpeed;
             enemy.Agent.stoppingDistance = enemy.AttackRange * 0.9f;
+            enemy.Agent.updateRotation = true;
             enemy.Agent.isStopped = false;
         }
 
-        public override void UpdateState(EnemyStateMachine enemy)
+        public override void UpdateState(IEnemy enemy)
         {
             if (enemy.Health.IsDead) return;
+            float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
 
-            if (!enemy.IsPlayerDetected)
+            if (distanceToPlayer > enemy.ChaseRange)
             {
                 enemy.SwitchState(new EnemyPatrolState());
                 return;
             }
-
-            float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
 
             if (distanceToPlayer <= enemy.AttackRange)
             {
@@ -75,29 +152,20 @@ namespace HDRP_FPS3D.Enemy
             enemy.Agent.SetDestination(enemy.Player.position);
         }
 
-        public override void ExitState(EnemyStateMachine enemy)
-        {
-            enemy.Agent.ResetPath();
-        }
+        public override void ExitState(IEnemy enemy) => enemy.Agent.ResetPath();
     }
 
     public class EnemyAttackState : EnemyBaseState
     {
-        public override void EnterState(EnemyStateMachine enemy)
+        public override void EnterState(IEnemy enemy)
         {
             enemy.Agent.isStopped = true;
+            enemy.Agent.updateRotation = false;
         }
 
-        public override void UpdateState(EnemyStateMachine enemy)
+        public override void UpdateState(IEnemy enemy)
         {
             if (enemy.Health.IsDead) return;
-
-            if (!enemy.IsPlayerDetected)
-            {
-                enemy.SwitchState(new EnemyPatrolState());
-                return;
-            }
-
             float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
 
             if (distanceToPlayer > enemy.AttackRange)
@@ -106,42 +174,40 @@ namespace HDRP_FPS3D.Enemy
                 return;
             }
 
-            if (enemy.CanAttack())
-            {
-                AttackPlayer(enemy);
-            }
+            if (enemy.CanAttack()) ExecuteAttack(enemy);
         }
 
-        private void AttackPlayer(EnemyStateMachine enemy)
+        private void ExecuteAttack(IEnemy enemy)
         {
-            if (enemy.AttackPrefab != null && enemy.AttackPoint != null)
+            if (enemy is RangeStateMachine rangeEnemy)
             {
-                Vector3 targetDir = (enemy.Player.position - enemy.AttackPoint.position).normalized;
-                Quaternion launchRotation = Quaternion.LookRotation(targetDir);
-
-                GameObject projectile = Object.Instantiate(enemy.AttackPrefab, enemy.AttackPoint.position, launchRotation);
-
-                Rigidbody rb = projectile.GetComponent<Rigidbody>();
-                if (rb != null)
+                if (rangeEnemy.AttackPrefab != null && rangeEnemy.AttackPoint != null)
                 {
-                    rb.isKinematic = false;
-                    rb.useGravity = false;
-                    rb.linearVelocity = targetDir * enemy.ProjectileSpeed;
-                }
-
-                EnemyProjectile projScript = projectile.GetComponent<EnemyProjectile>();
-                if (projScript != null)
-                {
-                    projScript.Damage = enemy.AttackDamage;
+                    Vector3 targetDir = (rangeEnemy.Player.position - rangeEnemy.AttackPoint.position).normalized;
+                    Quaternion launchRotation = Quaternion.LookRotation(targetDir);
+                    GameObject projectile = Object.Instantiate(rangeEnemy.AttackPrefab, rangeEnemy.AttackPoint.position, launchRotation);
+                    Rigidbody rb = projectile.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.isKinematic = false;
+                        rb.useGravity = false;
+                        rb.linearVelocity = targetDir * rangeEnemy.ProjectileSpeed;
+                    }
+                    EnemyProjectile projScript = projectile.GetComponent<EnemyProjectile>();
+                    if (projScript != null) projScript.Damage = rangeEnemy.AttackDamage;
+                    rangeEnemy.SetAttackTime(Time.time);
                 }
             }
-
-            enemy.SetAttackTime(Time.time);
+            else if (enemy is MeleeStateMachine meleeEnemy)
+            {
+                meleeEnemy.PerformMeleeAttack();
+            }
         }
 
-        public override void ExitState(EnemyStateMachine enemy)
+        public override void ExitState(IEnemy enemy)
         {
             enemy.Agent.isStopped = false;
+            enemy.Agent.updateRotation = true;
         }
     }
 }
