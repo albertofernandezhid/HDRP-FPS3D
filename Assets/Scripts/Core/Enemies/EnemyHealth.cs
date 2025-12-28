@@ -9,6 +9,7 @@ namespace HDRP_FPS3D.Enemy
 
         private float _currentHealth;
         private bool _isDead;
+        private EnemyHealthBar _healthBar;
 
         public float CurrentHealth => _currentHealth;
         public bool IsDead => _isDead;
@@ -16,6 +17,12 @@ namespace HDRP_FPS3D.Enemy
         private void Start()
         {
             _currentHealth = MaxHealth;
+            _healthBar = GetComponentInChildren<EnemyHealthBar>();
+
+            if (_healthBar != null)
+            {
+                _healthBar.Initialize(this);
+            }
         }
 
         public void TakeDamage(float damage)
@@ -23,7 +30,11 @@ namespace HDRP_FPS3D.Enemy
             if (_isDead) return;
 
             _currentHealth -= damage;
-            Debug.Log($"Enemigo impactado. Vida restante: {_currentHealth}"); // Para debugear en consola
+
+            if (_healthBar != null)
+            {
+                _healthBar.UpdateHealth(_currentHealth);
+            }
 
             if (_currentHealth <= 0)
             {
