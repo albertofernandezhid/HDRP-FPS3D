@@ -28,26 +28,39 @@ public class WeaponManager : MonoBehaviour
     private float lastThrowTime;
     private GameObject currentWeaponModel;
     private bool isReloadingModel = false;
+    private PlayerInputActions inputActions;
 
     public WeaponInventory Inventory => inventory;
     public int CurrentWeaponIndex => currentWeaponIndex;
     public bool IsArmed => currentWeaponIndex >= 0;
+    public GameObject CurrentWeapon => currentWeaponModel;
 
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+
+        inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Enable();
+        inputActions.Player.Attack.performed += OnAttackPerformed;
+        inputActions.Player.NextWeapon.performed += _ => NextWeapon();
+        inputActions.Player.PreviousWeapon.performed += _ => PreviousWeapon();
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.Attack.performed -= OnAttackPerformed;
+        inputActions.Disable();
     }
 
     private void Start()
     {
-        if (playerCamera == null)
-            playerCamera = Camera.main;
-
-        if (inventory == null)
-            inventory = GetComponent<WeaponInventory>();
+        if (playerCamera == null) playerCamera = Camera.main;
+        if (inventory == null) inventory = GetComponent<WeaponInventory>();
 
         inventory.OnInventoryChanged += OnInventoryChanged;
         SetupTrajectoryLine();
@@ -56,8 +69,7 @@ public class WeaponManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (inventory != null)
-            inventory.OnInventoryChanged -= OnInventoryChanged;
+        if (inventory != null) inventory.OnInventoryChanged -= OnInventoryChanged;
     }
 
     private void SetupTrajectoryLine()
@@ -81,27 +93,37 @@ public class WeaponManager : MonoBehaviour
 
     private void OnInventoryChanged()
     {
-        if (currentWeaponIndex >= inventory.Slots.Count)
+        int count = inventory.Slots.Count;
+        if (count == 0)
         {
             currentWeaponIndex = -1;
-            isReloadingModel = false;
-            UpdateWeaponModel();
         }
+        else if (currentWeaponIndex >= count)
+        {
+            currentWeaponIndex = count - 1;
+        }
+        UpdateWeaponModel();
     }
 
     private void Update()
     {
-        HandleInput();
         HandleModelReload();
         UpdateTrajectoryPredictor();
+    }
+
+    public void OnAttackPerformed(InputAction.CallbackContext context)
+    {
+        if (IsArmed && Time.time >= lastThrowTime + throwCooldown)
+        {
+            ThrowCurrentWeapon();
+        }
     }
 
     private void UpdateTrajectoryPredictor()
     {
         if (!showTrajectory || !IsArmed || trajectoryLine == null)
         {
-            if (trajectoryLine != null)
-                trajectoryLine.enabled = false;
+            if (trajectoryLine != null) trajectoryLine.enabled = false;
             return;
         }
 
@@ -128,7 +150,6 @@ public class WeaponManager : MonoBehaviour
     private void DrawTrajectory(Vector3 origin, Vector3 velocity)
     {
         trajectoryLine.positionCount = trajectoryPoints;
-
         Vector3 position = origin;
         Vector3 currentVelocity = velocity;
         float timeStep = trajectoryTimeStep;
@@ -157,14 +178,12 @@ public class WeaponManager : MonoBehaviour
             }
 
             position = nextPosition;
-
             if (position.y < origin.y - 20f)
             {
                 trajectoryLine.positionCount = pointsDrawn;
                 return;
             }
         }
-
         trajectoryLine.positionCount = pointsDrawn;
     }
 
@@ -176,102 +195,37 @@ public class WeaponManager : MonoBehaviour
             if (currentWeaponIndex >= 0 && currentWeaponIndex < inventory.Slots.Count)
             {
                 InventorySlot slot = inventory.Slots[currentWeaponIndex];
-                if (slot.CanUse())
-                {
-                    UpdateWeaponModel();
-                }
+                if (slot.CanUse()) UpdateWeaponModel();
             }
-        }
-    }
-
-    private void HandleInput()
-    {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            SelectWeapon(0);
-        else if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            SelectWeapon(1);
-        else if (Keyboard.current.digit3Key.wasPressedThisFrame)
-            SelectWeapon(2);
-
-        if (Gamepad.current != null)
-        {
-            if (Gamepad.current.dpad.left.wasPressedThisFrame)
-                PreviousWeapon();
-            else if (Gamepad.current.dpad.right.wasPressedThisFrame)
-                NextWeapon();
-
-            if (Gamepad.current.buttonNorth.wasPressedThisFrame)
-                ToggleUnarmed();
-        }
-
-        bool shootInput = Mouse.current.leftButton.wasPressedThisFrame ||
-                         (Gamepad.current != null && Gamepad.current.rightTrigger.wasPressedThisFrame);
-
-        if (shootInput && IsArmed && Time.time >= lastThrowTime + throwCooldown)
-        {
-            ThrowCurrentWeapon();
         }
     }
 
     public void SelectWeapon(int slotIndex)
     {
-        if (slotIndex < inventory.Slots.Count)
-        {
-            if (slotIndex == currentWeaponIndex)
-            {
-                currentWeaponIndex = -1;
-            }
-            else
-            {
-                currentWeaponIndex = slotIndex;
-            }
-        }
-        else
-        {
-            currentWeaponIndex = -1;
-        }
-
+        if (inventory.Slots.Count == 0) return;
+        currentWeaponIndex = Mathf.Clamp(slotIndex, 0, inventory.Slots.Count - 1);
         isReloadingModel = false;
         UpdateWeaponModel();
     }
 
     public void NextWeapon()
     {
-        if (inventory.Slots.Count == 0)
-        {
-            currentWeaponIndex = -1;
-        }
-        else
-        {
-            currentWeaponIndex = (currentWeaponIndex + 1) % (inventory.Slots.Count + 1);
-            if (currentWeaponIndex == inventory.Slots.Count)
-                currentWeaponIndex = -1;
-        }
+        int count = inventory.Slots.Count;
+        if (count <= 1) return;
 
+        currentWeaponIndex = (currentWeaponIndex + 1) % count;
         isReloadingModel = false;
         UpdateWeaponModel();
     }
 
     public void PreviousWeapon()
     {
-        if (inventory.Slots.Count == 0)
-        {
-            currentWeaponIndex = -1;
-        }
-        else
-        {
-            currentWeaponIndex = (currentWeaponIndex - 1 + inventory.Slots.Count + 1) % (inventory.Slots.Count + 1);
-            if (currentWeaponIndex == inventory.Slots.Count)
-                currentWeaponIndex = inventory.Slots.Count - 1;
-        }
+        int count = inventory.Slots.Count;
+        if (count <= 1) return;
 
-        isReloadingModel = false;
-        UpdateWeaponModel();
-    }
+        currentWeaponIndex--;
+        if (currentWeaponIndex < 0) currentWeaponIndex = count - 1;
 
-    public void ToggleUnarmed()
-    {
-        currentWeaponIndex = currentWeaponIndex >= 0 ? -1 : 0;
         isReloadingModel = false;
         UpdateWeaponModel();
     }
@@ -292,18 +246,14 @@ public class WeaponManager : MonoBehaviour
                 currentWeaponModel = Instantiate(weapon.Prefab, weaponHoldPoint);
                 currentWeaponModel.transform.localPosition = Vector3.zero;
                 currentWeaponModel.transform.localRotation = Quaternion.identity;
-
                 SetupWeaponInHand(currentWeaponModel);
             }
         }
-        else
+        else if (emptyHandModel != null && weaponHoldPoint != null)
         {
-            if (emptyHandModel != null && weaponHoldPoint != null)
-            {
-                currentWeaponModel = Instantiate(emptyHandModel, weaponHoldPoint);
-                currentWeaponModel.transform.localPosition = Vector3.zero;
-                currentWeaponModel.transform.localRotation = Quaternion.identity;
-            }
+            currentWeaponModel = Instantiate(emptyHandModel, weaponHoldPoint);
+            currentWeaponModel.transform.localPosition = Vector3.zero;
+            currentWeaponModel.transform.localRotation = Quaternion.identity;
         }
     }
 
@@ -324,38 +274,31 @@ public class WeaponManager : MonoBehaviour
         }
 
         ProjectileController proj = weaponObject.GetComponent<ProjectileController>();
-        if (proj != null)
-            proj.enabled = false;
+        if (proj != null) proj.enabled = false;
 
         PickupItem pickup = weaponObject.GetComponent<PickupItem>();
-        if (pickup != null)
-            Destroy(pickup);
+        if (pickup != null) Destroy(pickup);
     }
 
     private Vector3 GetAimTarget()
     {
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-
         if (Physics.Raycast(ray, out RaycastHit hit, maxThrowDistance, throwLayerMask))
         {
             return hit.point;
         }
-
         return ray.GetPoint(maxThrowDistance);
     }
 
     private void ThrowCurrentWeapon()
     {
-        if (currentWeaponIndex < 0 || currentWeaponIndex >= inventory.Slots.Count)
-            return;
+        if (currentWeaponIndex < 0 || currentWeaponIndex >= inventory.Slots.Count) return;
 
         InventorySlot slot = inventory.Slots[currentWeaponIndex];
-        if (!slot.CanUse())
-            return;
+        if (!slot.CanUse()) return;
 
         Vector3 targetPoint = GetAimTarget();
         Vector3 throwVelocity = CalculateThrowVelocity(weaponHoldPoint.position, targetPoint, slot.weapon.ThrowForce);
-
         Vector3 spawnDirection = throwVelocity.normalized;
         Vector3 throwPosition = weaponHoldPoint.position + spawnDirection * minSpawnDistance;
 
@@ -364,12 +307,7 @@ public class WeaponManager : MonoBehaviour
             throwPosition = weaponHoldPoint.position + spawnDirection * (spawnCheck.distance * 0.5f);
         }
 
-        GameObject thrownProjectile = Instantiate(
-            slot.weapon.Prefab,
-            throwPosition,
-            Quaternion.LookRotation(spawnDirection)
-        );
-
+        GameObject thrownProjectile = Instantiate(slot.weapon.Prefab, throwPosition, Quaternion.LookRotation(spawnDirection));
         SetupThrownWeapon(thrownProjectile, throwVelocity, slot);
 
         inventory.UseAmmo(currentWeaponIndex);
@@ -389,29 +327,22 @@ public class WeaponManager : MonoBehaviour
     {
         Vector3 toTarget = target - origin;
         Vector3 toTargetXZ = new Vector3(toTarget.x, 0, toTarget.z);
-
         float horizontalDistance = toTargetXZ.magnitude;
         float verticalDistance = toTarget.y;
-
         float gravity = Mathf.Abs(Physics.gravity.y);
         float speed = throwForce;
-
         float speedSquared = speed * speed;
         float underRoot = speedSquared * speedSquared - gravity * (gravity * horizontalDistance * horizontalDistance + 2 * verticalDistance * speedSquared);
 
         if (underRoot < 0)
         {
-            Vector3 direction = toTarget.normalized;
-            return direction * speed;
+            return toTarget.normalized * speed;
         }
 
         float root = Mathf.Sqrt(underRoot);
         float angle1 = Mathf.Atan((speedSquared - root) / (gravity * horizontalDistance));
-
         Vector3 horizontalDirection = toTargetXZ.normalized;
-        Vector3 velocity = horizontalDirection * Mathf.Cos(angle1) * speed + Vector3.up * Mathf.Sin(angle1) * speed;
-
-        return velocity;
+        return horizontalDirection * Mathf.Cos(angle1) * speed + Vector3.up * Mathf.Sin(angle1) * speed;
     }
 
     private void SetupThrownWeapon(GameObject projectile, Vector3 velocity, InventorySlot slot)
@@ -440,22 +371,22 @@ public class WeaponManager : MonoBehaviour
         }
 
         PickupItem pickup = projectile.GetComponent<PickupItem>();
-        if (pickup != null)
-            Destroy(pickup);
+        if (pickup != null) Destroy(pickup);
     }
 
     public bool PickupWeapon(ThrowableData weaponData, int ammoAmount = 1)
     {
         bool success = inventory.AddWeapon(weaponData, ammoAmount);
         if (success)
+        {
             weaponData.OnPickup();
 
-        if (success && currentWeaponIndex < 0)
-        {
-            currentWeaponIndex = inventory.Slots.Count - 1;
-            UpdateWeaponModel();
+            if (currentWeaponIndex == -1)
+            {
+                currentWeaponIndex = 0;
+                UpdateWeaponModel();
+            }
         }
-
         return success;
     }
 }

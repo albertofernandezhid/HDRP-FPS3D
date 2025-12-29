@@ -9,13 +9,14 @@ public class CameraController : MonoBehaviour
     [SerializeField] private GameObject playerMesh;
 
     [Header("Camera Settings")]
-    [SerializeField] private float mouseSensitivity = 300f;
+    [SerializeField] private float mouseSensitivity = 0.2f;
+    [SerializeField] private float gamepadSensitivity = 100f;
     [SerializeField] private float fpsFOV = 75f;
     [SerializeField] private float tpsFOV = 65f;
     [SerializeField] private float tpsDistance = 3f;
     [SerializeField] private float minZoomDistance = 1f;
     [SerializeField] private float maxZoomDistance = 10f;
-    [SerializeField] private float zoomSpeed = 5f;
+    [SerializeField] private float zoomSpeed = 2f;
     [SerializeField] private float collisionOffset = 0.3f;
     [SerializeField] private LayerMask collisionLayers = ~0;
 
@@ -47,6 +48,9 @@ public class CameraController : MonoBehaviour
     private Renderer playerRenderer;
     private Vector3 originalPivotPosition;
 
+    public float MouseSens => mouseSensitivity;
+    public float GamepadSens => gamepadSensitivity;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -64,8 +68,6 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        HandleMouseLook();
-        HandleInput();
         UpdateCameraDistance();
 
         if (isFirstPerson)
@@ -76,56 +78,34 @@ public class CameraController : MonoBehaviour
         UpdateFieldOfView();
     }
 
-    private void HandleMouseLook()
+    public void HandleMouseLook(float mouseX, float mouseY, bool isMouse)
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        float multiplier = isMouse ? 1f : Time.deltaTime;
 
-        xRotation -= mouseY;
+        xRotation -= mouseY * multiplier;
+        xRotation = Mathf.Clamp(xRotation, isFirstPerson ? fpsMinVerticalAngle : tpsMinVerticalAngle, isFirstPerson ? fpsMaxVerticalAngle : tpsMaxVerticalAngle);
 
-        float minAngle = isFirstPerson ? fpsMinVerticalAngle : tpsMinVerticalAngle;
-        float maxAngle = isFirstPerson ? fpsMaxVerticalAngle : tpsMaxVerticalAngle;
-        xRotation = Mathf.Clamp(xRotation, minAngle, maxAngle);
-
-        playerRoot.Rotate(Vector3.up * mouseX);
+        playerRoot.Rotate(Vector3.up * mouseX * multiplier);
         cameraPivot.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 
-    private void HandleInput()
+    public void SetAiming(bool state)
     {
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            isFirstPerson = !isFirstPerson;
-            SwitchCameraMode();
-        }
-
         if (toggleAimMode)
         {
-            if (Input.GetMouseButtonDown(1))
-            {
-                isAiming = !isAiming;
-            }
+            if (state) isAiming = !isAiming;
         }
         else
         {
-            if (Input.GetMouseButtonDown(1))
-            {
-                isAiming = true;
-            }
-
-            if (Input.GetMouseButtonUp(1))
-            {
-                isAiming = false;
-            }
+            isAiming = state;
         }
+    }
 
+    public void HandleZoom(float zoomAmount)
+    {
         if (!isFirstPerson && !isAiming)
         {
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
-            if (scroll != 0)
-            {
-                targetDistance = Mathf.Clamp(targetDistance - scroll * zoomSpeed, minZoomDistance, maxZoomDistance);
-            }
+            targetDistance = Mathf.Clamp(targetDistance - zoomAmount * zoomSpeed, minZoomDistance, maxZoomDistance);
         }
     }
 
@@ -136,8 +116,18 @@ public class CameraController : MonoBehaviour
             float aimingDistance = Mathf.Max(minZoomDistance, tpsDistance - aimingDistanceReduction);
             targetDistance = aimingDistance;
         }
+        else if (!isFirstPerson && !isAiming)
+        {
+            targetDistance = tpsDistance;
+        }
 
         currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.deltaTime / aimingSmoothTime);
+    }
+
+    public void ToggleCameraMode()
+    {
+        isFirstPerson = !isFirstPerson;
+        SwitchCameraMode();
     }
 
     private void SwitchCameraMode()
