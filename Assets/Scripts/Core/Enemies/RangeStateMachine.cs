@@ -103,6 +103,26 @@ namespace HDRP_FPS3D.Enemy
         public void SetAttackTime(float time) => _lastAttackTime = time;
         public bool CanAttack() => Time.time >= _lastAttackTime + AttackCooldown;
 
+        public void AnimationEvent_ShootProjectile()
+        {
+            if (Player == null || AttackPrefab == null || AttackPoint == null) return;
+
+            Vector3 targetDir = (Player.position - AttackPoint.position).normalized;
+            Quaternion launchRotation = Quaternion.LookRotation(targetDir);
+            GameObject projectile = Instantiate(AttackPrefab, AttackPoint.position, launchRotation);
+
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+                rb.useGravity = false;
+                rb.linearVelocity = targetDir * ProjectileSpeed;
+            }
+
+            EnemyProjectile projScript = projectile.GetComponent<EnemyProjectile>();
+            if (projScript != null) projScript.Damage = AttackDamage;
+        }
+
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;

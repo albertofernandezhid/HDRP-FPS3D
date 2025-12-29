@@ -210,22 +210,7 @@ namespace HDRP_FPS3D.Enemy
         {
             if (enemy is RangeStateMachine rangeEnemy)
             {
-                if (rangeEnemy.AttackPrefab != null && rangeEnemy.AttackPoint != null)
-                {
-                    Vector3 targetDir = (rangeEnemy.Player.position - rangeEnemy.AttackPoint.position).normalized;
-                    Quaternion launchRotation = Quaternion.LookRotation(targetDir);
-                    GameObject projectile = Object.Instantiate(rangeEnemy.AttackPrefab, rangeEnemy.AttackPoint.position, launchRotation);
-                    Rigidbody rb = projectile.GetComponent<Rigidbody>();
-                    if (rb != null)
-                    {
-                        rb.isKinematic = false;
-                        rb.useGravity = false;
-                        rb.linearVelocity = targetDir * rangeEnemy.ProjectileSpeed;
-                    }
-                    EnemyProjectile projScript = projectile.GetComponent<EnemyProjectile>();
-                    if (projScript != null) projScript.Damage = rangeEnemy.AttackDamage;
-                    rangeEnemy.SetAttackTime(Time.time);
-                }
+                rangeEnemy.SetAttackTime(Time.time);
             }
             else if (enemy is MeleeStateMachine meleeEnemy)
             {
