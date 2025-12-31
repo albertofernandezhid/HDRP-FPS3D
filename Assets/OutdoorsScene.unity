@@ -3516,7 +3516,6 @@ GameObject:
   - component: {fileID: 1211875422}
   - component: {fileID: 1211875421}
   - component: {fileID: 1211875425}
-  - component: {fileID: 1211875430}
   - component: {fileID: 1211875428}
   - component: {fileID: 1211875427}
   - component: {fileID: 1211875426}
@@ -3636,13 +3635,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211875420}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
   m_Actions: {fileID: -944628639613478452, guid: 8de06fb746d38604d87f8275c5f84b34, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 747728447}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -3747,7 +3746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e0ca8bfd98fa6541bb03d966fa54cd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
-  animator: {fileID: 1211875430}
+  animator: {fileID: 0}
   speedParam: Speed
   isGroundedParam: IsGrounded
   verticalVelocityParam: VerticalVelocity
@@ -3758,28 +3757,6 @@ MonoBehaviour:
   dieParam: Die
   respawnParam: Respawn
   isDeadParam: IsDead
---- !u!95 &1211875430
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1211875420}
-  m_Enabled: 0
-  m_Avatar: {fileID: 9000000, guid: 3ed6bb6194603044b8b54cb42e082a06, type: 3}
-  m_Controller: {fileID: 9100000, guid: ad71614078fed7044b84244caf55e01c, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1211875431
 MonoBehaviour:
   m_ObjectHideFlags: 0
