@@ -3066,10 +3066,10 @@ MonoBehaviour:
   gamepadSensitivity: 100
   fpsFOV: 75
   tpsFOV: 65
+  tpsDistance: 3
   minZoomDistance: 1
   maxZoomDistance: 5
-  zoomSteps: 12
-  zoomSmoothSpeed: 10
+  zoomSpeed: 2
   collisionOffset: 0.2
   collisionLayers:
     serializedVersion: 2

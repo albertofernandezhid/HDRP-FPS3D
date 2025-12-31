@@ -93,9 +93,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
     {
         ProcessCameraToggle();
         ProcessPauseInput();
-
         currentState.HandleMovement(moveInput, ref velocity, jumpRequested);
-
         PlayerState nextState = currentState.UpdateState();
         if (nextState != currentState)
         {
@@ -103,9 +101,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
             currentState = nextState;
             currentState.Enter();
         }
-
         ResetFrameInputs();
-
         if (animationController != null)
         {
             animationController.UpdateAnimations(moveInput, GetCurrentSpeed(), IsGrounded(), velocity.y);
@@ -123,7 +119,6 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
             float sensitivity = isMouse ? cameraController.MouseSens : cameraController.GamepadSens;
             cameraController.HandleMouseLook(lookInput.x * sensitivity, lookInput.y * sensitivity, isMouse);
         }
-        if (Mathf.Abs(zoomInput) > 0.01f) cameraController.HandleZoom(zoomInput * zoomSensitivity);
     }
 
     private void ProcessCameraToggle()
@@ -168,27 +163,29 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         if (cameraController == null) return;
         cameraController.SetAiming(context.performed);
     }
-    public void OnZoom(InputAction.CallbackContext context) => zoomInput = context.ReadValue<float>();
+    public void OnZoom(InputAction.CallbackContext context)
+    {
+        if (context.performed && cameraController != null)
+        {
+            cameraController.ApplyZoomTick(context.ReadValue<float>());
+        }
+    }
     public void OnPause(InputAction.CallbackContext context) { if (context.performed) pausePressed = true; }
-
     public void OnAttack(InputAction.CallbackContext context) { }
     public void OnNextWeapon(InputAction.CallbackContext context) { }
     public void OnPreviousWeapon(InputAction.CallbackContext context) { }
-
     public void ChangeState(PlayerState newState)
     {
         if (currentState != null) currentState.Exit();
         currentState = newState;
         currentState.Enter();
     }
-
     public void Move(Vector3 motion) => characterController.Move(motion * Time.deltaTime);
     public void ApplyGravity(ref Vector3 vel)
     {
         vel.y += gravity * Time.deltaTime;
         if (characterController.isGrounded && vel.y < 0f) vel.y = -2f;
     }
-
     public Vector3 GetCameraRelativeDirection(Vector2 input)
     {
         if (input.sqrMagnitude < 0.01f) return Vector3.zero;
@@ -201,7 +198,6 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         if (direction.sqrMagnitude > 0.01f) direction.Normalize();
         return direction;
     }
-
     public bool IsGrounded() => characterController.isGrounded;
     public float GetCurrentSpeed() => currentState.GetSpeed();
     public bool IsRunPressed() => runPressed;
