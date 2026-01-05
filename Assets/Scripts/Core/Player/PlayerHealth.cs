@@ -40,6 +40,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         PlayHurtEffects();
 
+        if (animationController != null && currentHealth > 0)
+        {
+            animationController.TriggerTakeDamage();
+        }
+
         if (currentHealth <= 0)
             Die();
     }
@@ -53,6 +58,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             Instantiate(deathParticles, transform.position, Quaternion.identity);
 
         OnDeath?.Invoke();
+
+        if (animationController != null)
+        {
+            animationController.SetDead(true);
+        }
 
         if (playerController != null)
         {

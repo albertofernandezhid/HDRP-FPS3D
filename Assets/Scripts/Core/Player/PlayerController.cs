@@ -26,8 +26,8 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
     public CameraController cameraController;
     public Transform playerCamera;
     public StaminaSystem staminaSystem;
-    public PlayerAnimationController animationController;
     public WeaponManager weaponManager;
+    public PlayerAnimationController animationController;
 
     public PlayerState currentState;
     private PlayerInputActions inputActions;
@@ -55,11 +55,11 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
 
     private void InitializeComponents()
     {
-        if (animationController == null) animationController = GetComponentInChildren<PlayerAnimationController>();
         characterController = GetComponent<CharacterController>();
         if (cameraController == null) cameraController = GetComponentInChildren<CameraController>();
         if (staminaSystem == null) staminaSystem = GetComponent<StaminaSystem>();
         if (weaponManager == null) weaponManager = GetComponent<WeaponManager>();
+        if (animationController == null) animationController = GetComponent<PlayerAnimationController>();
     }
 
     private void InitializeInputSystem()
@@ -101,11 +101,11 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
             currentState = nextState;
             currentState.Enter();
         }
-        ResetFrameInputs();
         if (animationController != null)
         {
-            animationController.UpdateAnimations(moveInput, GetCurrentSpeed(), IsGrounded(), velocity.y);
+            animationController.UpdateAnimations(moveInput, GetCurrentSpeed());
         }
+        ResetFrameInputs();
     }
 
     private void LateUpdate() => ProcessCameraInput();
@@ -145,24 +145,37 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
     private void ResetFrameInputs() => jumpRequested = false;
 
     public void OnMove(InputAction.CallbackContext context) => moveInput = context.ReadValue<Vector2>();
-    public void OnJump(InputAction.CallbackContext context) { if (context.performed) jumpRequested = true; }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.performed && IsGrounded())
+        {
+            jumpRequested = true;
+            animationController?.TriggerJump();
+        }
+    }
+
     public void OnRun(InputAction.CallbackContext context)
     {
         if (context.performed) { runPressed = true; lastRunTime = Time.time; }
         else if (context.canceled) { runPressed = false; runBlocked = false; }
     }
+
     public void OnSprint(InputAction.CallbackContext context)
     {
         if (context.performed) { sprintPressed = true; lastSprintTime = Time.time; }
         else if (context.canceled) { sprintPressed = false; sprintBlocked = false; }
     }
+
     public void OnLook(InputAction.CallbackContext context) => lookInput = context.ReadValue<Vector2>();
     public void OnToggleCamera(InputAction.CallbackContext context) { if (context.performed) toggleCameraPressed = true; }
+
     public void OnAim(InputAction.CallbackContext context)
     {
         if (cameraController == null) return;
         cameraController.SetAiming(context.performed);
     }
+
     public void OnZoom(InputAction.CallbackContext context)
     {
         if (context.performed && cameraController != null)
@@ -170,22 +183,44 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
             cameraController.ApplyZoomTick(context.ReadValue<float>());
         }
     }
+
     public void OnPause(InputAction.CallbackContext context) { if (context.performed) pausePressed = true; }
-    public void OnAttack(InputAction.CallbackContext context) { }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.performed && weaponManager != null && animationController != null)
+        {
+            if (weaponManager.CanThrow() && !animationController.IsAnimationPlaying("ThrowObject"))
+            {
+                animationController.TriggerThrow();
+            }
+        }
+    }
+
     public void OnNextWeapon(InputAction.CallbackContext context) { }
     public void OnPreviousWeapon(InputAction.CallbackContext context) { }
+
     public void ChangeState(PlayerState newState)
     {
         if (currentState != null) currentState.Exit();
         currentState = newState;
         currentState.Enter();
     }
+
     public void Move(Vector3 motion) => characterController.Move(motion * Time.deltaTime);
+
     public void ApplyGravity(ref Vector3 vel)
     {
-        vel.y += gravity * Time.deltaTime;
-        if (characterController.isGrounded && vel.y < 0f) vel.y = -2f;
+        if (characterController.isGrounded && vel.y < 0f)
+        {
+            vel.y = -2f;
+        }
+        else
+        {
+            vel.y += gravity * Time.deltaTime;
+        }
     }
+
     public Vector3 GetCameraRelativeDirection(Vector2 input)
     {
         if (input.sqrMagnitude < 0.01f) return Vector3.zero;
@@ -198,6 +233,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         if (direction.sqrMagnitude > 0.01f) direction.Normalize();
         return direction;
     }
+
     public bool IsGrounded() => characterController.isGrounded;
     public float GetCurrentSpeed() => currentState.GetSpeed();
     public bool IsRunPressed() => runPressed;

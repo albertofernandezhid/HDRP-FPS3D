@@ -4,11 +4,7 @@ public class SprintState : PlayerState
 {
     public SprintState(PlayerController playerController) : base(playerController) { }
 
-    public override void Enter()
-    {
-        if (player.animationController != null)
-            player.animationController.SetSprinting();
-    }
+    public override void Enter() { }
 
     public override void HandleMovement(Vector2 input, ref Vector3 velocity, bool jumpRequested)
     {

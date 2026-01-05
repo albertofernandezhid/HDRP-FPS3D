@@ -6,7 +6,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform playerRoot;
     [SerializeField] private Transform cameraPivot;
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private GameObject playerMesh;
+
+    [Header("Player Models")]
+    [SerializeField] private GameObject tpsModel;
+    [SerializeField] private GameObject fpsModel;
 
     [Header("Camera Settings")]
     [SerializeField] private float mouseSensitivity = 0.2f;
@@ -24,79 +27,98 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float fpsMinVerticalAngle = -26f;
     [SerializeField] private float fpsMaxVerticalAngle = 26f;
 
-    [Header("TPS Limits (Minecraft Style)")]
+    [Header("TPS Limits")]
     [SerializeField] private float tpsMinVerticalAngle = -60f;
     [SerializeField] private float tpsMaxVerticalAngle = 80f;
 
     [Header("First Person Options")]
-    [SerializeField] private bool hideMeshInFPS = true;
     [SerializeField] private float fpsVerticalOffset = 0.6f;
+    [SerializeField] private float fpsForwardOffset = 0.12f;
     [SerializeField] private bool startInFirstPerson = true;
 
     [Header("Aiming Settings")]
     [SerializeField] private float aimingZoomMultiplier = 0.7f;
     [SerializeField] private float aimingDistanceReduction = 1.5f;
-    [SerializeField] private float aimingSmoothTime = 0.15f;
     [SerializeField] private bool toggleAimMode = true;
 
-    private float xRotation = 0f;
+    private float xRotation;
     private float currentDistance;
     private float targetDistance;
     private float baseTpsDistance;
     private int currentZoomStep;
-    private bool isFirstPerson = false;
-    private bool isAiming = false;
+    private bool isFirstPerson;
+    private bool isAiming;
     private Vector3 cameraVelocity;
-    private Renderer playerRenderer;
     private Vector3 originalPivotPosition;
 
     public float MouseSens => mouseSensitivity;
     public float GamepadSens => gamepadSensitivity;
+    public Transform CameraPivot => cameraPivot;
+    public bool IsAiming => isAiming;
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
         currentZoomStep = zoomSteps / 2;
         baseTpsDistance = CalculateDistanceAtStep(currentZoomStep);
         targetDistance = baseTpsDistance;
         currentDistance = targetDistance;
+
         originalPivotPosition = cameraPivot.localPosition;
-        if (playerMesh != null) playerRenderer = playerMesh.GetComponent<Renderer>();
         isFirstPerson = startInFirstPerson;
+
         SwitchCameraMode();
     }
 
     private void Update()
     {
         UpdateCameraDistance();
-        if (isFirstPerson) UpdateFirstPerson();
-        else UpdateThirdPerson();
+
+        if (isFirstPerson)
+            UpdateFirstPerson();
+        else
+            UpdateThirdPerson();
+
         UpdateFieldOfView();
     }
 
     public void HandleMouseLook(float mouseX, float mouseY, bool isMouse)
     {
         float multiplier = isMouse ? 1f : Time.deltaTime;
+
         xRotation -= mouseY * multiplier;
-        xRotation = Mathf.Clamp(xRotation, isFirstPerson ? fpsMinVerticalAngle : tpsMinVerticalAngle, isFirstPerson ? fpsMaxVerticalAngle : tpsMaxVerticalAngle);
+        xRotation = Mathf.Clamp(
+            xRotation,
+            isFirstPerson ? fpsMinVerticalAngle : tpsMinVerticalAngle,
+            isFirstPerson ? fpsMaxVerticalAngle : tpsMaxVerticalAngle
+        );
+
         playerRoot.Rotate(Vector3.up * mouseX * multiplier);
         cameraPivot.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 
     public void SetAiming(bool state)
     {
-        if (toggleAimMode) { if (state) isAiming = !isAiming; }
-        else { isAiming = state; }
+        if (toggleAimMode)
+        {
+            if (state) isAiming = !isAiming;
+        }
+        else
+        {
+            isAiming = state;
+        }
     }
 
     public void ApplyZoomTick(float input)
     {
         if (isFirstPerson || isAiming) return;
 
-        bool isGamepad = UnityEngine.InputSystem.Gamepad.current != null &&
-                         (UnityEngine.InputSystem.Gamepad.current.dpad.up.isPressed ||
-                          UnityEngine.InputSystem.Gamepad.current.dpad.down.isPressed);
+        bool isGamepad =
+            UnityEngine.InputSystem.Gamepad.current != null &&
+            (UnityEngine.InputSystem.Gamepad.current.dpad.up.isPressed ||
+             UnityEngine.InputSystem.Gamepad.current.dpad.down.isPressed);
 
         if (isGamepad)
         {
@@ -121,8 +143,11 @@ public class CameraController : MonoBehaviour
 
     private void UpdateCameraDistance()
     {
-        if (isAiming && !isFirstPerson) targetDistance = Mathf.Max(minZoomDistance, baseTpsDistance - aimingDistanceReduction);
-        else if (!isFirstPerson) targetDistance = baseTpsDistance;
+        if (isAiming && !isFirstPerson)
+            targetDistance = Mathf.Max(minZoomDistance, baseTpsDistance - aimingDistanceReduction);
+        else if (!isFirstPerson)
+            targetDistance = baseTpsDistance;
+
         currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.deltaTime * zoomSmoothSpeed);
     }
 
@@ -136,13 +161,20 @@ public class CameraController : MonoBehaviour
     {
         if (isFirstPerson)
         {
-            cameraPivot.localPosition = originalPivotPosition + new Vector3(0, fpsVerticalOffset, 0);
-            if (hideMeshInFPS && playerRenderer != null) playerRenderer.enabled = false;
+            cameraPivot.localPosition =
+                originalPivotPosition +
+                Vector3.up * fpsVerticalOffset +
+                Vector3.forward * fpsForwardOffset;
+
+            if (tpsModel != null) tpsModel.SetActive(false);
+            if (fpsModel != null) fpsModel.SetActive(true);
         }
         else
         {
             cameraPivot.localPosition = originalPivotPosition;
-            if (hideMeshInFPS && playerRenderer != null) playerRenderer.enabled = true;
+
+            if (tpsModel != null) tpsModel.SetActive(true);
+            if (fpsModel != null) fpsModel.SetActive(false);
         }
     }
 
@@ -163,18 +195,20 @@ public class CameraController : MonoBehaviour
     private void UpdateThirdPersonPosition()
     {
         Vector3 desiredPosition = cameraPivot.position - cameraPivot.forward * currentDistance;
-        RaycastHit hit;
-        if (Physics.Linecast(cameraPivot.position, desiredPosition, out hit, collisionLayers)) desiredPosition = hit.point + hit.normal * collisionOffset;
-        playerCamera.transform.position = Vector3.SmoothDamp(playerCamera.transform.position, desiredPosition, ref cameraVelocity, 0.05f);
+
+        if (Physics.Linecast(cameraPivot.position, desiredPosition, out RaycastHit hit, collisionLayers))
+            desiredPosition = hit.point + hit.normal * collisionOffset;
+
+        playerCamera.transform.position =
+            Vector3.SmoothDamp(playerCamera.transform.position, desiredPosition, ref cameraVelocity, 0.05f);
     }
 
     private void UpdateFieldOfView()
     {
         float targetFOV = isFirstPerson ? fpsFOV : tpsFOV;
         if (isAiming) targetFOV *= aimingZoomMultiplier;
-        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, Time.deltaTime * 10f);
-    }
 
-    public Transform CameraPivot => cameraPivot;
-    public bool IsAiming => isAiming;
+        playerCamera.fieldOfView =
+            Mathf.Lerp(playerCamera.fieldOfView, targetFOV, Time.deltaTime * 10f);
+    }
 }
