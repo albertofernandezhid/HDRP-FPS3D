@@ -12,6 +12,10 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
+# Ignore development and placeholder audio
+/[Aa]ssets/[Ss]ounds/DEV/
+/[Aa]ssets/[Ss]ounds/Voices - Essentials/
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
