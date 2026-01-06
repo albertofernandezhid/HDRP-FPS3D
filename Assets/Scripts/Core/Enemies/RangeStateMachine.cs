@@ -77,8 +77,13 @@ namespace HDRP_FPS3D.Enemy
         private void CheckPlayerDetection()
         {
             if (Player == null) return;
+
+            var playerHealth = Player.GetComponent<PlayerHealth>();
+            bool isPlayerAlive = playerHealth != null && playerHealth.IsAlive();
+
             float distanceToPlayer = Vector3.Distance(transform.position, Player.position);
-            _isPlayerDetected = distanceToPlayer <= DetectionRange;
+
+            _isPlayerDetected = (distanceToPlayer <= DetectionRange) && isPlayerAlive;
         }
 
         public void LookAtPlayer()

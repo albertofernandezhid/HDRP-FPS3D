@@ -25,6 +25,9 @@ namespace HDRP_FPS3D.Enemy
         {
             if (enemy.Health.IsDead) return;
 
+            PlayerHealth playerHealth = enemy.Player.GetComponent<PlayerHealth>();
+            bool isPlayerAlive = playerHealth != null && playerHealth.IsAlive();
+
             float angleToTarget = Vector3.Angle(enemy.transform.forward, enemy.Agent.desiredVelocity);
             if (enemy.Agent.remainingDistance > enemy.Agent.stoppingDistance)
             {
@@ -33,31 +36,31 @@ namespace HDRP_FPS3D.Enemy
 
             enemy.Animator.SetFloat("Speed", enemy.Agent.velocity.magnitude, 0.1f, Time.deltaTime);
 
-            float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
-
-            if (distanceToPlayer <= enemy.ChaseRange)
+            if (isPlayerAlive)
             {
-                enemy.SwitchState(new EnemyChaseState());
-                return;
-            }
+                float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
+                if (distanceToPlayer <= enemy.ChaseRange)
+                {
+                    enemy.SwitchState(new EnemyChaseState());
+                    return;
+                }
 
-            if (enemy.IsPlayerDetected)
-            {
-                enemy.Agent.isStopped = true;
-                enemy.Agent.updateRotation = false;
-                enemy.Animator.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
-                return;
+                if (enemy.IsPlayerDetected)
+                {
+                    enemy.Agent.isStopped = true;
+                    enemy.Agent.updateRotation = false;
+                    enemy.Animator.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
+                    return;
+                }
             }
 
             if (_isPerformingMicroSearch)
             {
                 _waitTimer -= Time.deltaTime;
-
                 if (enemy.Agent.remainingDistance <= enemy.Agent.stoppingDistance)
                 {
                     enemy.Agent.updateRotation = false;
                     HandleIntelligentLook(enemy);
-
                     if (Random.value < 0.01f && _waitTimer > 1f)
                     {
                         MoveToRandomLocalPoint(enemy);
@@ -141,8 +144,14 @@ namespace HDRP_FPS3D.Enemy
         {
             if (enemy.Health.IsDead) return;
 
-            float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
+            PlayerHealth playerHealth = enemy.Player.GetComponent<PlayerHealth>();
+            if (playerHealth == null || !playerHealth.IsAlive())
+            {
+                enemy.SwitchState(new EnemyPatrolState());
+                return;
+            }
 
+            float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
             if (distanceToPlayer <= enemy.AttackRange)
             {
                 enemy.SwitchState(new EnemyAttackState());
@@ -178,8 +187,14 @@ namespace HDRP_FPS3D.Enemy
         {
             if (enemy.Health.IsDead) return;
 
-            bool isAttacking = enemy.Animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack") || enemy.Animator.IsInTransition(0);
+            PlayerHealth playerHealth = enemy.Player.GetComponent<PlayerHealth>();
+            if (playerHealth == null || !playerHealth.IsAlive())
+            {
+                enemy.SwitchState(new EnemyPatrolState());
+                return;
+            }
 
+            bool isAttacking = enemy.Animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack") || enemy.Animator.IsInTransition(0);
             if (!isAttacking)
             {
                 Vector3 directionToPlayer = (enemy.Player.position - enemy.transform.position).normalized;
@@ -192,7 +207,6 @@ namespace HDRP_FPS3D.Enemy
             }
 
             float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
-
             if (distanceToPlayer > enemy.AttackRange * 1.2f && !isAttacking)
             {
                 enemy.SwitchState(new EnemyChaseState());

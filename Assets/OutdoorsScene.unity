@@ -1980,7 +1980,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &553765147
 Transform:
   m_ObjectHideFlags: 0
@@ -3051,7 +3051,8 @@ MonoBehaviour:
   playerRoot: {fileID: 1211875424}
   cameraPivot: {fileID: 1127980433}
   playerCamera: {fileID: 1823688466}
-  playerMesh: {fileID: 1211875420}
+  tpsModel: {fileID: 0}
+  fpsModel: {fileID: 0}
   mouseSensitivity: 0.1
   gamepadSensitivity: 100
   fpsFOV: 75
@@ -3068,12 +3069,11 @@ MonoBehaviour:
   fpsMaxVerticalAngle: 26
   tpsMinVerticalAngle: -60
   tpsMaxVerticalAngle: 80
-  hideMeshInFPS: 1
   fpsVerticalOffset: -1
+  fpsForwardOffset: 0.12
   startInFirstPerson: 1
   aimingZoomMultiplier: 0.7
   aimingDistanceReduction: 1.5
-  aimingSmoothTime: 0.15
   toggleAimMode: 1
 --- !u!81 &975069976
 AudioListener:
@@ -7141,11 +7141,11 @@ PrefabInstance:
       objectReference: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
     - target: {fileID: 4917033720732840232, guid: e1ff981e9b36bde4f9cebdcf20b84e68, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4917033720732840232, guid: e1ff981e9b36bde4f9cebdcf20b84e68, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4962528814836359358, guid: e1ff981e9b36bde4f9cebdcf20b84e68, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9071,11 +9071,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1398215476677955346, guid: a63364f24bd80ed46976ab317b454580, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1398215476677955346, guid: a63364f24bd80ed46976ab317b454580, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2870170680269873731, guid: a63364f24bd80ed46976ab317b454580, type: 3}
       propertyPath: m_Name
