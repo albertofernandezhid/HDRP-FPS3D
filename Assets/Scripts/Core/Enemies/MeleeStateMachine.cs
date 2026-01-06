@@ -22,6 +22,14 @@ namespace HDRP_FPS3D.Enemy
         public float HitboxRadius = 1.0f;
         public LayerMask PlayerLayer;
 
+        [Header("Audio Settings")]
+        public AudioSource EnemyAudioSource;
+        public AudioClip[] AttackSounds;
+        public AudioClip[] FootstepSounds;
+        public AudioClip[] DamageSounds;
+        public AudioClip DeathSound;
+        [Range(0, 1)] public float MasterVolume = 1f;
+
         private EnemyBaseState _currentState;
         private NavMeshAgent _agent;
         private EnemyHealth _health;
@@ -51,6 +59,11 @@ namespace HDRP_FPS3D.Enemy
             _initialPosition = transform.position;
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = true;
+
+            if (EnemyAudioSource == null)
+            {
+                EnemyAudioSource = GetComponent<AudioSource>();
+            }
         }
 
         private void Start()
@@ -78,19 +91,15 @@ namespace HDRP_FPS3D.Enemy
         private void CheckPlayerDetection()
         {
             if (Player == null) return;
-
             var playerHealth = Player.GetComponent<PlayerHealth>();
             bool isPlayerAlive = playerHealth != null && playerHealth.IsAlive();
-
             float distanceToPlayer = Vector3.Distance(transform.position, Player.position);
-
             _isPlayerDetected = (distanceToPlayer <= DetectionRange) && isPlayerAlive;
         }
 
         public void LookAtPlayer()
         {
             if (_animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
-
             Vector3 direction = (Player.position - transform.position).normalized;
             direction.y = 0;
             if (direction != Vector3.zero)
@@ -112,6 +121,35 @@ namespace HDRP_FPS3D.Enemy
         public void PerformMeleeAttack()
         {
             _lastAttackTime = Time.time;
+        }
+
+        public void PlayRandomSound(AudioClip[] clips, float volumeMultiplier = 1f)
+        {
+            if (clips == null || clips.Length == 0 || EnemyAudioSource == null) return;
+            AudioClip clip = clips[Random.Range(0, clips.Length)];
+            EnemyAudioSource.pitch = Random.Range(0.9f, 1.1f);
+            EnemyAudioSource.PlayOneShot(clip, MasterVolume * volumeMultiplier);
+        }
+
+        public void AnimationEvent_AttackSound()
+        {
+            PlayRandomSound(AttackSounds, 1f);
+        }
+
+        public void AnimationEvent_Footstep()
+        {
+            if (_agent.velocity.magnitude > 0.2f)
+            {
+                PlayRandomSound(FootstepSounds, 0.5f);
+            }
+        }
+
+        public void PlayDeathSound()
+        {
+            if (DeathSound != null)
+            {
+                AudioSource.PlayClipAtPoint(DeathSound, transform.position, MasterVolume);
+            }
         }
 
         public void AnimationEvent_HitPlayer()

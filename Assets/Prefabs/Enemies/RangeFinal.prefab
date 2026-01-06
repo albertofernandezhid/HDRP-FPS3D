@@ -1271,7 +1271,7 @@ AudioSource:
   m_GameObject: {fileID: 4394698000350611561}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -427740567768865931, guid: 6326626504592ad499a335cc6dc736a3, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -1283,8 +1283,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 2
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -1373,8 +1373,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.RangeStateMachine
   PatrolSpeed: 2
   ChaseSpeed: 4
-  DetectionRange: 10
-  ChaseRange: 8
+  DetectionRange: 13
+  ChaseRange: 10
   AttackRange: 7
   PatrolRadius: 5
   AttackDamage: 10
@@ -1384,6 +1384,45 @@ MonoBehaviour:
   AttackPrefab: {fileID: 9152739413097916265, guid: 8496097ac11e0b64f96a1898199a8dc2, type: 3}
   AttackPoint: {fileID: 8781544113977418796}
   ProjectileSpeed: 20
+  EnemyAudioSource: {fileID: 3719412893090858500}
+  AttackSounds:
+  - {fileID: 8300000, guid: 6d5fcba0fc126c1449828d2fb5c49562, type: 3}
+  - {fileID: 8300000, guid: 76fcfd68b36a79843b56deaa52646ad7, type: 3}
+  - {fileID: 8300000, guid: 9e591b5f1b3163446bcdcde513d06862, type: 3}
+  - {fileID: 8300000, guid: 4e28f51cff7d3dd4bb61c3b24edd49d5, type: 3}
+  - {fileID: 8300000, guid: b7b24e86fd9c2f5448001f900f1818e3, type: 3}
+  - {fileID: 8300000, guid: af3f6a779a055c74a9351c46d57eff91, type: 3}
+  - {fileID: 8300000, guid: 40fe16197bc3b8d47879d306fd13f049, type: 3}
+  - {fileID: 8300000, guid: 773b263d046d92045a6a72a97946c1ef, type: 3}
+  - {fileID: 8300000, guid: a32fd356ac81b2c4f9bf1d22eab3e527, type: 3}
+  - {fileID: 8300000, guid: 53f0d9216afcb074e9d875b9c83833ca, type: 3}
+  FootstepSounds:
+  - {fileID: 8300000, guid: b4a9a70d5b64a4847af4f6f049d67b1d, type: 3}
+  - {fileID: 8300000, guid: 4199de14ed7c7fd4eb9c5ad912e2c168, type: 3}
+  - {fileID: 8300000, guid: b15952478bd468542839298e0e277ce1, type: 3}
+  - {fileID: 8300000, guid: fea7c0e89f3e1c84bab1fd4bfe3a0e04, type: 3}
+  - {fileID: 8300000, guid: c9f91eb21db878942af13e0e423f33d1, type: 3}
+  - {fileID: 8300000, guid: 8fb8119e3d170bc46875d7d3207fa8a4, type: 3}
+  - {fileID: 8300000, guid: cbd1a729cc2885146a13a7bf49c536fa, type: 3}
+  - {fileID: 8300000, guid: a3771b364f1e0324c96ab1654afb211d, type: 3}
+  - {fileID: 8300000, guid: d3d5ec44debacf64990e797f45f0e701, type: 3}
+  - {fileID: 8300000, guid: 1cd2dd64ab15e1348ac5967c08129ec6, type: 3}
+  DamageSounds:
+  - {fileID: 8300000, guid: baac6697ded203d4ca0897e07f424c92, type: 3}
+  - {fileID: 8300000, guid: c1e0e3f07b4077d49b9cbeefbbbce976, type: 3}
+  - {fileID: 8300000, guid: 47785b24395810544b56bba1ab487b63, type: 3}
+  - {fileID: 8300000, guid: e565301edccd95947a1e061276e83eb2, type: 3}
+  - {fileID: 8300000, guid: a21d77c88765bbb4280186d7dd6e0058, type: 3}
+  - {fileID: 8300000, guid: 5d0818aafd43f534695270176f04750d, type: 3}
+  - {fileID: 8300000, guid: d6eb76b5fd4945c4a99883f6ffbd697a, type: 3}
+  - {fileID: 8300000, guid: 6978ac4cc8663ec429502d6d6122edd8, type: 3}
+  - {fileID: 8300000, guid: d0ecf1016f2858244939574ab08042e6, type: 3}
+  - {fileID: 8300000, guid: 183e9b8fadc515141908c1a62502b30a, type: 3}
+  - {fileID: 8300000, guid: bee629f32fca29f4792c53cba978ccc9, type: 3}
+  - {fileID: 8300000, guid: 3805f4eec3175b349bc8446e36d02e81, type: 3}
+  - {fileID: 8300000, guid: c97cf44b6f5fe444c9e9ea0ae164b54a, type: 3}
+  DeathSound: {fileID: 8300000, guid: acde9225e28300747880fa1a0a1e626a, type: 3}
+  MasterVolume: 1
 --- !u!114 &6327399437700467928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1398,6 +1437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyHealth
   MaxHealth: 100
   DeathEffect: {fileID: 0}
+  CanvasDisableDelay: 1.5
 --- !u!114 &6875304178871100264
 MonoBehaviour:
   m_ObjectHideFlags: 0

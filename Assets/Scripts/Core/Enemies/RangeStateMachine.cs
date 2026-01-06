@@ -21,6 +21,14 @@ namespace HDRP_FPS3D.Enemy
         public Transform AttackPoint;
         public float ProjectileSpeed = 20f;
 
+        [Header("Audio Settings")]
+        public AudioSource EnemyAudioSource;
+        public AudioClip[] AttackSounds;
+        public AudioClip[] FootstepSounds;
+        public AudioClip[] DamageSounds;
+        public AudioClip DeathSound;
+        [Range(0, 1)] public float MasterVolume = 1f;
+
         private EnemyBaseState _currentState;
         private NavMeshAgent _agent;
         private EnemyHealth _health;
@@ -50,6 +58,11 @@ namespace HDRP_FPS3D.Enemy
             _initialPosition = transform.position;
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = true;
+
+            if (EnemyAudioSource == null)
+            {
+                EnemyAudioSource = GetComponent<AudioSource>();
+            }
         }
 
         private void Start()
@@ -77,12 +90,9 @@ namespace HDRP_FPS3D.Enemy
         private void CheckPlayerDetection()
         {
             if (Player == null) return;
-
             var playerHealth = Player.GetComponent<PlayerHealth>();
             bool isPlayerAlive = playerHealth != null && playerHealth.IsAlive();
-
             float distanceToPlayer = Vector3.Distance(transform.position, Player.position);
-
             _isPlayerDetected = (distanceToPlayer <= DetectionRange) && isPlayerAlive;
         }
 
@@ -108,9 +118,35 @@ namespace HDRP_FPS3D.Enemy
         public void SetAttackTime(float time) => _lastAttackTime = time;
         public bool CanAttack() => Time.time >= _lastAttackTime + AttackCooldown;
 
+        public void PlayRandomSound(AudioClip[] clips, float volumeMultiplier = 1f)
+        {
+            if (clips == null || clips.Length == 0 || EnemyAudioSource == null) return;
+            AudioClip clip = clips[Random.Range(0, clips.Length)];
+            EnemyAudioSource.pitch = Random.Range(0.9f, 1.1f);
+            EnemyAudioSource.PlayOneShot(clip, MasterVolume * volumeMultiplier);
+        }
+
+        public void AnimationEvent_Footstep()
+        {
+            if (_agent.velocity.magnitude > 0.2f)
+            {
+                PlayRandomSound(FootstepSounds, 0.5f);
+            }
+        }
+
+        public void PlayDeathSound()
+        {
+            if (DeathSound != null)
+            {
+                AudioSource.PlayClipAtPoint(DeathSound, transform.position, MasterVolume);
+            }
+        }
+
         public void AnimationEvent_ShootProjectile()
         {
             if (Player == null || AttackPrefab == null || AttackPoint == null) return;
+
+            PlayRandomSound(AttackSounds, 1f);
 
             Vector3 targetDir = (Player.position - AttackPoint.position).normalized;
             Quaternion launchRotation = Quaternion.LookRotation(targetDir);

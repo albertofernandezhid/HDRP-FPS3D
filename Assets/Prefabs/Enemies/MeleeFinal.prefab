@@ -1062,10 +1062,10 @@ AudioSource:
   m_GameObject: {fileID: 4743447132972937557}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -427740567768865931, guid: 6326626504592ad499a335cc6dc736a3, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -1074,8 +1074,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 2
+  MaxDistance: 15
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -1110,7 +1110,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1164,6 +1164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyHealth
   MaxHealth: 100
   DeathEffect: {fileID: 0}
+  CanvasDisableDelay: 1.5
 --- !u!114 &5255360108970745381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1207,6 +1208,32 @@ MonoBehaviour:
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 8
+  EnemyAudioSource: {fileID: 7200874812753869783}
+  AttackSounds:
+  - {fileID: 8300000, guid: 85edb304979b82848ae7b9d615023180, type: 3}
+  - {fileID: 8300000, guid: 7dd56992bde9d4241bd17ffa92332d31, type: 3}
+  FootstepSounds:
+  - {fileID: 8300000, guid: 5ce1d2e9a173c0846b46a02a444052ca, type: 3}
+  - {fileID: 8300000, guid: 0e845d24cca5638498f7666e068a2a62, type: 3}
+  - {fileID: 8300000, guid: f5f31575ffff44946bdf6f7df3a431e3, type: 3}
+  - {fileID: 8300000, guid: bf74ca107a881c741a964acdcf8e6feb, type: 3}
+  - {fileID: 8300000, guid: 337e450921a3a7f438e6a501bca30f17, type: 3}
+  - {fileID: 8300000, guid: 9e2fb48dac37c104fbfda0834c875226, type: 3}
+  - {fileID: 8300000, guid: 36e2082387a6ba34ea168e15e634ce8e, type: 3}
+  - {fileID: 8300000, guid: a8f6b0a966621d548b14b4ef167b4ac7, type: 3}
+  - {fileID: 8300000, guid: 41ccda19935ecea43a57b5914fcf8026, type: 3}
+  - {fileID: 8300000, guid: d9c588a14415e5b4c8e36c72e66952d8, type: 3}
+  DamageSounds:
+  - {fileID: 8300000, guid: 0226a236e673c874687dd4335c9d43b9, type: 3}
+  - {fileID: 8300000, guid: f39b96b8e66e40641bacb1178815713e, type: 3}
+  - {fileID: 8300000, guid: 298cc92c4504ce848a4178ededc69f35, type: 3}
+  - {fileID: 8300000, guid: e1d1ff41ec718334884d9e04ccd7c2e7, type: 3}
+  - {fileID: 8300000, guid: bb600035c5bbeda489ba7758ba0d0696, type: 3}
+  - {fileID: 8300000, guid: 7370c7db3b02ff94191b695758d9d32a, type: 3}
+  - {fileID: 8300000, guid: e395eb1b663db4d4ca1f17bc86a144d6, type: 3}
+  - {fileID: 8300000, guid: 9a497b11f3b9e8848adcd4cc906f615e, type: 3}
+  DeathSound: {fileID: 8300000, guid: 9248f25f42fe9c64199d47beca6fbae7, type: 3}
+  MasterVolume: 1
 --- !u!95 &3215752542508356321
 Animator:
   serializedVersion: 7

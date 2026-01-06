@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 namespace HDRP_FPS3D.Enemy
 {
@@ -7,11 +8,15 @@ namespace HDRP_FPS3D.Enemy
     {
         public float MaxHealth = 100f;
         public GameObject DeathEffect;
+        public float CanvasDisableDelay = 1.5f;
 
         private float _currentHealth;
         private bool _isDead;
         private EnemyHealthBar _healthBar;
         private Animator _animator;
+
+        private MeleeStateMachine _meleeSM;
+        private RangeStateMachine _rangeSM;
 
         public float CurrentHealth => _currentHealth;
         public bool IsDead => _isDead;
@@ -20,6 +25,8 @@ namespace HDRP_FPS3D.Enemy
         {
             _currentHealth = MaxHealth;
             _animator = GetComponent<Animator>();
+            _meleeSM = GetComponent<MeleeStateMachine>();
+            _rangeSM = GetComponent<RangeStateMachine>();
             _healthBar = GetComponentInChildren<EnemyHealthBar>();
 
             if (_healthBar != null)
@@ -33,6 +40,15 @@ namespace HDRP_FPS3D.Enemy
             if (_isDead) return;
 
             _currentHealth -= damage;
+
+            if (_meleeSM != null)
+            {
+                _meleeSM.PlayRandomSound(_meleeSM.DamageSounds, 0.8f);
+            }
+            else if (_rangeSM != null)
+            {
+                _rangeSM.PlayRandomSound(_rangeSM.DamageSounds, 0.8f);
+            }
 
             if (_animator != null)
             {
@@ -54,6 +70,17 @@ namespace HDRP_FPS3D.Enemy
         {
             if (_isDead) return;
             _isDead = true;
+
+            StartCoroutine(DisableCanvasDelayed());
+
+            if (_meleeSM != null)
+            {
+                _meleeSM.PlayDeathSound();
+            }
+            else if (_rangeSM != null)
+            {
+                _rangeSM.PlayDeathSound();
+            }
 
             if (_animator != null)
             {
@@ -86,7 +113,7 @@ namespace HDRP_FPS3D.Enemy
             {
                 if (script == null) continue;
                 System.Type type = script.GetType();
-                if (type != typeof(Animator) && type != typeof(EnemyHealth))
+                if (type != typeof(Animator) && type != typeof(EnemyHealth) && type != typeof(AudioSource))
                 {
                     script.enabled = false;
                 }
@@ -95,6 +122,16 @@ namespace HDRP_FPS3D.Enemy
             if (DeathEffect != null)
             {
                 Instantiate(DeathEffect, transform.position, Quaternion.identity);
+            }
+        }
+
+        private IEnumerator DisableCanvasDelayed()
+        {
+            yield return new WaitForSeconds(CanvasDisableDelay);
+            Canvas childCanvas = GetComponentInChildren<Canvas>();
+            if (childCanvas != null)
+            {
+                childCanvas.enabled = false;
             }
         }
     }
