@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         public float gravity;
         public float lookSensitivity;
         public float zoomSensitivity;
+        public float pushPower;
     }
 
     [System.Serializable]
@@ -38,9 +39,12 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         public float damageDuration;
         public float damageLowFreq;
         public float damageHighFreq;
+        [Header("Push Effect")]
+        public float pushLowFreq;
+        public float pushHighFreq;
     }
 
-    public MovementSettings moveSettings = new MovementSettings { walkSpeed = 3f, runSpeed = 6f, sprintSpeed = 9f, jumpHeight = 2f, jumpHeightMultiplier = 1f, gravity = -9.81f, lookSensitivity = 1f, zoomSensitivity = 0.1f };
+    public MovementSettings moveSettings = new MovementSettings { walkSpeed = 3f, runSpeed = 6f, sprintSpeed = 9f, jumpHeight = 2f, jumpHeightMultiplier = 1f, gravity = -9.81f, lookSensitivity = 1f, zoomSensitivity = 0.1f, pushPower = 2f };
     public VibrationSettings vibrationSettings;
 
     [HideInInspector] public float originalWalkSpeed;
@@ -296,6 +300,24 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         Vector3 direction = forward * input.y + right * input.x;
         if (direction.sqrMagnitude > 0.01f) direction.Normalize();
         return direction;
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        Rigidbody rb = hit.collider.attachedRigidbody;
+        if (rb == null || rb.isKinematic) return;
+        if (hit.moveDirection.y < -0.3f) return;
+
+        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+        float speedFactor = Mathf.Clamp(GetCurrentSpeed() / moveSettings.sprintSpeed, 0.5f, 1.5f);
+
+        rb.linearVelocity = pushDir * moveSettings.pushPower * speedFactor / rb.mass;
+
+        if (vibrationSettings.hapticsEnabled)
+        {
+            float massWeight = Mathf.Clamp01(rb.mass / 10f);
+            TriggerVibration(0.1f, vibrationSettings.pushLowFreq * massWeight, vibrationSettings.pushHighFreq * massWeight);
+        }
     }
 
     public bool IsGrounded() => characterController.isGrounded;
