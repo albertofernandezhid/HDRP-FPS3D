@@ -9,7 +9,7 @@
 
 > ⚠️ **Proyecto en construcción:** Actualmente se está desarrollando la base del juego, incluyendo personajes, enemigos, mecánicas de movimiento, combate y cambio de cámara/armas.
 <p align="center">
-  <img src="https://progress-bar.xyz/55/?title=Progress&width=600&color=7c3aed" />
+  <img src="https://progress-bar.xyz/66/?title=Progress&width=600&color=7c3aed" />
 </p>
 
 ---
@@ -160,8 +160,8 @@ Assets/
 - [x] Crear **inventario de armas**
 - [x] Añadir **enemigos con IA básica**
 - [x] Añadir **pickups y power-ups**
-- [ ] Añadir **modelos y animaciones finales**
+- [x] Añadir **modelos y animaciones finales**
 - [ ] Añadir **audio y partículas 3D**
-- [ ] Primer **nivel jugable**
-- [ ] Extender a **mínimo 3 niveles**
+- [ ] Crear **menús y paneles**
+- [ ] Crear **mínimo 3 niveles**
 - [ ] Pulir optimización y efectos visuales
