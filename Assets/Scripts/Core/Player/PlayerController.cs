@@ -217,7 +217,8 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         }
         else
         {
-            vel.y += gravity * Time.deltaTime;
+            float gravityFallMultiplier = (vel.y < 0) ? 2.5f : 1f;
+            vel.y += gravity * gravityFallMultiplier * Time.deltaTime;
         }
     }
 

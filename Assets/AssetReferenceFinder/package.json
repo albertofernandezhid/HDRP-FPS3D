@@ -1,6 +1,6 @@
 {
   "name": "com.jms.assetreferencefinder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "Asset Reference Finder",
   "description": "Asset Reference Finder integrates seamlessly with Unity to highlight asset dependencies within your project, simplifying the process of determining asset usage. Key features include:\n\t1.\tEnhanced Project Window: Displays asset references directly within the project view.\n\t2.\tDedicated Reference Window: Lists all assets that reference a selected asset.\n\t3.\tComprehensive Reference Tracking: Identifies both direct and indirect references for assets, including those in Resources, Addressables, and Spritesheets.",
   "unity": "2022.3",

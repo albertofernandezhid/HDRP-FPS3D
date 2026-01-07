@@ -1,17 +1,26 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip[] hurtSounds;
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private ParticleSystem hurtParticles;
     [SerializeField] private ParticleSystem deathParticles;
 
+    [Header("Damage Overlay Settings")]
+    [SerializeField] private Image damageOverlayImage;
+    [SerializeField] private float overlayDuration = 0.5f;
+    [SerializeField] private float maxOverlayAlpha = 0.5f;
+
     private float currentHealth;
     private PlayerController playerController;
     private PlayerAnimationController animationController;
+    private CameraController cameraController;
+    private Coroutine overlayCoroutine;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
@@ -25,7 +34,16 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         playerController = GetComponent<PlayerController>();
         animationController = GetComponentInChildren<PlayerAnimationController>();
+        cameraController = GetComponentInChildren<CameraController>();
         currentHealth = maxHealth;
+
+        if (damageOverlayImage != null)
+        {
+            Color c = damageOverlayImage.color;
+            c.a = 0;
+            damageOverlayImage.color = c;
+        }
+
         NotifyHealthChange();
     }
 
@@ -72,14 +90,40 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     private void PlayHurtEffects()
     {
-        if (hurtSound != null)
-            AudioSource.PlayClipAtPoint(hurtSound, transform.position);
+        if (animationController != null && hurtSounds != null && hurtSounds.Length > 0)
+        {
+            animationController.PlayRandomSound(hurtSounds, 0.8f);
+        }
+
+        if (damageOverlayImage != null && cameraController != null && cameraController.IsFirstPerson)
+        {
+            if (overlayCoroutine != null) StopCoroutine(overlayCoroutine);
+            overlayCoroutine = StartCoroutine(FadeOverlay());
+        }
 
         if (hurtParticles != null)
         {
             ParticleSystem particles = Instantiate(hurtParticles, transform.position, Quaternion.identity);
             Destroy(particles.gameObject, 2f);
         }
+    }
+
+    private IEnumerator FadeOverlay()
+    {
+        float elapsedTime = 0f;
+        Color c = damageOverlayImage.color;
+
+        while (elapsedTime < overlayDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(maxOverlayAlpha, 0, elapsedTime / overlayDuration);
+            c.a = alpha;
+            damageOverlayImage.color = c;
+            yield return null;
+        }
+
+        c.a = 0;
+        damageOverlayImage.color = c;
     }
 
     public void Heal(float amount)

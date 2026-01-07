@@ -1,15 +1,8 @@
 fileFormatVersion: 2
 guid: b5ceb28ffe3fb4bcaa0df0d5853f707c
-AssetOrigin:
-  serializedVersion: 1
-  productId: 337488
-  packageName: Asset Reference Finder
-  packageVersion: 1.0.0
-  assetPath: Assets/AssetReferenceFinder/Editor/AssetReferenceFinderLib.Editor.dll
-  uploadId: 827866
 PluginImporter:
   externalObjects: {}
-  serializedVersion: 3
+  serializedVersion: 2
   iconMap: {}
   executionOrder: {}
   defineConstraints: []
@@ -18,55 +11,71 @@ PluginImporter:
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
-    Android:
-      enabled: 0
-      settings:
-        AndroidLibraryDependee: UnityLibrary
-        AndroidSharedLibraryType: Executable
-        CPU: ARMv7
-    Any:
+  - first:
+      : Any
+    second:
       enabled: 0
       settings:
         Exclude Android: 1
         Exclude Editor: 0
         Exclude Linux64: 1
         Exclude OSXUniversal: 1
-        Exclude WebGL: 1
         Exclude Win: 1
         Exclude Win64: 1
-        Exclude WindowsStoreApps: 1
         Exclude iOS: 1
-    Editor:
+  - first:
+      Android: Android
+    second:
+      enabled: 0
+      settings:
+        AndroidSharedLibraryType: Executable
+        CPU: ARMv7
+  - first:
+      Any: 
+    second:
+      enabled: 0
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
       enabled: 1
       settings:
-        CPU: x86_64
+        CPU: AnyCPU
         DefaultValueInitialized: true
-        OS: Windows
-    Linux64:
+        OS: AnyOS
+  - first:
+      Standalone: Linux64
+    second:
       enabled: 0
       settings:
         CPU: None
-    OSXUniversal:
+  - first:
+      Standalone: OSXUniversal
+    second:
       enabled: 0
       settings:
         CPU: None
-    Win:
+  - first:
+      Standalone: Win
+    second:
       enabled: 0
       settings:
         CPU: None
-    Win64:
+  - first:
+      Standalone: Win64
+    second:
       enabled: 0
       settings:
         CPU: None
-    WindowsStoreApps:
+  - first:
+      Windows Store Apps: WindowsStoreApps
+    second:
       enabled: 0
       settings:
         CPU: AnyCPU
-        DontProcess: false
-        PlaceholderPath: 
-        SDK: AnySDK
-        ScriptingBackend: AnyScriptingBackend
-    iOS:
+  - first:
+      iPhone: iOS
+    second:
       enabled: 0
       settings:
         AddToEmbeddedBinaries: false
@@ -76,3 +85,10 @@ PluginImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 337488
+  packageName: Asset Reference Finder
+  packageVersion: 1.0.2
+  assetPath: Assets/AssetReferenceFinder/Editor/AssetReferenceFinderLib.Editor.dll
+  uploadId: 843230

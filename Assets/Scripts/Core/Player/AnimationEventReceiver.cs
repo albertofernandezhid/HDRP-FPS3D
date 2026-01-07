@@ -3,10 +3,16 @@ using UnityEngine;
 public class AnimationEventReceiver : MonoBehaviour
 {
     private WeaponManager weaponManager;
+    private PlayerAnimationController animationController;
 
     private void Awake()
     {
         weaponManager = GetComponentInParent<WeaponManager>();
+        animationController = GetComponent<PlayerAnimationController>();
+        if (animationController == null)
+        {
+            animationController = GetComponentInParent<PlayerAnimationController>();
+        }
     }
 
     public void AnimationEvent_ShootProjectile()
@@ -14,6 +20,19 @@ public class AnimationEventReceiver : MonoBehaviour
         if (weaponManager != null)
         {
             weaponManager.ExecuteThrow();
+        }
+
+        if (animationController != null)
+        {
+            animationController.PlayRandomSound(animationController.AttackSounds, 1f);
+        }
+    }
+
+    public void AnimationEvent_Footstep()
+    {
+        if (animationController != null)
+        {
+            animationController.PlayRandomSound(animationController.FootstepSounds, 0.4f);
         }
     }
 }
