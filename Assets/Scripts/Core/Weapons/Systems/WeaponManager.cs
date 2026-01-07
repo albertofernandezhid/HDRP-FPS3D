@@ -5,18 +5,28 @@ public class WeaponManager : MonoBehaviour
 {
     public static WeaponManager Instance { get; private set; }
 
+    [System.Serializable]
+    public struct WeaponVibrationSettings
+    {
+        public float throwDuration;
+        public float throwLowFreq;
+        public float throwHighFreq;
+    }
+
     [Header("References")]
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Transform weaponHoldPoint;
     [SerializeField] private WeaponInventory inventory;
     [SerializeField] private GameObject emptyHandModel;
     [SerializeField] private PlayerAnimationController animationController;
+    [SerializeField] private PlayerController playerController;
 
     [Header("Settings")]
     [SerializeField] private float throwCooldown = 0.5f;
     [SerializeField] private float maxThrowDistance = 50f;
     [SerializeField] private float minSpawnDistance = 0.8f;
     [SerializeField] private LayerMask throwLayerMask = ~0;
+    public WeaponVibrationSettings vibrationSettings;
 
     [Header("Trajectory Predictor")]
     [SerializeField] private bool showTrajectory = true;
@@ -61,6 +71,7 @@ public class WeaponManager : MonoBehaviour
     {
         if (playerCamera == null) playerCamera = Camera.main;
         if (inventory == null) inventory = GetComponent<WeaponInventory>();
+        if (playerController == null) playerController = GetComponentInParent<PlayerController>();
         inventory.OnInventoryChanged += OnInventoryChanged;
         SetupTrajectoryLine();
         UpdateWeaponModel();
@@ -121,6 +132,8 @@ public class WeaponManager : MonoBehaviour
         {
             lastThrowTime = Time.time;
             isReloadingModel = true;
+            if (playerController != null)
+                playerController.TriggerVibration(vibrationSettings.throwDuration, vibrationSettings.throwLowFreq, vibrationSettings.throwHighFreq);
             if (animationController != null)
             {
                 animationController.TriggerThrow();

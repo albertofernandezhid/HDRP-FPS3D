@@ -5,11 +5,24 @@ using System.Collections;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
+    [System.Serializable]
+    public struct HealthVibrationSettings
+    {
+        public float damageDuration;
+        public float damageLowFreq;
+        public float damageHighFreq;
+        [Header("Death Effect")]
+        public float deathDuration;
+        public float deathLowFreq;
+        public float deathHighFreq;
+    }
+
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private AudioClip[] hurtSounds;
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private ParticleSystem hurtParticles;
     [SerializeField] private ParticleSystem deathParticles;
+    public HealthVibrationSettings vibrationSettings;
 
     [Header("Damage Overlay Settings")]
     [SerializeField] private Image damageOverlayImage;
@@ -58,6 +71,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         PlayHurtEffects();
 
+        if (playerController != null)
+        {
+            playerController.TriggerVibration(vibrationSettings.damageDuration, vibrationSettings.damageLowFreq, vibrationSettings.damageHighFreq);
+        }
+
         if (animationController != null && currentHealth > 0)
         {
             animationController.TriggerTakeDamage();
@@ -74,6 +92,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         if (deathParticles != null)
             Instantiate(deathParticles, transform.position, Quaternion.identity);
+
+        if (playerController != null)
+        {
+            playerController.TriggerVibration(vibrationSettings.deathDuration, vibrationSettings.deathLowFreq, vibrationSettings.deathHighFreq);
+        }
 
         OnDeath?.Invoke();
 

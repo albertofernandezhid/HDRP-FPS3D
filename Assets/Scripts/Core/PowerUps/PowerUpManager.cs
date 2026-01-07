@@ -120,19 +120,19 @@ public class PowerUpManager : MonoBehaviour
 
         if (data.speedMultiplier > 0.01f && Mathf.Abs(data.speedMultiplier - 1f) > 0.01f && playerController != null)
         {
-            float originalWalk = playerController.walkSpeed;
-            float originalRun = playerController.runSpeed;
-            float originalSprint = playerController.sprintSpeed;
+            float originalWalk = playerController.moveSettings.walkSpeed;
+            float originalRun = playerController.moveSettings.runSpeed;
+            float originalSprint = playerController.moveSettings.sprintSpeed;
 
-            playerController.walkSpeed *= data.speedMultiplier;
-            playerController.runSpeed *= data.speedMultiplier;
-            playerController.sprintSpeed *= data.speedMultiplier;
+            playerController.moveSettings.walkSpeed *= data.speedMultiplier;
+            playerController.moveSettings.runSpeed *= data.speedMultiplier;
+            playerController.moveSettings.sprintSpeed *= data.speedMultiplier;
 
             revertActions.Add(() =>
             {
-                playerController.walkSpeed = originalWalk;
-                playerController.runSpeed = originalRun;
-                playerController.sprintSpeed = originalSprint;
+                playerController.moveSettings.walkSpeed = originalWalk;
+                playerController.moveSettings.runSpeed = originalRun;
+                playerController.moveSettings.sprintSpeed = originalSprint;
             });
         }
 
@@ -149,12 +149,12 @@ public class PowerUpManager : MonoBehaviour
 
         if (data.jumpMultiplier > 0.01f && Mathf.Abs(data.jumpMultiplier - 1f) > 0.01f && playerController != null)
         {
-            float originalMultiplier = playerController.jumpHeightMultiplier;
-            playerController.jumpHeightMultiplier *= data.jumpMultiplier;
+            float originalMultiplier = playerController.moveSettings.jumpHeightMultiplier;
+            playerController.moveSettings.jumpHeightMultiplier *= data.jumpMultiplier;
 
             revertActions.Add(() =>
             {
-                playerController.jumpHeightMultiplier = originalMultiplier;
+                playerController.moveSettings.jumpHeightMultiplier = originalMultiplier;
             });
         }
 

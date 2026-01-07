@@ -45,6 +45,6 @@ public class SprintState : PlayerState
         return this;
     }
 
-    public override float GetSpeed() => player.sprintSpeed;
+    public override float GetSpeed() => player.moveSettings.sprintSpeed;
     public override void Exit() { }
 }

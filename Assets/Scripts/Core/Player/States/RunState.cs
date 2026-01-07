@@ -45,6 +45,6 @@ public class RunState : PlayerState
         return this;
     }
 
-    public override float GetSpeed() => player.runSpeed;
+    public override float GetSpeed() => player.moveSettings.runSpeed;
     public override void Exit() { }
 }

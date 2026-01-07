@@ -31,7 +31,7 @@ public class PlayerAnimationController : MonoBehaviour
         animator = newAnimator;
     }
 
-    public void UpdateAnimations(Vector2 moveInput, float speed)
+    public void UpdateAnimations(Vector2 moveInput, float speed, Vector3 velocity, bool isGrounded)
     {
         if (animator == null || !animator.gameObject.activeInHierarchy) return;
         float moveX = moveInput.x;
@@ -45,6 +45,15 @@ public class PlayerAnimationController : MonoBehaviour
         animator.SetFloat("MoveX", moveX, 0.1f, Time.deltaTime);
         animator.SetFloat("MoveY", moveY, 0.1f, Time.deltaTime);
         animator.SetFloat("Speed", speed, 0.1f, Time.deltaTime);
+
+        if (!isGrounded && velocity.y < -0.1f)
+        {
+            animator.SetBool("landing", true);
+        }
+        else if (isGrounded)
+        {
+            animator.SetBool("landing", false);
+        }
     }
 
     public void TriggerJump()
@@ -52,6 +61,7 @@ public class PlayerAnimationController : MonoBehaviour
         if (animator != null && animator.gameObject.activeInHierarchy)
         {
             animator.SetTrigger("jump");
+            animator.SetBool("landing", false);
             PlayRandomSound(JumpSounds, 0.7f);
         }
     }

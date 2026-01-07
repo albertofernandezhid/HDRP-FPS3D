@@ -45,6 +45,6 @@ public class WalkState : PlayerState
         return this;
     }
 
-    public override float GetSpeed() => player.walkSpeed;
+    public override float GetSpeed() => player.moveSettings.walkSpeed;
     public override void Exit() { }
 }

@@ -12,8 +12,8 @@ public class IdleState : PlayerState
 
         if (jumpRequested && player.IsGrounded())
         {
-            float effectiveJumpHeight = player.jumpHeight * player.jumpHeightMultiplier;
-            velocity.y = Mathf.Sqrt(effectiveJumpHeight * -2f * player.gravity);
+            float effectiveJumpHeight = player.moveSettings.jumpHeight * player.moveSettings.jumpHeightMultiplier;
+            velocity.y = Mathf.Sqrt(effectiveJumpHeight * -2f * player.moveSettings.gravity);
         }
 
         player.Move(velocity);

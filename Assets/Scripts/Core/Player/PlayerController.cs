@@ -1,27 +1,54 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
 {
-    [Header("Movement Settings")]
-    public float walkSpeed = 3f;
-    public float runSpeed = 6f;
-    public float sprintSpeed = 9f;
-    public float jumpHeight = 2f;
-    public float jumpHeightMultiplier = 1f;
-    public float gravity = -9.81f;
-    public float lookSensitivity = 1f;
-    public float zoomSensitivity = 0.1f;
+    [System.Serializable]
+    public struct MovementSettings
+    {
+        public float walkSpeed;
+        public float runSpeed;
+        public float sprintSpeed;
+        public float jumpHeight;
+        public float jumpHeightMultiplier;
+        public float gravity;
+        public float lookSensitivity;
+        public float zoomSensitivity;
+    }
 
-    [Header("Original Values")]
-    public float originalWalkSpeed = 3f;
-    public float originalRunSpeed = 6f;
-    public float originalSprintSpeed = 9f;
-    public float originalJumpHeight = 2f;
-    public float originalJumpHeightMultiplier = 1f;
+    [System.Serializable]
+    public struct VibrationSettings
+    {
+        public bool hapticsEnabled;
+        [Header("Jump Effect")]
+        public float jumpDuration;
+        public float jumpLowFreq;
+        public float jumpHighFreq;
+        [Header("Land Effect")]
+        public float landDuration;
+        public float landLowFreq;
+        public float landHighFreq;
+        [Header("Attack Effect")]
+        public float attackDuration;
+        public float attackLowFreq;
+        public float attackHighFreq;
+        [Header("Damage Effect")]
+        public float damageDuration;
+        public float damageLowFreq;
+        public float damageHighFreq;
+    }
 
-    [Header("References")]
+    public MovementSettings moveSettings = new MovementSettings { walkSpeed = 3f, runSpeed = 6f, sprintSpeed = 9f, jumpHeight = 2f, jumpHeightMultiplier = 1f, gravity = -9.81f, lookSensitivity = 1f, zoomSensitivity = 0.1f };
+    public VibrationSettings vibrationSettings;
+
+    [HideInInspector] public float originalWalkSpeed;
+    [HideInInspector] public float originalRunSpeed;
+    [HideInInspector] public float originalSprintSpeed;
+    [HideInInspector] public float originalJumpHeight;
+    [HideInInspector] public float originalJumpHeightMultiplier;
+
     public CharacterController characterController;
     public CameraController cameraController;
     public Transform playerCamera;
@@ -34,7 +61,6 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
 
     private Vector2 moveInput;
     private Vector2 lookInput;
-    private float zoomInput;
     private Vector3 velocity;
     private bool jumpRequested;
     private bool runPressed;
@@ -45,6 +71,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
     private bool sprintBlocked;
     private float lastRunTime;
     private float lastSprintTime;
+    private bool wasGrounded;
 
     private void Awake()
     {
@@ -70,15 +97,19 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
 
     private void SaveOriginalValues()
     {
-        originalWalkSpeed = walkSpeed;
-        originalRunSpeed = runSpeed;
-        originalSprintSpeed = sprintSpeed;
-        originalJumpHeight = jumpHeight;
-        originalJumpHeightMultiplier = jumpHeightMultiplier;
+        originalWalkSpeed = moveSettings.walkSpeed;
+        originalRunSpeed = moveSettings.runSpeed;
+        originalSprintSpeed = moveSettings.sprintSpeed;
+        originalJumpHeight = moveSettings.jumpHeight;
+        originalJumpHeightMultiplier = moveSettings.jumpHeightMultiplier;
     }
 
     private void OnEnable() => inputActions.Enable();
-    private void OnDisable() => inputActions.Disable();
+    private void OnDisable()
+    {
+        StopAllMotors();
+        inputActions.Disable();
+    }
     private void OnDestroy() => inputActions.Dispose();
 
     private void Start()
@@ -93,6 +124,14 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
     {
         ProcessCameraToggle();
         ProcessPauseInput();
+
+        bool isGroundedNow = IsGrounded();
+        if (isGroundedNow && !wasGrounded && velocity.y < -5f)
+        {
+            TriggerVibration(vibrationSettings.landDuration, vibrationSettings.landLowFreq, vibrationSettings.landHighFreq);
+        }
+        wasGrounded = isGroundedNow;
+
         currentState.HandleMovement(moveInput, ref velocity, jumpRequested);
         PlayerState nextState = currentState.UpdateState();
         if (nextState != currentState)
@@ -103,7 +142,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         }
         if (animationController != null)
         {
-            animationController.UpdateAnimations(moveInput, GetCurrentSpeed());
+            animationController.UpdateAnimations(moveInput, GetCurrentSpeed(), velocity, isGroundedNow);
         }
         ResetFrameInputs();
     }
@@ -138,6 +177,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
             Time.timeScale = isPaused ? 1f : 0f;
             Cursor.lockState = isPaused ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = !isPaused;
+            if (!isPaused) StopAllMotors();
             pausePressed = false;
         }
     }
@@ -152,6 +192,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         {
             jumpRequested = true;
             animationController?.TriggerJump();
+            TriggerVibration(vibrationSettings.jumpDuration, vibrationSettings.jumpLowFreq, vibrationSettings.jumpHighFreq);
         }
     }
 
@@ -193,12 +234,34 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
             if (weaponManager.CanThrow() && !animationController.IsAnimationPlaying("ThrowObject"))
             {
                 animationController.TriggerThrow();
+                TriggerVibration(vibrationSettings.attackDuration, vibrationSettings.attackLowFreq, vibrationSettings.attackHighFreq);
             }
         }
     }
 
     public void OnNextWeapon(InputAction.CallbackContext context) { }
     public void OnPreviousWeapon(InputAction.CallbackContext context) { }
+
+    public void NotifyTakeDamage()
+    {
+        TriggerVibration(vibrationSettings.damageDuration, vibrationSettings.damageLowFreq, vibrationSettings.damageHighFreq);
+    }
+
+    public void TriggerVibration(float duration, float lowFreq, float highFreq)
+    {
+        if (!vibrationSettings.hapticsEnabled) return;
+        Gamepad gamepad = Gamepad.current;
+        if (gamepad != null) StartCoroutine(VibrationCoroutine(gamepad, duration, lowFreq, highFreq));
+    }
+
+    private IEnumerator VibrationCoroutine(Gamepad gamepad, float duration, float low, float high)
+    {
+        gamepad.SetMotorSpeeds(low, high);
+        yield return new WaitForSecondsRealtime(duration);
+        gamepad.SetMotorSpeeds(0f, 0f);
+    }
+
+    private void StopAllMotors() => Gamepad.current?.SetMotorSpeeds(0f, 0f);
 
     public void ChangeState(PlayerState newState)
     {
@@ -218,7 +281,7 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
         else
         {
             float gravityFallMultiplier = (vel.y < 0) ? 2.5f : 1f;
-            vel.y += gravity * gravityFallMultiplier * Time.deltaTime;
+            vel.y += moveSettings.gravity * gravityFallMultiplier * Time.deltaTime;
         }
     }
 

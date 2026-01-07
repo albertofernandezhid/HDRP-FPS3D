@@ -4,10 +4,12 @@ public class AnimationEventReceiver : MonoBehaviour
 {
     private WeaponManager weaponManager;
     private PlayerAnimationController animationController;
+    private PlayerController playerController;
 
     private void Awake()
     {
         weaponManager = GetComponentInParent<WeaponManager>();
+        playerController = GetComponentInParent<PlayerController>();
         animationController = GetComponent<PlayerAnimationController>();
         if (animationController == null)
         {
@@ -20,6 +22,11 @@ public class AnimationEventReceiver : MonoBehaviour
         if (weaponManager != null)
         {
             weaponManager.ExecuteThrow();
+        }
+
+        if (playerController != null)
+        {
+            playerController.TriggerVibration(playerController.vibrationSettings.attackDuration, playerController.vibrationSettings.attackLowFreq, playerController.vibrationSettings.attackHighFreq);
         }
 
         if (animationController != null)
