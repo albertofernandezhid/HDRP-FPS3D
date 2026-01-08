@@ -59,6 +59,82 @@ MonoBehaviour:
     m_Key: Dev
     m_Metadata:
       m_Items: []
+  - m_Id: 305280105058304
+    m_Key: Tutorial
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305320735281152
+    m_Key: Lvl1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305386212560896
+    m_Key: Lvl2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305438138044416
+    m_Key: Lvl3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305527808069632
+    m_Key: Languaje
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305591850897408
+    m_Key: Graphics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305794926514176
+    m_Key: Low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305859070005248
+    m_Key: Mid
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305994327920640
+    m_Key: High
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306188540973056
+    m_Key: VeryHigh
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306387988516864
+    m_Key: General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306460461895680
+    m_Key: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306506972532736
+    m_Key: Ambient
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306542338904064
+    m_Key: Effects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 307622422515712
+    m_Key: Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 316004785197056
+    m_Key: KeyboardInput
+    m_Metadata:
+      m_Items: []
+  - m_Id: 316210561945600
+    m_Key: GamepadInput
+    m_Metadata:
+      m_Items: []
+  - m_Id: 365629428731904
+    m_Key: PlayerDie
+    m_Metadata:
+      m_Items: []
+  - m_Id: 365823666950144
+    m_Key: PlayerWin
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

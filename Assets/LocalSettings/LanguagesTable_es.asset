@@ -27,7 +27,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 219420299264
-    m_Localized: Creditos
+    m_Localized: "Cr\xE9ditos"
     m_Metadata:
       m_Items: []
   - m_Id: 272264335360
@@ -55,11 +55,87 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 944145698816
-    m_Localized: Salir al menu
+    m_Localized: "Salir al men\xFA"
     m_Metadata:
       m_Items: []
   - m_Id: 1079995011072
     m_Localized: Desarrollado por Alberto F. H.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305280105058304
+    m_Localized: Tutorial
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305320735281152
+    m_Localized: Nivel 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305386212560896
+    m_Localized: Nivel 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305438138044416
+    m_Localized: Nivel 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305527808069632
+    m_Localized: Idioma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305591850897408
+    m_Localized: "Gr\xE1ficos"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305794926514176
+    m_Localized: Bajos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305859070005248
+    m_Localized: Medios
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305994327920640
+    m_Localized: Altos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306188540973056
+    m_Localized: ' Muy altos'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306387988516864
+    m_Localized: General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306460461895680
+    m_Localized: "M\xFAsica"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306506972532736
+    m_Localized: Ambiente
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306542338904064
+    m_Localized: Efectos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 307622422515712
+    m_Localized: Volumen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 316004785197056
+    m_Localized: "Teclado/Rat\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 316210561945600
+    m_Localized: Gamepad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 365629428731904
+    m_Localized: Has muerto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 365823666950144
+    m_Localized: Nivel superado
     m_Metadata:
       m_Items: []
   references:

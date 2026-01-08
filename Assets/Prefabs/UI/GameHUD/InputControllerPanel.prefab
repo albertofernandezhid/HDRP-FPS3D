@@ -91,8 +91,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InputDeviceDetector
   statusText: {fileID: 359640159721688174}
   displayDuration: 2
-  keyboardMessage: Keyboard Input
-  gamepadMessage: Gamepad Input
+  keyboardInputText:
+    m_TableReference:
+      m_TableCollectionName: GUID:4a4664d47bcd54b42848bded64492487
+    m_TableEntryReference:
+      m_KeyId: 316004785197056
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  gamepadInputText:
+    m_TableReference:
+      m_TableCollectionName: GUID:4a4664d47bcd54b42848bded64492487
+    m_TableEntryReference:
+      m_KeyId: 316210561945600
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &4875635508410391684
 GameObject:
   m_ObjectHideFlags: 0

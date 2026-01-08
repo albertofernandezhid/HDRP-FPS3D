@@ -2,26 +2,27 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
 using System.Collections;
+using UnityEngine.Localization;
 
 public class InputDeviceDetector : MonoBehaviour
 {
-    [Header("Settings")]
+    [Header("UI")]
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private float displayDuration = 2f;
-    [SerializeField] private string keyboardMessage = "Keyboard Input";
-    [SerializeField] private string gamepadMessage = "Gamepad Input";
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString keyboardInputText;
+    [SerializeField] private LocalizedString gamepadInputText;
 
     private CanvasGroup canvasGroup;
     private Coroutine fadeCoroutine;
 
-    // Usamos un bool nullable para saber si es la primera vez que detectamos algo
     private bool? isUsingGamepad = null;
 
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
-
         canvasGroup.alpha = 0f;
     }
 
@@ -44,24 +45,22 @@ public class InputDeviceDetector : MonoBehaviour
 
         bool currentlyUsingGamepad = device is Gamepad;
 
-        // PRIMERA DETECCIÓN: Solo guardamos el estado sin mostrar el panel
         if (isUsingGamepad == null)
         {
             isUsingGamepad = currentlyUsingGamepad;
             return;
         }
 
-        // DETECCIONES POSTERIORES: Solo si el dispositivo ha cambiado
         if (currentlyUsingGamepad != isUsingGamepad)
         {
             isUsingGamepad = currentlyUsingGamepad;
-            ShowPanel(isUsingGamepad.Value ? gamepadMessage : keyboardMessage);
+            ShowPanel(isUsingGamepad.Value ? gamepadInputText : keyboardInputText);
         }
     }
 
-    private void ShowPanel(string message)
+    private void ShowPanel(LocalizedString localizedText)
     {
-        statusText.text = message;
+        statusText.text = localizedText.GetLocalizedString();
 
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
         fadeCoroutine = StartCoroutine(FadeSequence());
@@ -81,6 +80,7 @@ public class InputDeviceDetector : MonoBehaviour
             canvasGroup.alpha = Mathf.Lerp(1f, 0f, elapsed / fadeTime);
             yield return null;
         }
+
         canvasGroup.alpha = 0f;
     }
 }

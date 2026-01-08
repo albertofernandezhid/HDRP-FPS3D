@@ -62,6 +62,82 @@ MonoBehaviour:
     m_Localized: Developed by Alberto F. H.
     m_Metadata:
       m_Items: []
+  - m_Id: 305280105058304
+    m_Localized: Tutorial
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305320735281152
+    m_Localized: Level 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305386212560896
+    m_Localized: Level 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305438138044416
+    m_Localized: Level 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305527808069632
+    m_Localized: Languaje
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305591850897408
+    m_Localized: Graphics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305794926514176
+    m_Localized: Low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305859070005248
+    m_Localized: Medium
+    m_Metadata:
+      m_Items: []
+  - m_Id: 305994327920640
+    m_Localized: High
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306188540973056
+    m_Localized: Very High
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306387988516864
+    m_Localized: General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306460461895680
+    m_Localized: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306506972532736
+    m_Localized: Ambient
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306542338904064
+    m_Localized: Effects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 307622422515712
+    m_Localized: Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 316004785197056
+    m_Localized: Keyboard Input
+    m_Metadata:
+      m_Items: []
+  - m_Id: 316210561945600
+    m_Localized: Gamepad Input
+    m_Metadata:
+      m_Items: []
+  - m_Id: 365629428731904
+    m_Localized: You died
+    m_Metadata:
+      m_Items: []
+  - m_Id: 365823666950144
+    m_Localized: Level passed
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

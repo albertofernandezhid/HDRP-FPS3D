@@ -165,6 +165,7 @@ GameObject:
   - component: {fileID: 8227830236341537147}
   - component: {fileID: 4036172068630871298}
   - component: {fileID: 3363932170617061780}
+  - component: {fileID: 4768716816357315750}
   m_Layer: 6
   m_Name: MeleeEnemy
   m_TagString: Enemy
@@ -430,6 +431,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyHealth
   MaxHealth: 80
   DeathEffect: {fileID: 0}
+  CanvasDisableDelay: 1.5
 --- !u!114 &4036172068630871298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -457,6 +459,12 @@ MonoBehaviour:
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 8
+  EnemyAudioSource: {fileID: 0}
+  AttackSounds: []
+  FootstepSounds: []
+  DamageSounds: []
+  DeathSound: {fileID: 0}
+  MasterVolume: 1
 --- !u!114 &3363932170617061780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,6 +481,28 @@ MonoBehaviour:
   enemyHealth: {fileID: 8227830236341537147}
   canvas: {fileID: 4323103059858502176}
   heightOffset: 0
+--- !u!95 &4768716816357315750
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2468502730222058947}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 89aef2469fb1ead4892e30cdabe1dbdc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2899383887555295973
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,7 +686,7 @@ RectTransform:
   m_Father: {fileID: 351919576938257541}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
