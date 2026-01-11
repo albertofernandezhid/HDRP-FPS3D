@@ -109,6 +109,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             playerController.ChangeState(new DeathState(playerController));
         }
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowDead();
+        }
     }
 
     private void PlayHurtEffects()
@@ -138,7 +143,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         while (elapsedTime < overlayDuration)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             float alpha = Mathf.Lerp(maxOverlayAlpha, 0, elapsedTime / overlayDuration);
             c.a = alpha;
             damageOverlayImage.color = c;

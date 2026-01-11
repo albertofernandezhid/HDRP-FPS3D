@@ -177,11 +177,8 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayerActions
     {
         if (pausePressed)
         {
-            bool isPaused = Time.timeScale == 0f;
-            Time.timeScale = isPaused ? 1f : 0f;
-            Cursor.lockState = isPaused ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !isPaused;
-            if (!isPaused) StopAllMotors();
+            UIManager.Instance.TogglePause();
+            if (Time.timeScale == 1f) StopAllMotors();
             pausePressed = false;
         }
     }
