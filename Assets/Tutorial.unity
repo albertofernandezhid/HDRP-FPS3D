@@ -1506,6 +1506,14 @@ MonoBehaviour:
   sMusic: {fileID: 278748697896346934}
   sAmbient: {fileID: 1630443125735099546}
   sSFX: {fileID: 8669683318136248438}
+  useBlurOnPause: 1
+  globalVolume: {fileID: 1430708682}
+  blurFadeSpeed: 5
+  deathDelay: 3
+  firstButtonPause: {fileID: 6314859952935362561}
+  firstButtonSettings: {fileID: 4549685535455377001}
+  firstButtonDead: {fileID: 1314216514655519144}
+  firstButtonWin: {fileID: 520729883986335246}
 --- !u!114 &926807472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1819,6 +1827,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3684289875974276009, guid: 5f411d9aa9ecd12429f3f8b346e4044e, type: 3}
   m_PrefabInstance: {fileID: 6815621683371249655}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1430708681
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1430708683}
+  - component: {fileID: 1430708682}
+  m_Layer: 0
+  m_Name: PauseVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1430708682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1430708681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: f1091d432327e194e83353cd315c88f9, type: 2}
+--- !u!4 &1430708683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1430708681}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 841.9272, y: 509.03534, z: 414.07495}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1497692408
 Mesh:
   m_ObjectHideFlags: 0
@@ -15115,3 +15172,4 @@ SceneRoots:
   - {fileID: 868036052}
   - {fileID: 926807475}
   - {fileID: 1194548372}
+  - {fileID: 1430708683}

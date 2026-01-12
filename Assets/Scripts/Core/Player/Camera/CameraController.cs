@@ -76,6 +76,8 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0) return;
+
         UpdateCameraDistance();
         if (isFirstPerson)
             UpdateFirstPerson();
@@ -86,6 +88,8 @@ public class CameraController : MonoBehaviour
 
     public void HandleMouseLook(float mouseX, float mouseY, bool isMouse)
     {
+        if (Time.timeScale == 0) return;
+
         float multiplier = isMouse ? 1f : Time.deltaTime;
         xRotation -= mouseY * multiplier;
         xRotation = Mathf.Clamp(
@@ -99,6 +103,8 @@ public class CameraController : MonoBehaviour
 
     public void SetAiming(bool state)
     {
+        if (Time.timeScale == 0) return;
+
         if (toggleAimMode)
         {
             if (state) isAiming = !isAiming;
@@ -111,11 +117,12 @@ public class CameraController : MonoBehaviour
 
     public void ApplyZoomTick(float input)
     {
-        if (isFirstPerson || isAiming) return;
-        bool isGamepad =
-            UnityEngine.InputSystem.Gamepad.current != null &&
-            (UnityEngine.InputSystem.Gamepad.current.dpad.up.isPressed ||
-             UnityEngine.InputSystem.Gamepad.current.dpad.down.isPressed);
+        if (isFirstPerson || isAiming || Time.timeScale == 0) return;
+
+        bool isGamepad = UnityEngine.InputSystem.Gamepad.current != null &&
+                        (UnityEngine.InputSystem.Gamepad.current.dpad.up.isPressed ||
+                         UnityEngine.InputSystem.Gamepad.current.dpad.down.isPressed);
+
         if (isGamepad)
         {
             if (UnityEngine.InputSystem.Gamepad.current.dpad.up.isPressed) currentZoomStep--;
@@ -147,6 +154,7 @@ public class CameraController : MonoBehaviour
 
     public void ToggleCameraMode()
     {
+        if (Time.timeScale == 0) return;
         isFirstPerson = !isFirstPerson;
         SwitchCameraMode();
     }

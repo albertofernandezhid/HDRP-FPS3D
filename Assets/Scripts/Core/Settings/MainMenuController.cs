@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class MainMenuController : MonoBehaviour
 {
-    [Header("Panel Padre (Siempre Activo)")]
+    [Header("Panel Padre")]
     public GameObject panelMenuInicio;
 
-    [Header("Paneles Hijos (Se intercambian)")]
+    [Header("Paneles Hijos")]
     public GameObject panelPlay;
     public GameObject panelSettings;
     public GameObject panelCredits;
@@ -26,6 +27,12 @@ public class MainMenuController : MonoBehaviour
     [Header("Configuración de Calidad")]
     public TMP_Dropdown qualityDropdown;
 
+    [Header("Gamepad Navigation")]
+    public GameObject firstButtonMainMenu;
+    public GameObject firstButtonPlay;
+    public GameObject firstButtonSettings;
+    public GameObject firstButtonCredits;
+
     void Start()
     {
         Time.timeScale = 1f;
@@ -37,9 +44,29 @@ public class MainMenuController : MonoBehaviour
         panelSettings.SetActive(false);
         panelCredits.SetActive(false);
 
+        SetInitialSelection(firstButtonMainMenu);
+
         Invoke("ActualizarBotonesNiveles", 0.1f);
         CargarYConfigurarSliders();
         ConfigurarQualityDropdown();
+    }
+
+    void Update()
+    {
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if (panelPlay.activeSelf || panelSettings.activeSelf || panelCredits.activeSelf)
+            {
+                CloseAllSubPanels();
+            }
+        }
+    }
+
+    private void SetInitialSelection(GameObject target)
+    {
+        if (target == null) return;
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(target);
     }
 
     private void CargarYConfigurarSliders()
@@ -101,6 +128,13 @@ public class MainMenuController : MonoBehaviour
         if (panelAActivar != null && panelAActivar != panelMenuInicio)
         {
             panelAActivar.SetActive(true);
+            if (panelAActivar == panelPlay) SetInitialSelection(firstButtonPlay);
+            else if (panelAActivar == panelSettings) SetInitialSelection(firstButtonSettings);
+            else if (panelAActivar == panelCredits) SetInitialSelection(firstButtonCredits);
+        }
+        else
+        {
+            SetInitialSelection(firstButtonMainMenu);
         }
     }
 
@@ -109,14 +143,13 @@ public class MainMenuController : MonoBehaviour
         if (panelPlay) panelPlay.SetActive(false);
         if (panelSettings) panelSettings.SetActive(false);
         if (panelCredits) panelCredits.SetActive(false);
+        SetInitialSelection(firstButtonMainMenu);
     }
 
     void ActualizarBotonesNiveles()
     {
         if (GameManager.Instance == null) return;
-
         int progress = GameManager.Instance.levelsUnlocked;
-
         if (btnTutorial) btnTutorial.interactable = true;
         if (btnLvl1) btnLvl1.interactable = (progress >= 2);
         if (btnLvl2) btnLvl2.interactable = (progress >= 3);
@@ -125,19 +158,11 @@ public class MainMenuController : MonoBehaviour
 
     public void PlayLevel(string sceneName)
     {
-        if (GameManager.Instance != null)
-            GameManager.Instance.LoadScene(sceneName);
-        else
-            SceneManager.LoadScene(sceneName);
+        if (GameManager.Instance != null) GameManager.Instance.LoadScene(sceneName);
+        else SceneManager.LoadScene(sceneName);
     }
 
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
+    public void QuitGame() => Application.Quit();
 
-    private void OnDisable()
-    {
-        PlayerPrefs.Save();
-    }
+    private void OnDisable() => PlayerPrefs.Save();
 }

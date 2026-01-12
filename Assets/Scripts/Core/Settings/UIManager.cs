@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using System.Collections;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -15,12 +18,42 @@ public class UIManager : MonoBehaviour
     public AudioMixer mainMixer;
     public Slider sMaster, sMusic, sAmbient, sSFX;
 
+    [Header("Efecto de Pausa")]
+    public Volume globalVolume;
+    public float blurFadeSpeed = 5f;
+
+    [Header("Configuración Muerte")]
+    public float deathDelay = 3f;
+
+    [Header("Gamepad Navigation")]
+    public GameObject firstButtonPause;
+    public GameObject firstButtonSettings;
+    public GameObject firstButtonDead;
+    public GameObject firstButtonWin;
+
     void Awake() => Instance = this;
 
     void Start()
     {
         CargarAudio();
         CloseAll();
+    }
+
+    void Update() => HandleBlurFade();
+
+    private void SetInitialSelection(GameObject target)
+    {
+        if (target == null || EventSystem.current == null) return;
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(target);
+    }
+
+    private void HandleBlurFade()
+    {
+        if (globalVolume == null) return;
+        bool shouldBlur = (Time.timeScale == 0 || panelDead.activeSelf || panelWin.activeSelf);
+        float targetWeight = shouldBlur ? 1f : 0f;
+        globalVolume.weight = Mathf.MoveTowards(globalVolume.weight, targetWeight, blurFadeSpeed * Time.unscaledDeltaTime);
     }
 
     public void CloseAll()
@@ -32,29 +65,32 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
     }
 
     public void TogglePause()
     {
         if (panelDead.activeSelf || panelWin.activeSelf) return;
         bool pausing = !panelPause.activeSelf && !panelSettingsPause.activeSelf;
-
         panelPause.SetActive(pausing);
         if (!pausing) panelSettingsPause.SetActive(false);
-
         Time.timeScale = pausing ? 0f : 1f;
         Cursor.lockState = pausing ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = pausing;
+        if (pausing) SetInitialSelection(firstButtonPause);
     }
 
     public void Resume() => TogglePause();
 
-    public void ShowDead()
+    public void ShowDead() => StartCoroutine(DeathSequence());
+
+    private IEnumerator DeathSequence()
     {
+        yield return new WaitForSeconds(deathDelay);
         panelDead.SetActive(true);
-        Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        SetInitialSelection(firstButtonDead);
     }
 
     public void ShowWin()
@@ -63,22 +99,7 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-    }
-
-    public void NextLevel()
-    {
-        if (GameManager.Instance != null) GameManager.Instance.UnlockNextLevel();
-
-        int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        if (nextIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            string nextSceneName = NameFromIndex(nextIndex);
-            CargarEscenaInterna(nextSceneName);
-        }
-        else
-        {
-            GoToMenu();
-        }
+        SetInitialSelection(firstButtonWin);
     }
 
     public void SetMaster(float v) { if (mainMixer) mainMixer.SetFloat("Master", Mathf.Log10(Mathf.Max(0.0001f, v)) * 20); PlayerPrefs.SetFloat("MasterVol", v); }
@@ -88,43 +109,24 @@ public class UIManager : MonoBehaviour
 
     void CargarAudio()
     {
-        float m = PlayerPrefs.GetFloat("MasterVol", 0.75f);
-        float mu = PlayerPrefs.GetFloat("MusicVol", 0.75f);
-        float a = PlayerPrefs.GetFloat("AmbientVol", 0.75f);
-        float s = PlayerPrefs.GetFloat("SFXVol", 0.75f);
-
+        float m = PlayerPrefs.GetFloat("MasterVol", 0.75f), mu = PlayerPrefs.GetFloat("MusicVol", 0.75f), a = PlayerPrefs.GetFloat("AmbientVol", 0.75f), s = PlayerPrefs.GetFloat("SFXVol", 0.75f);
         if (sMaster) { sMaster.value = m; SetMaster(m); }
         if (sMusic) { sMusic.value = mu; SetMusic(mu); }
         if (sAmbient) { sAmbient.value = a; SetAmbient(a); }
         if (sSFX) { sSFX.value = s; SetSFX(s); }
     }
 
-    public void OpenSettings() { panelPause.SetActive(false); panelSettingsPause.SetActive(true); }
-    public void BackToPause() { panelSettingsPause.SetActive(false); panelPause.SetActive(true); }
-
+    public void OpenSettings() { panelPause.SetActive(false); panelSettingsPause.SetActive(true); SetInitialSelection(firstButtonSettings); }
+    public void BackToPause() { panelSettingsPause.SetActive(false); panelPause.SetActive(true); SetInitialSelection(firstButtonPause); }
     public void GoToMenu() => CargarEscenaInterna("MainMenu");
     public void Retry() => CargarEscenaInterna(SceneManager.GetActiveScene().name);
 
     private void CargarEscenaInterna(string nombre)
     {
         Time.timeScale = 1f;
-        if (GameManager.Instance != null)
-            GameManager.Instance.LoadScene(nombre);
-        else
-            SceneManager.LoadScene(nombre);
+        if (GameManager.Instance != null) GameManager.Instance.LoadScene(nombre);
+        else SceneManager.LoadScene(nombre);
     }
 
-    private string NameFromIndex(int BuildIndex)
-    {
-        string path = SceneUtility.GetScenePathByBuildIndex(BuildIndex);
-        int slash = path.LastIndexOf('/');
-        string name = path.Substring(slash + 1);
-        int dot = name.LastIndexOf('.');
-        return name.Substring(0, dot);
-    }
-
-    private void OnDisable()
-    {
-        PlayerPrefs.Save();
-    }
+    private void OnDisable() => PlayerPrefs.Save();
 }
