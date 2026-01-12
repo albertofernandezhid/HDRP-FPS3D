@@ -139,6 +139,14 @@ MonoBehaviour:
     m_Key: Back
     m_Metadata:
       m_Items: []
+  - m_Id: 1659469663576064
+    m_Key: LanguageSelectEN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1659642724753408
+    m_Key: LanguageSelectES
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

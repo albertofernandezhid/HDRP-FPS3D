@@ -142,6 +142,14 @@ MonoBehaviour:
     m_Localized: Volver
     m_Metadata:
       m_Items: []
+  - m_Id: 1659469663576064
+    m_Localized: "Ingl\xE9s (EN)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1659642724753408
+    m_Localized: "Espa\xF1ol (ES)"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
