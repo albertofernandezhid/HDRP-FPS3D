@@ -74,11 +74,9 @@ public class UISelectionEffects : MonoBehaviour
             if (h || v || anyButton)
             {
                 isUsingGamepad = true;
-
                 if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
                 {
                     SetupNewObject(EventSystem.current.currentSelectedGameObject);
-                    lastSelected = EventSystem.current.currentSelectedGameObject;
                 }
             }
         }
