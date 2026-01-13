@@ -3,8 +3,9 @@ using TMPro;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public class GraphicsDropdown : MonoBehaviour
+public class GraphicsSettingsManager : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown dropdown;
     [SerializeField] private string tableName = "LanguagesTable";
@@ -12,37 +13,57 @@ public class GraphicsDropdown : MonoBehaviour
 
     private void Awake()
     {
-        if (!dropdown)
-            dropdown = GetComponent<TMP_Dropdown>();
+        if (!dropdown) dropdown = GetComponent<TMP_Dropdown>();
+
+        int savedQuality = PlayerPrefs.GetInt("GraphicsQuality", QualitySettings.GetQualityLevel());
+        QualitySettings.SetQualityLevel(savedQuality, true);
+        dropdown.value = savedQuality;
     }
 
     private void OnEnable()
     {
-        LocalizationSettings.SelectedLocaleChanged += Refresh;
-        Refresh(LocalizationSettings.SelectedLocale);
+        LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+        dropdown.onValueChanged.AddListener(SetQuality);
+        RefreshOptions();
     }
 
     private void OnDisable()
     {
-        LocalizationSettings.SelectedLocaleChanged -= Refresh;
+        LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+        dropdown.onValueChanged.RemoveListener(SetQuality);
     }
 
-    private async void Refresh(Locale locale)
+    public void SetQuality(int index)
     {
-        int value = dropdown.value;
+        QualitySettings.SetQualityLevel(index, true);
+        PlayerPrefs.SetInt("GraphicsQuality", index);
+        PlayerPrefs.Save();
+    }
+
+    private void OnLocaleChanged(Locale locale)
+    {
+        RefreshOptions();
+    }
+
+    private async void RefreshOptions()
+    {
+        int currentValue = dropdown.value;
         dropdown.options.Clear();
 
+        List<Task<string>> tasks = new List<Task<string>>();
         foreach (var key in optionKeys)
         {
-            var handle = LocalizationSettings.StringDatabase
-                .GetLocalizedStringAsync(tableName, key);
-
-            string text = await handle.Task;
-
-            dropdown.options.Add(new TMP_Dropdown.OptionData(text));
+            tasks.Add(LocalizationSettings.StringDatabase.GetLocalizedStringAsync(tableName, key).Task);
         }
 
-        dropdown.value = Mathf.Clamp(value, 0, dropdown.options.Count - 1);
+        string[] results = await Task.WhenAll(tasks);
+
+        foreach (string translatedText in results)
+        {
+            dropdown.options.Add(new TMP_Dropdown.OptionData(translatedText));
+        }
+
+        dropdown.value = Mathf.Clamp(currentValue, 0, dropdown.options.Count - 1);
         dropdown.RefreshShownValue();
     }
 }
