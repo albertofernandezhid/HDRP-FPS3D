@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.InputSystem; // Importante: Usar el nuevo sistema
 
 public class UISelectionEffects : MonoBehaviour
 {
@@ -17,30 +18,57 @@ public class UISelectionEffects : MonoBehaviour
     public Ease easeType = Ease.OutBack;
 
     private GameObject lastSelected;
-    private Outline currentOutline;
     private bool isUsingGamepad = false;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
+        else { Destroy(gameObject); }
+    }
+
+    private void OnEnable()
+    {
+        // Suscribirse al mismo evento que tu primer script
+        InputSystem.onActionChange += OnInputDeviceChange;
+    }
+
+    private void OnDisable()
+    {
+        InputSystem.onActionChange -= OnInputDeviceChange;
+    }
+
+    private void OnInputDeviceChange(object obj, InputActionChange change)
+    {
+        if (change != InputActionChange.ActionPerformed) return;
+
+        InputAction action = (InputAction)obj;
+        bool currentlyUsingGamepad = action.activeControl.device is Gamepad;
+
+        // Si cambiamos de dispositivo
+        if (currentlyUsingGamepad != isUsingGamepad)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
+            isUsingGamepad = currentlyUsingGamepad;
+
+            // Si pasamos a teclado/ratón, limpiamos los efectos actuales
+            if (!isUsingGamepad && lastSelected != null)
+            {
+                ResetLastObject(lastSelected);
+            }
+            // Si pasamos a mando, activamos el efecto en lo que esté seleccionado
+            else if (isUsingGamepad && EventSystem.current?.currentSelectedGameObject != null)
+            {
+                SetupNewObject(EventSystem.current.currentSelectedGameObject);
+            }
         }
     }
 
     void Update()
     {
-        DetectInputMode();
-
         if (EventSystem.current == null) return;
 
         GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
 
+        // Solo aplicamos efectos si el cambio de selección ocurre mientras usamos mando
         if (currentSelected != lastSelected)
         {
             ResetLastObject(lastSelected);
@@ -54,49 +82,16 @@ public class UISelectionEffects : MonoBehaviour
         }
     }
 
-    private void DetectInputMode()
-    {
-        float mouseX = Mathf.Abs(Input.GetAxis("Mouse X"));
-        float mouseY = Mathf.Abs(Input.GetAxis("Mouse Y"));
-        bool mouseClick = Input.GetMouseButtonDown(0);
-
-        if ((mouseX > 0.05f || mouseY > 0.05f || mouseClick) && isUsingGamepad)
-        {
-            isUsingGamepad = false;
-            if (lastSelected != null) ResetLastObject(lastSelected);
-        }
-        else if (!isUsingGamepad)
-        {
-            bool h = Mathf.Abs(Input.GetAxisRaw("Horizontal")) > 0.1f;
-            bool v = Mathf.Abs(Input.GetAxisRaw("Vertical")) > 0.1f;
-            bool anyButton = Input.anyKeyDown && !mouseClick;
-
-            if (h || v || anyButton)
-            {
-                isUsingGamepad = true;
-                if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
-                {
-                    SetupNewObject(EventSystem.current.currentSelectedGameObject);
-                }
-            }
-        }
-    }
-
     private void SetupNewObject(GameObject target)
     {
         if (target == null || target.GetComponent<Selectable>() == null) return;
 
         target.transform.DOScale(scaleMultiplier, animationDuration).SetEase(easeType).SetUpdate(true);
 
-        currentOutline = target.GetComponent<Outline>();
-        if (currentOutline == null)
-        {
-            currentOutline = target.AddComponent<Outline>();
-        }
-
-        currentOutline.effectColor = outlineColor;
-        currentOutline.effectDistance = outlineDistance;
-        currentOutline.enabled = true;
+        var outline = target.GetComponent<Outline>() ?? target.AddComponent<Outline>();
+        outline.effectColor = outlineColor;
+        outline.effectDistance = outlineDistance;
+        outline.enabled = true;
     }
 
     private void ResetLastObject(GameObject target)
@@ -104,9 +99,7 @@ public class UISelectionEffects : MonoBehaviour
         if (target != null)
         {
             target.transform.DOScale(1f, animationDuration).SetEase(easeType).SetUpdate(true);
-
-            Outline oldOutline = target.GetComponent<Outline>();
-            if (oldOutline != null)
+            if (target.TryGetComponent<Outline>(out var oldOutline))
             {
                 oldOutline.enabled = false;
             }
