@@ -8,6 +8,8 @@ TagManager:
   - Ground
   - Projectile
   - EnemyProjectile
+  - IndoorLight
+  - StreetLight
   layers:
   - Default
   - TransparentFX

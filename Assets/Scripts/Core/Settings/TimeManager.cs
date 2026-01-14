@@ -1,16 +1,25 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
+using System.Collections.Generic;
 
 public class DynamicDayManager : MonoBehaviour
 {
     public Light sun;
-    [Range(15f, 35f)] public float minSunElevation = 18f;
-    [Range(45f, 85f)] public float maxSunElevation = 65f;
+    [Range(0f, 35f)] public float minSunElevation = 5f;
+    [Range(45f, 90f)] public float maxSunElevation = 75f;
     public float dayCycleDuration = 600f;
     public float latitude = 35f;
-    [Range(0f, 16f)] public float godRaysIntensity = 1f; // HDRP permite hasta 16 en el dimmer
+    [Range(0f, 16f)] public float godRaysIntensity = 1.2f;
 
+    [Header("Artificial Lights Settings")]
+    public float streetLightActivationAngle = 15f;
+
+    private List<Light> _streetLights = new List<Light>();
+    private List<Light> _indoorLights = new List<Light>();
+    private bool _streetLightsActive;
+
+    [Header("Atmosphere")]
     public Volume globalVolume;
     [Range(0f, 1f)] public float cloudCoverage = 0.4f;
     [Range(0f, 1f)] public float fogHumidity = 0.15f;
@@ -37,6 +46,36 @@ public class DynamicDayManager : MonoBehaviour
             sun.useColorTemperature = true;
             sun.lightUnit = LightUnit.Lux;
         }
+
+        FindAndConfigureLights();
+
+        // Forzar estado inicial apagado para evitar errores de lógica al arranque
+        _streetLightsActive = false;
+        UpdateLightState(false);
+    }
+
+    void FindAndConfigureLights()
+    {
+        _streetLights.Clear();
+        _indoorLights.Clear();
+
+        GameObject[] streetL = GameObject.FindGameObjectsWithTag("StreetLight");
+        foreach (GameObject go in streetL)
+        {
+            Light l = go.GetComponent<Light>();
+            if (l != null) _streetLights.Add(l);
+        }
+
+        GameObject[] indoorL = GameObject.FindGameObjectsWithTag("IndoorLight");
+        foreach (GameObject go in indoorL)
+        {
+            Light l = go.GetComponent<Light>();
+            if (l != null)
+            {
+                l.enabled = true;
+                _indoorLights.Add(l);
+            }
+        }
     }
 
     void Update()
@@ -54,39 +93,50 @@ public class DynamicDayManager : MonoBehaviour
 
     void UpdateSun()
     {
-        // Usamos Sin para que el sol suba y baje suavemente sin tocar el horizonte
         float sunWave = Mathf.Sin(_time01 * Mathf.PI);
         float elevation = Mathf.Lerp(minSunElevation, maxSunElevation, sunWave);
-
-        // Movimiento horizontal oscilante para que nunca sea noche
         float azimuth = Mathf.Lerp(-100f, 100f, Mathf.PingPong(_time01 * 2f, 1f));
 
         sun.transform.rotation = Quaternion.Euler(elevation, azimuth + latitude, 0f);
 
         float elevation01 = Mathf.InverseLerp(minSunElevation, maxSunElevation, elevation);
 
-        sun.colorTemperature = Mathf.Lerp(3800f, 6500f, elevation01);
-        sun.intensity = Mathf.Lerp(20000f, 120000f, elevation01);
+        sun.colorTemperature = Mathf.Lerp(3000f, 6500f, elevation01);
+        sun.intensity = Mathf.Lerp(1000f, 60000f, elevation01);
+
+        // Control de luces de calle usando la variable local elevation
+        bool shouldBeActive = elevation < streetLightActivationAngle;
+        if (shouldBeActive != _streetLightsActive)
+        {
+            UpdateLightState(shouldBeActive);
+        }
 
         if (_sunData != null)
         {
-            // Los rayos son más visibles cuando el sol está algo bajo y el cielo despejado
             float rayFactor = sunWave * (1f - (cloudCoverage * 0.5f));
             _sunData.volumetricDimmer = godRaysIntensity * rayFactor;
         }
     }
 
+    void UpdateLightState(bool active)
+    {
+        _streetLightsActive = active;
+        foreach (Light l in _streetLights)
+        {
+            if (l != null) l.enabled = active;
+        }
+    }
+
     void UpdateAtmosphere()
     {
-        float elevation = Mathf.Lerp(minSunElevation, maxSunElevation, Mathf.Sin(_time01 * Mathf.PI));
+        float sunWave = Mathf.Sin(_time01 * Mathf.PI);
+        float elevation = Mathf.Lerp(minSunElevation, maxSunElevation, sunWave);
 
         if (_clouds != null)
         {
             _clouds.densityMultiplier.value = cloudCoverage;
             _clouds.sunLightDimmer.value = Mathf.Lerp(1f, 0.55f, cloudCoverage);
             _clouds.ambientLightProbeDimmer.value = Mathf.Lerp(1f, 0.7f, cloudCoverage);
-
-            // IMPORTANTE: Activar sombras para God Rays reales
             _clouds.shadows.value = true;
 
             _cloudOffset += new Vector3(windDirection.x, 0f, windDirection.y) * windSpeed * Time.deltaTime;
@@ -95,18 +145,16 @@ public class DynamicDayManager : MonoBehaviour
 
         if (_fog != null)
         {
-            // La niebla es más densa "por la mañana" (inicio del ciclo)
-            float fogValue = fogHumidity * Mathf.Lerp(1.1f, 0.6f, Mathf.Sin(_time01 * Mathf.PI));
+            float fogValue = fogHumidity * Mathf.Lerp(1.5f, 0.5f, sunWave);
             _fog.enableVolumetricFog.value = true;
-            _fog.meanFreePath.value = Mathf.Lerp(10000f, 400f, fogValue);
+            _fog.meanFreePath.value = Mathf.Lerp(10000f, 300f, fogValue);
         }
 
         if (_sky != null)
         {
-            // Ajuste dinámico del tinte del cielo según la elevación
             float sunFactor = Mathf.InverseLerp(minSunElevation, maxSunElevation, elevation);
-            _sky.horizonTint.value = Color.Lerp(new Color(1f, 0.8f, 0.6f), Color.white, sunFactor);
-            _sky.zenithTint.value = Color.Lerp(new Color(0.6f, 0.8f, 1f), Color.white, sunFactor);
+            _sky.horizonTint.value = Color.Lerp(new Color(1f, 0.5f, 0.2f), Color.white, sunFactor);
+            _sky.zenithTint.value = Color.Lerp(new Color(0.2f, 0.4f, 1f), Color.white, sunFactor);
         }
     }
 }
