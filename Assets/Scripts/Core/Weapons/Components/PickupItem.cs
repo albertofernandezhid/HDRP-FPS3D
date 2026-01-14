@@ -6,6 +6,8 @@ public class PickupItem : MonoBehaviour
     [Header("Pickup Settings")]
     [SerializeField] private ThrowableData weaponData;
     [SerializeField] private int ammoAmount = 5;
+    [SerializeField] private float detectionRange = 2f;
+    [SerializeField] private LayerMask playerLayer;
 
     [Header("Bounce Animation")]
     [SerializeField] private bool enableBounce = true;
@@ -49,6 +51,7 @@ public class PickupItem : MonoBehaviour
     private Tween rotationTween;
     private Tween scalePulseTween;
     private Tween hoverTween;
+    private bool isPickedUp = false;
 
     private void Start()
     {
@@ -56,25 +59,49 @@ public class PickupItem : MonoBehaviour
         InitializeAnimations();
     }
 
+    private void Update()
+    {
+        if (isPickedUp) return;
+        CheckForPlayer();
+    }
+
+    private void CheckForPlayer()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRange, playerLayer);
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Player"))
+            {
+                TryPickup(hitCollider.gameObject);
+                break;
+            }
+        }
+    }
+
+    private void TryPickup(GameObject player)
+    {
+        WeaponManager weaponManager = player.GetComponent<WeaponManager>();
+        if (weaponManager != null)
+        {
+            if (weaponManager.PickupWeapon(weaponData, ammoAmount))
+            {
+                isPickedUp = true;
+                PlayPickupEffects();
+                DestroyPickup();
+            }
+        }
+    }
+
     private void SetupPickupState()
     {
         Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.isKinematic = true;
-        }
+        if (rb != null) rb.isKinematic = true;
 
         Collider col = GetComponent<Collider>();
-        if (col != null)
-        {
-            col.isTrigger = true;
-        }
+        if (col != null) col.isTrigger = true;
 
         ProjectileController proj = GetComponent<ProjectileController>();
-        if (proj != null)
-        {
-            proj.enabled = false;
-        }
+        if (proj != null) proj.enabled = false;
     }
 
     private void InitializeAnimations()
@@ -91,36 +118,25 @@ public class PickupItem : MonoBehaviour
     private void SetupBounceAnimation()
     {
         if (!enableBounce) return;
-
         bounceTween = transform.DOMoveY(startPosition.y + bounceHeight, bounceDuration)
             .SetEase(bounceEase, bounceOvershoot)
             .SetLoops(-1, LoopType.Yoyo);
-
-        if (customBounceStart)
-        {
-            bounceTween.SetDelay(bounceStartDelay);
-        }
+        if (customBounceStart) bounceTween.SetDelay(bounceStartDelay);
     }
 
     private void SetupRotationAnimation()
     {
         if (!enableRotation) return;
-
         float rotationDuration = 360f / rotationSpeed;
         rotationTween = transform.DORotate(rotationAxis * 360f, rotationDuration, rotateMode)
             .SetLoops(-1, LoopType.Incremental)
             .SetEase(rotationEase);
-
-        if (customRotationStart)
-        {
-            rotationTween.SetDelay(rotationStartDelay);
-        }
+        if (customRotationStart) rotationTween.SetDelay(rotationStartDelay);
     }
 
     private void SetupScalePulseAnimation()
     {
         if (!enableScalePulse) return;
-
         scalePulseTween = transform.DOScale(scalePulseTo, scalePulseDuration)
             .SetEase(scalePulseEase)
             .SetLoops(scalePulseLoops, scalePulseLoopType);
@@ -129,7 +145,6 @@ public class PickupItem : MonoBehaviour
     private void SetupHoverAnimation()
     {
         if (!enableHover) return;
-
         hoverTween = transform.DOMoveY(startPosition.y + hoverHeight, hoverDuration)
             .SetEase(hoverEase)
             .SetLoops(-1, LoopType.Yoyo);
@@ -151,70 +166,12 @@ public class PickupItem : MonoBehaviour
         KillTweenIfActive(ref hoverTween);
     }
 
-    [ContextMenu("Pause Animations")]
-    public void PauseAllAnimations()
-    {
-        PauseTweenIfActive(bounceTween);
-        PauseTweenIfActive(rotationTween);
-        PauseTweenIfActive(scalePulseTween);
-        PauseTweenIfActive(hoverTween);
-    }
-
-    [ContextMenu("Resume Animations")]
-    public void ResumeAllAnimations()
-    {
-        ResumeTweenIfActive(bounceTween);
-        ResumeTweenIfActive(rotationTween);
-        ResumeTweenIfActive(scalePulseTween);
-        ResumeTweenIfActive(hoverTween);
-    }
-
-    [ContextMenu("Reset Position and Scale")]
-    public void ResetTransform()
-    {
-        StopAllAnimations();
-        transform.position = startPosition;
-        transform.localScale = originalScale;
-    }
-
     private void KillTweenIfActive(ref Tween tween)
     {
         if (tween != null && tween.IsActive())
         {
             tween.Kill();
             tween = null;
-        }
-    }
-
-    private void PauseTweenIfActive(Tween tween)
-    {
-        if (tween != null && tween.IsActive())
-        {
-            tween.Pause();
-        }
-    }
-
-    private void ResumeTweenIfActive(Tween tween)
-    {
-        if (tween != null && tween.IsActive())
-        {
-            tween.Play();
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            WeaponManager weaponManager = other.GetComponent<WeaponManager>();
-            if (weaponManager != null)
-            {
-                if (weaponManager.PickupWeapon(weaponData, ammoAmount))
-                {
-                    PlayPickupEffects();
-                    DestroyPickup();
-                }
-            }
         }
     }
 
@@ -233,9 +190,12 @@ public class PickupItem : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void OnDestroy()
+    private void OnDestroy() => StopAllAnimations();
+
+    private void OnDrawGizmosSelected()
     {
-        StopAllAnimations();
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 
     private void OnValidate()
@@ -244,5 +204,6 @@ public class PickupItem : MonoBehaviour
         rotationSpeed = Mathf.Max(0.1f, rotationSpeed);
         scalePulseDuration = Mathf.Max(0.1f, scalePulseDuration);
         hoverDuration = Mathf.Max(0.1f, hoverDuration);
+        detectionRange = Mathf.Max(0f, detectionRange);
     }
 }
