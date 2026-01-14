@@ -41,6 +41,8 @@ namespace HDRP_FPS3D.Enemy
 
             _currentHealth -= damage;
 
+            CheckAggroOnDamage();
+
             if (_meleeSM != null)
             {
                 _meleeSM.PlayRandomSound(_meleeSM.DamageSounds, 0.8f);
@@ -63,6 +65,33 @@ namespace HDRP_FPS3D.Enemy
             if (_currentHealth <= 0)
             {
                 Die();
+            }
+        }
+
+        private void CheckAggroOnDamage()
+        {
+            float detectionRange = 0f;
+            Transform player = null;
+
+            if (_meleeSM != null)
+            {
+                detectionRange = _meleeSM.DetectionRange;
+                player = _meleeSM.Player;
+            }
+            else if (_rangeSM != null)
+            {
+                detectionRange = _rangeSM.DetectionRange;
+                player = _rangeSM.Player;
+            }
+
+            if (player != null)
+            {
+                float distance = Vector3.Distance(transform.position, player.position);
+                if (distance <= detectionRange)
+                {
+                    if (_meleeSM != null) _meleeSM.TriggerAggro();
+                    else if (_rangeSM != null) _rangeSM.TriggerAggro();
+                }
             }
         }
 

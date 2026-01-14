@@ -10,14 +10,14 @@ namespace HDRP_FPS3D.Enemy
         public float ChaseSpeed = 6f;
         public float RotationSpeed = 7f;
         public float PatrolRadius = 5f;
+        public float AggroDuration = 5f;
+        public float StunDuration = 1.5f;
         public Transform[] PatrolPoints;
-
         public float DetectionRange = 20f;
         public float ChaseRange = 12f;
         public float AttackRange = 2.5f;
         public float AttackDamage = 20f;
         public float AttackCooldown = 1.2f;
-
         public Transform AttackHitboxCenter;
         public float HitboxRadius = 1.0f;
         public LayerMask PlayerLayer;
@@ -37,12 +37,17 @@ namespace HDRP_FPS3D.Enemy
         private float _lastAttackTime;
         private bool _isPlayerDetected;
         private Vector3 _initialPosition;
+        private bool _isAggroed;
+        private float _aggroTimer;
 
         public NavMeshAgent Agent => _agent;
         public Animator Animator => _animator;
         public EnemyHealth Health => _health;
         public bool IsPlayerDetected => _isPlayerDetected;
         public Vector3 InitialPosition => _initialPosition;
+        public bool IsAggroed => _isAggroed;
+        float IEnemy.AggroDuration => AggroDuration;
+        float IEnemy.StunDuration => StunDuration;
         float IEnemy.PatrolSpeed => PatrolSpeed;
         float IEnemy.ChaseSpeed => ChaseSpeed;
         float IEnemy.AttackRange => AttackRange;
@@ -59,11 +64,7 @@ namespace HDRP_FPS3D.Enemy
             _initialPosition = transform.position;
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = true;
-
-            if (EnemyAudioSource == null)
-            {
-                EnemyAudioSource = GetComponent<AudioSource>();
-            }
+            if (EnemyAudioSource == null) EnemyAudioSource = GetComponent<AudioSource>();
         }
 
         private void Start()
@@ -78,7 +79,8 @@ namespace HDRP_FPS3D.Enemy
             if (Player == null) FindPlayer();
             if (Player == null || _health.IsDead) return;
             CheckPlayerDetection();
-            if (_isPlayerDetected) LookAtPlayer();
+            HandleAggroLogic();
+            if (_isPlayerDetected || _isAggroed) LookAtPlayer();
             _currentState?.UpdateState(this);
         }
 
@@ -95,6 +97,25 @@ namespace HDRP_FPS3D.Enemy
             bool isPlayerAlive = playerHealth != null && playerHealth.IsAlive();
             float distanceToPlayer = Vector3.Distance(transform.position, Player.position);
             _isPlayerDetected = (distanceToPlayer <= DetectionRange) && isPlayerAlive;
+        }
+
+        private void HandleAggroLogic()
+        {
+            if (_isAggroed)
+            {
+                if (_isPlayerDetected) _aggroTimer = 0f;
+                else
+                {
+                    _aggroTimer += Time.deltaTime;
+                    if (_aggroTimer >= AggroDuration) _isAggroed = false;
+                }
+            }
+        }
+
+        public void TriggerAggro()
+        {
+            _isAggroed = true;
+            _aggroTimer = 0f;
         }
 
         public void LookAtPlayer()
@@ -117,11 +138,7 @@ namespace HDRP_FPS3D.Enemy
         }
 
         public bool CanAttack() => Time.time >= _lastAttackTime + AttackCooldown;
-
-        public void PerformMeleeAttack()
-        {
-            _lastAttackTime = Time.time;
-        }
+        public void PerformMeleeAttack() => _lastAttackTime = Time.time;
 
         public void PlayRandomSound(AudioClip[] clips, float volumeMultiplier = 1f)
         {
@@ -131,25 +148,16 @@ namespace HDRP_FPS3D.Enemy
             EnemyAudioSource.PlayOneShot(clip, MasterVolume * volumeMultiplier);
         }
 
-        public void AnimationEvent_AttackSound()
-        {
-            PlayRandomSound(AttackSounds, 1f);
-        }
+        public void AnimationEvent_AttackSound() => PlayRandomSound(AttackSounds, 1f);
 
         public void AnimationEvent_Footstep()
         {
-            if (_agent.velocity.magnitude > 0.2f)
-            {
-                PlayRandomSound(FootstepSounds, 0.5f);
-            }
+            if (_agent.velocity.magnitude > 0.2f) PlayRandomSound(FootstepSounds, 0.5f);
         }
 
         public void PlayDeathSound()
         {
-            if (DeathSound != null)
-            {
-                AudioSource.PlayClipAtPoint(DeathSound, transform.position, MasterVolume);
-            }
+            if (DeathSound != null) AudioSource.PlayClipAtPoint(DeathSound, transform.position, MasterVolume);
         }
 
         public void AnimationEvent_HitPlayer()
@@ -164,17 +172,10 @@ namespace HDRP_FPS3D.Enemy
 
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, AttackRange);
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.position, ChaseRange);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, DetectionRange);
-            if (AttackHitboxCenter != null)
-            {
-                Gizmos.color = Color.blue;
-                Gizmos.DrawWireSphere(AttackHitboxCenter.position, HitboxRadius);
-            }
+            Gizmos.color = Color.red; Gizmos.DrawWireSphere(transform.position, AttackRange);
+            Gizmos.color = Color.magenta; Gizmos.DrawWireSphere(transform.position, ChaseRange);
+            Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(transform.position, DetectionRange);
+            if (AttackHitboxCenter != null) { Gizmos.color = Color.blue; Gizmos.DrawWireSphere(AttackHitboxCenter.position, HitboxRadius); }
         }
     }
 }

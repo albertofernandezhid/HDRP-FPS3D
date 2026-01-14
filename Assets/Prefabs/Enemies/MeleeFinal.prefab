@@ -1197,10 +1197,12 @@ MonoBehaviour:
   ChaseSpeed: 4
   RotationSpeed: 7
   PatrolRadius: 3
+  AggroDuration: 5
+  StunDuration: 1.1
   PatrolPoints: []
   DetectionRange: 10
   ChaseRange: 7.5
-  AttackRange: 2.15
+  AttackRange: 2.2
   AttackDamage: 10
   AttackCooldown: 2.5
   AttackHitboxCenter: {fileID: 3988895890119339773}

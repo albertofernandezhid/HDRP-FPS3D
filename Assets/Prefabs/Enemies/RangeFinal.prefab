@@ -1380,6 +1380,8 @@ MonoBehaviour:
   AttackDamage: 10
   AttackCooldown: 2
   RotationSpeed: 5
+  AggroDuration: 5
+  StunDuration: 1.2
   PatrolPoints: []
   AttackPrefab: {fileID: 9152739413097916265, guid: 8496097ac11e0b64f96a1898199a8dc2, type: 3}
   AttackPoint: {fileID: 8781544113977418796}

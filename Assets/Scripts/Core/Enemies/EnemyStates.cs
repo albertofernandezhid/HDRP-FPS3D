@@ -28,18 +28,10 @@ namespace HDRP_FPS3D.Enemy
             PlayerHealth playerHealth = enemy.Player.GetComponent<PlayerHealth>();
             bool isPlayerAlive = playerHealth != null && playerHealth.IsAlive();
 
-            float angleToTarget = Vector3.Angle(enemy.transform.forward, enemy.Agent.desiredVelocity);
-            if (enemy.Agent.remainingDistance > enemy.Agent.stoppingDistance)
-            {
-                enemy.Agent.speed = (angleToTarget > 45f) ? 0.5f : enemy.PatrolSpeed;
-            }
-
-            enemy.Animator.SetFloat("Speed", enemy.Agent.velocity.magnitude, 0.1f, Time.deltaTime);
-
             if (isPlayerAlive)
             {
                 float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
-                if (distanceToPlayer <= enemy.ChaseRange)
+                if (distanceToPlayer <= enemy.ChaseRange || enemy.IsAggroed)
                 {
                     enemy.SwitchState(new EnemyChaseState());
                     return;
@@ -53,6 +45,14 @@ namespace HDRP_FPS3D.Enemy
                     return;
                 }
             }
+
+            float angleToTarget = Vector3.Angle(enemy.transform.forward, enemy.Agent.desiredVelocity);
+            if (enemy.Agent.remainingDistance > enemy.Agent.stoppingDistance)
+            {
+                enemy.Agent.speed = (angleToTarget > 45f) ? 0.5f : enemy.PatrolSpeed;
+            }
+
+            enemy.Animator.SetFloat("Speed", enemy.Agent.velocity.magnitude, 0.1f, Time.deltaTime);
 
             if (_isPerformingMicroSearch)
             {
@@ -132,17 +132,31 @@ namespace HDRP_FPS3D.Enemy
 
     public class EnemyChaseState : EnemyBaseState
     {
+        private float _stunTimer;
+
         public override void EnterState(IEnemy enemy)
         {
             enemy.Agent.speed = enemy.ChaseSpeed;
             enemy.Agent.stoppingDistance = enemy.AttackRange * 0.8f;
             enemy.Agent.updateRotation = true;
-            enemy.Agent.isStopped = false;
+            _stunTimer = enemy.StunDuration;
         }
 
         public override void UpdateState(IEnemy enemy)
         {
             if (enemy.Health.IsDead) return;
+
+            bool isTakingDamage = enemy.Animator.GetCurrentAnimatorStateInfo(0).IsTag("TakeDamage");
+
+            if (isTakingDamage || _stunTimer > 0)
+            {
+                _stunTimer -= Time.deltaTime;
+                enemy.Agent.isStopped = true;
+                enemy.Animator.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
+                return;
+            }
+
+            enemy.Agent.isStopped = false;
 
             PlayerHealth playerHealth = enemy.Player.GetComponent<PlayerHealth>();
             if (playerHealth == null || !playerHealth.IsAlive())
@@ -152,13 +166,14 @@ namespace HDRP_FPS3D.Enemy
             }
 
             float distanceToPlayer = Vector3.Distance(enemy.transform.position, enemy.Player.position);
+
             if (distanceToPlayer <= enemy.AttackRange)
             {
                 enemy.SwitchState(new EnemyAttackState());
                 return;
             }
 
-            if (distanceToPlayer > enemy.ChaseRange)
+            if (distanceToPlayer > enemy.ChaseRange && !enemy.IsAggroed)
             {
                 enemy.SwitchState(new EnemyPatrolState());
                 return;
@@ -195,6 +210,7 @@ namespace HDRP_FPS3D.Enemy
             }
 
             bool isAttacking = enemy.Animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack") || enemy.Animator.IsInTransition(0);
+
             if (!isAttacking)
             {
                 Vector3 directionToPlayer = (enemy.Player.position - enemy.transform.position).normalized;

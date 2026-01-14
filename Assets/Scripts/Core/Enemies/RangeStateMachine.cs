@@ -15,8 +15,9 @@ namespace HDRP_FPS3D.Enemy
         public float AttackDamage = 10f;
         public float AttackCooldown = 1.5f;
         public float RotationSpeed = 5f;
+        public float AggroDuration = 5f;
+        public float StunDuration = 1.5f;
         public Transform[] PatrolPoints;
-
         public GameObject AttackPrefab;
         public Transform AttackPoint;
         public float ProjectileSpeed = 20f;
@@ -36,12 +37,17 @@ namespace HDRP_FPS3D.Enemy
         private float _lastAttackTime;
         private bool _isPlayerDetected;
         private Vector3 _initialPosition;
+        private bool _isAggroed;
+        private float _aggroTimer;
 
         public NavMeshAgent Agent => _agent;
         public Animator Animator => _animator;
         public EnemyHealth Health => _health;
         public bool IsPlayerDetected => _isPlayerDetected;
         public Vector3 InitialPosition => _initialPosition;
+        public bool IsAggroed => _isAggroed;
+        float IEnemy.AggroDuration => AggroDuration;
+        float IEnemy.StunDuration => StunDuration;
         float IEnemy.PatrolSpeed => PatrolSpeed;
         float IEnemy.ChaseSpeed => ChaseSpeed;
         float IEnemy.AttackRange => AttackRange;
@@ -58,11 +64,7 @@ namespace HDRP_FPS3D.Enemy
             _initialPosition = transform.position;
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = true;
-
-            if (EnemyAudioSource == null)
-            {
-                EnemyAudioSource = GetComponent<AudioSource>();
-            }
+            if (EnemyAudioSource == null) EnemyAudioSource = GetComponent<AudioSource>();
         }
 
         private void Start()
@@ -77,7 +79,8 @@ namespace HDRP_FPS3D.Enemy
             if (Player == null) FindPlayer();
             if (Player == null || _health.IsDead) return;
             CheckPlayerDetection();
-            if (_isPlayerDetected) LookAtPlayer();
+            HandleAggroLogic();
+            if (_isPlayerDetected || _isAggroed) LookAtPlayer();
             _currentState?.UpdateState(this);
         }
 
@@ -94,6 +97,25 @@ namespace HDRP_FPS3D.Enemy
             bool isPlayerAlive = playerHealth != null && playerHealth.IsAlive();
             float distanceToPlayer = Vector3.Distance(transform.position, Player.position);
             _isPlayerDetected = (distanceToPlayer <= DetectionRange) && isPlayerAlive;
+        }
+
+        private void HandleAggroLogic()
+        {
+            if (_isAggroed)
+            {
+                if (_isPlayerDetected) _aggroTimer = 0f;
+                else
+                {
+                    _aggroTimer += Time.deltaTime;
+                    if (_aggroTimer >= AggroDuration) _isAggroed = false;
+                }
+            }
+        }
+
+        public void TriggerAggro()
+        {
+            _isAggroed = true;
+            _aggroTimer = 0f;
         }
 
         public void LookAtPlayer()
@@ -128,30 +150,21 @@ namespace HDRP_FPS3D.Enemy
 
         public void AnimationEvent_Footstep()
         {
-            if (_agent.velocity.magnitude > 0.2f)
-            {
-                PlayRandomSound(FootstepSounds, 0.5f);
-            }
+            if (_agent.velocity.magnitude > 0.2f) PlayRandomSound(FootstepSounds, 0.5f);
         }
 
         public void PlayDeathSound()
         {
-            if (DeathSound != null)
-            {
-                AudioSource.PlayClipAtPoint(DeathSound, transform.position, MasterVolume);
-            }
+            if (DeathSound != null) AudioSource.PlayClipAtPoint(DeathSound, transform.position, MasterVolume);
         }
 
         public void AnimationEvent_ShootProjectile()
         {
             if (Player == null || AttackPrefab == null || AttackPoint == null) return;
-
             PlayRandomSound(AttackSounds, 1f);
-
             Vector3 targetDir = (Player.position - AttackPoint.position).normalized;
             Quaternion launchRotation = Quaternion.LookRotation(targetDir);
             GameObject projectile = Instantiate(AttackPrefab, AttackPoint.position, launchRotation);
-
             Rigidbody rb = projectile.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -159,19 +172,15 @@ namespace HDRP_FPS3D.Enemy
                 rb.useGravity = false;
                 rb.linearVelocity = targetDir * ProjectileSpeed;
             }
-
             EnemyProjectile projScript = projectile.GetComponent<EnemyProjectile>();
             if (projScript != null) projScript.Damage = AttackDamage;
         }
 
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, AttackRange);
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.position, ChaseRange);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, DetectionRange);
+            Gizmos.color = Color.red; Gizmos.DrawWireSphere(transform.position, AttackRange);
+            Gizmos.color = Color.magenta; Gizmos.DrawWireSphere(transform.position, ChaseRange);
+            Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(transform.position, DetectionRange);
         }
     }
 }

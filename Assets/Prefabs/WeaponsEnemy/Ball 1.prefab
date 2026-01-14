@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 5865629302600858415}
   - component: {fileID: -7150212920514351009}
   - component: {fileID: -6579516776742697439}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Ball 1
-  m_TagString: Projectile
+  m_TagString: EnemyProjectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

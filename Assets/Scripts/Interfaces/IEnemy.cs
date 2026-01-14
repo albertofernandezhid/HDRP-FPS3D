@@ -16,11 +16,16 @@ namespace HDRP_FPS3D.Enemy
         float ChaseRange { get; }
         float DetectionRange { get; }
         float PatrolRadius { get; }
+        float AggroDuration { get; }
+        float StunDuration { get; }
         Vector3 InitialPosition { get; }
         Transform[] PatrolPoints { get; }
         bool IsPlayerDetected { get; }
+        bool IsAggroed { get; }
+
         void LookAtPlayer();
         void SwitchState(EnemyBaseState newState);
         bool CanAttack();
+        void TriggerAggro();
     }
 }

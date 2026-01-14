@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 5865629302600858415}
   - component: {fileID: 8409896885442225856}
   - component: {fileID: -6099522213423935152}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Stone 1
-  m_TagString: Projectile
+  m_TagString: EnemyProjectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

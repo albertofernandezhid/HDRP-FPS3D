@@ -155,3 +155,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HDRP_FPS3D.Enemy.EnemyProjectile
   Damage: 10
   LifeTime: 10
+  ImpactEffect: {fileID: 0}
