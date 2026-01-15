@@ -170,6 +170,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PickupItem
   weaponData: {fileID: 11400000, guid: 27c52fbfd79e6334c885e2acc1f0f8aa, type: 2}
   ammoAmount: 500
+  detectionRange: 0.5
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
   enableBounce: 0
   bounceHeight: 0.5
   bounceDuration: 1
