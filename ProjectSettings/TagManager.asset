@@ -10,6 +10,7 @@ TagManager:
   - EnemyProjectile
   - IndoorLight
   - StreetLight
+  - Item
   layers:
   - Default
   - TransparentFX

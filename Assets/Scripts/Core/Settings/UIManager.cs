@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Paneles")]
     public GameObject panelPause;
-    public GameObject panelSettingsPause, panelDead, panelWin;
+    public GameObject panelSettingsPause, panelControls, panelDead, panelWin;
 
     [Header("Audio")]
     public AudioMixer mainMixer;
@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour
     [Header("Gamepad Navigation")]
     public GameObject firstButtonPause;
     public GameObject firstButtonSettings;
+    public GameObject firstButtonControls;
     public GameObject firstButtonDead;
     public GameObject firstButtonWin;
 
@@ -60,6 +61,7 @@ public class UIManager : MonoBehaviour
     {
         panelPause.SetActive(false);
         panelSettingsPause.SetActive(false);
+        panelControls.SetActive(false);
         panelDead.SetActive(false);
         panelWin.SetActive(false);
         Time.timeScale = 1f;
@@ -71,9 +73,13 @@ public class UIManager : MonoBehaviour
     public void TogglePause()
     {
         if (panelDead.activeSelf || panelWin.activeSelf) return;
-        bool pausing = !panelPause.activeSelf && !panelSettingsPause.activeSelf;
+        bool pausing = !panelPause.activeSelf && !panelSettingsPause.activeSelf && !panelControls.activeSelf;
         panelPause.SetActive(pausing);
-        if (!pausing) panelSettingsPause.SetActive(false);
+        if (!pausing)
+        {
+            panelSettingsPause.SetActive(false);
+            panelControls.SetActive(false);
+        }
         Time.timeScale = pausing ? 0f : 1f;
         Cursor.lockState = pausing ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = pausing;
@@ -117,9 +123,37 @@ public class UIManager : MonoBehaviour
     }
 
     public void OpenSettings() { panelPause.SetActive(false); panelSettingsPause.SetActive(true); SetInitialSelection(firstButtonSettings); }
-    public void BackToPause() { panelSettingsPause.SetActive(false); panelPause.SetActive(true); SetInitialSelection(firstButtonPause); }
+
+    public void OpenControls() { panelPause.SetActive(false); panelControls.SetActive(true); SetInitialSelection(firstButtonControls); }
+
+    public void BackToPause()
+    {
+        panelSettingsPause.SetActive(false);
+        panelControls.SetActive(false);
+        panelPause.SetActive(true);
+        SetInitialSelection(firstButtonPause);
+    }
+
     public void GoToMenu() => CargarEscenaInterna("MainMenu");
     public void Retry() => CargarEscenaInterna(SceneManager.GetActiveScene().name);
+
+    public void NextLevel()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UnlockNextLevel();
+            int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+            if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+            {
+                Time.timeScale = 1f;
+                SceneManager.LoadScene(nextSceneIndex);
+            }
+            else
+            {
+                GoToMenu();
+            }
+        }
+    }
 
     private void CargarEscenaInterna(string nombre)
     {

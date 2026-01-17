@@ -27,7 +27,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 219420299264
-    m_Localized: Credits
+    m_Localized: Controls
     m_Metadata:
       m_Items: []
   - m_Id: 272264335360
@@ -148,6 +148,66 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1659642724753408
     m_Localized: Spanish (ES)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3576257022791680
+    m_Localized: 'Movement - WASD
+
+      Jump - Space
+
+      Run - Shift
+
+      Sprint
+      - Ctrl
+
+      Toggle camera - V
+
+      Next weapon - E
+
+      Previous weapon
+      - Q
+
+      Pause - Escape
+
+      
+
+      Look around - Move mouse
+
+      Aim
+      - Right click
+
+      Zoom - Mouse wheel
+
+      Attack - Left click"'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3577695023140864
+    m_Localized: 'Movement - Left stick
+
+      Jump - A
+
+      Run - LB
+
+      Sprint
+      - RB
+
+      Toggle camera - Select
+
+      Look around - Right stick
+
+      Aim
+      - Press right stick
+
+      Zoom - D-Pad Up/Down
+
+      Attack - RT
+
+      Next
+      weapon - D-Pad Right
+
+      Previous weapon - D-Pad Left
+
+      Pause - Start"'
     m_Metadata:
       m_Items: []
   references:

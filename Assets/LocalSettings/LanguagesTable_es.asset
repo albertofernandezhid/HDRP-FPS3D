@@ -27,7 +27,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 219420299264
-    m_Localized: "Cr\xE9ditos"
+    m_Localized: Controles
     m_Metadata:
       m_Items: []
   - m_Id: 272264335360
@@ -148,6 +148,20 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1659642724753408
     m_Localized: "Espa\xF1ol (ES)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3576257022791680
+    m_Localized: "Movimiento - WASD\r\nSaltar - Espacio\r\nCorrer - Shift\r\nSprint
+      - Ctrl\r\nCambiar c\xE1mara - V\r\nSiguiente arma - E\r\nArma anterior - Q\r\nPausa
+      - Escape\r\n\r\nMirar alrededor - Mover rat\xF3n\r\nApuntar - Click derecho\r\nZoom
+      - Rueda del rat\xF3n\r\nAtacar - Click izquierdo\""
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3577695023140864
+    m_Localized: "Movimiento - Stick izquierdo\r\nSaltar - A\r\nCorrer - LB\r\nSprint
+      - RB\r\nCambiar c\xE1mara - Select\r\nMirar alrededor - Stick derecho\r\nApuntar
+      - Presionar stick derecho\r\nZoom - D-Pad Arriba/Abajo\r\nAtacar - RT\r\nSiguiente
+      arma - D-Pad Derecha\r\nArma anterior - D-Pad Izquierda\r\nPausa - Start\""
     m_Metadata:
       m_Items: []
   references:
