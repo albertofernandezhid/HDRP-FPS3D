@@ -95342,6 +95342,7 @@ MonoBehaviour:
   panelControls: {fileID: 1026311763}
   panelDead: {fileID: 2940393009115701464}
   panelWin: {fileID: 5286835361186846108}
+  menuScore: {fileID: 0}
   mainMixer: {fileID: 24100000, guid: 6326626504592ad499a335cc6dc736a3, type: 2}
   sMaster: {fileID: 218766134829801435}
   sMusic: {fileID: 278748697896346934}
