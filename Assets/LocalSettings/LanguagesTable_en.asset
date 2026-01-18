@@ -75,7 +75,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 305438138044416
-    m_Localized: Level 3
+    m_Localized: 'Reset
+
+      Score'
     m_Metadata:
       m_Items: []
   - m_Id: 305527808069632

@@ -21,6 +21,20 @@ public class LevelGoal : MonoBehaviour
 
     private void FinishLevel()
     {
+        ScoreManager scManager = Object.FindFirstObjectByType<ScoreManager>();
+        if (scManager != null)
+        {
+            scManager.FinishLevel();
+        }
+
+        PlayerPrefs.Save();
+
+        MenuScore menuScore = Object.FindFirstObjectByType<MenuScore>();
+        if (menuScore != null)
+        {
+            menuScore.RefreshScores();
+        }
+
         if (victoryParticles != null)
         {
             var main = victoryParticles.main;

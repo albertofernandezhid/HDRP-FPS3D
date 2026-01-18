@@ -67772,6 +67772,7 @@ MonoBehaviour:
   panelControls: {fileID: 0}
   panelDead: {fileID: 0}
   panelWin: {fileID: 0}
+  menuScore: {fileID: 0}
   mainMixer: {fileID: 24100000, guid: 6326626504592ad499a335cc6dc736a3, type: 2}
   sMaster: {fileID: 0}
   sMusic: {fileID: 0}
@@ -74799,8 +74800,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -22.3581, y: -9.8357}
+  m_SizeDelta: {x: 73.5092, y: 35.4135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1089068774
 CanvasGroup:

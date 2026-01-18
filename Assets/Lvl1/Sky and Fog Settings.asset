@@ -212,10 +212,10 @@ MonoBehaviour:
     m_Value: 0
   limitMin:
     m_OverrideState: 1
-    m_Value: -1
+    m_Value: 9
   limitMax:
     m_OverrideState: 1
-    m_Value: 14
+    m_Value: 15
   curveMap:
     m_OverrideState: 1
     m_Value:
@@ -1115,10 +1115,10 @@ MonoBehaviour:
     m_Value: 200
   ambientLightProbeDimmer:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.8
   sunLightDimmer:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.8
   erosionOcclusion:
     m_OverrideState: 0
     m_Value: 0.1
@@ -1165,7 +1165,7 @@ MonoBehaviour:
     m_Value: 1
   shadows:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   shadowResolution:
     m_OverrideState: 1
     m_Value: 256
@@ -1213,7 +1213,7 @@ MonoBehaviour:
   interCascadeBorders: 1
   maxShadowDistance:
     m_OverrideState: 1
-    m_Value: 500
+    m_Value: 200
   directionalTransmissionMultiplier:
     m_OverrideState: 1
     m_Value: 1

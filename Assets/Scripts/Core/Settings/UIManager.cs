@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     [Header("Paneles")]
     public GameObject panelPause;
     public GameObject panelSettingsPause, panelControls, panelDead, panelWin;
+    public MenuScore menuScore;
 
     [Header("Audio")]
     public AudioMixer mainMixer;
@@ -102,6 +103,13 @@ public class UIManager : MonoBehaviour
     public void ShowWin()
     {
         panelWin.SetActive(true);
+
+        MenuScore menuScore = panelWin.GetComponentInChildren<MenuScore>(true);
+        if (menuScore != null)
+        {
+            menuScore.RefreshScores();
+        }
+
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

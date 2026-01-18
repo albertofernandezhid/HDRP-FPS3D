@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -1892107683284080072}
   - component: {fileID: -7150212920514351009}
   - component: {fileID: 3043791015775454918}
+  - component: {fileID: 1213115124557225136}
   m_Layer: 7
   m_Name: Ball
   m_TagString: Projectile
@@ -200,3 +201,15 @@ MonoBehaviour:
   hoverEase: 4
   pickupEffect: {fileID: 0}
   pickupSound: {fileID: 0}
+--- !u!114 &1213115124557225136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9152739413097916265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6444db2b8319f794f81240e4971c276b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileScore
