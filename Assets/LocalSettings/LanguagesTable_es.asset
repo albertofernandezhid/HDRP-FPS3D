@@ -164,6 +164,10 @@ MonoBehaviour:
       arma - D-Pad Derecha\r\nArma anterior - D-Pad Izquierda\r\nPausa - Start\""
     m_Metadata:
       m_Items: []
+  - m_Id: 3857612587667456
+    m_Localized: Saltar intro
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -169,12 +169,12 @@ MonoBehaviour:
 
       Pause - Escape
 
-      
+
 
       Look around - Move mouse
 
-      Aim
-      - Right click
+      Aim - Right
+      click
 
       Zoom - Mouse wheel
 
@@ -208,6 +208,10 @@ MonoBehaviour:
       Previous weapon - D-Pad Left
 
       Pause - Start"'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3857612587667456
+    m_Localized: Skip intro
     m_Metadata:
       m_Items: []
   references:

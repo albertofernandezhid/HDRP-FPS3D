@@ -155,6 +155,10 @@ MonoBehaviour:
     m_Key: MoveGamepad
     m_Metadata:
       m_Items: []
+  - m_Id: 3857612587667456
+    m_Key: SkipIntro
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
