@@ -9,7 +9,8 @@ public class GraphicsSettingsManager : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown dropdown;
     [SerializeField] private string tableName = "LanguagesTable";
-    [SerializeField] private List<string> optionKeys;
+
+    private bool _isRefreshing = false;
 
     private void Awake()
     {
@@ -47,23 +48,40 @@ public class GraphicsSettingsManager : MonoBehaviour
 
     private async void RefreshOptions()
     {
-        int currentValue = dropdown.value;
-        dropdown.options.Clear();
+        if (_isRefreshing) return;
+        _isRefreshing = true;
 
-        List<Task<string>> tasks = new List<Task<string>>();
-        foreach (var key in optionKeys)
+        try
         {
-            tasks.Add(LocalizationSettings.StringDatabase.GetLocalizedStringAsync(tableName, key).Task);
+            if (!LocalizationSettings.InitializationOperation.IsDone)
+            {
+                await LocalizationSettings.InitializationOperation.Task;
+            }
+
+            int currentValue = QualitySettings.GetQualityLevel();
+            string[] qualityNames = QualitySettings.names;
+
+            List<Task<string>> tasks = new List<Task<string>>();
+
+            foreach (string name in qualityNames)
+            {
+                tasks.Add(LocalizationSettings.StringDatabase.GetLocalizedStringAsync(tableName, name).Task);
+            }
+
+            string[] results = await Task.WhenAll(tasks);
+
+            dropdown.options.Clear();
+            foreach (string translatedText in results)
+            {
+                dropdown.options.Add(new TMP_Dropdown.OptionData(translatedText));
+            }
+
+            dropdown.value = currentValue;
+            dropdown.RefreshShownValue();
         }
-
-        string[] results = await Task.WhenAll(tasks);
-
-        foreach (string translatedText in results)
+        finally
         {
-            dropdown.options.Add(new TMP_Dropdown.OptionData(translatedText));
+            _isRefreshing = false;
         }
-
-        dropdown.value = Mathf.Clamp(currentValue, 0, dropdown.options.Count - 1);
-        dropdown.RefreshShownValue();
     }
 }

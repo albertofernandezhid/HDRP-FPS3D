@@ -122,6 +122,8 @@ public class PowerUpPickup : MonoBehaviour
         {
             isBeingPickedUp = true;
 
+            transform.SetParent(null);
+
             if (pickupCollider != null)
                 pickupCollider.enabled = false;
 
