@@ -165,3 +165,9 @@ Assets/
 - [x] Crear **menús y paneles**
 - [x] Crear **mínimo 3 niveles**
 - [ ] Pulir optimización y efectos visuales
+
+---
+
+## 🎮 Itch.io
+
+[Throwback Force [PORTABLE]](https://albertofernandezhid.itch.io/throwback-force)
